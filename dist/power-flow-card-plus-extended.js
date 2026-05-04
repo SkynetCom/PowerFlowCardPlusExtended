@@ -789,6 +789,9 @@ const j=globalThis,B=e=>e,L=j.trustedTypes,R=L?L.createPolicy("lit-html",{create
     margin-top: 4px;
     padding-top: 0;
     max-width: 470px;
+    position: relative;
+    z-index: 2;
+    background: var(--ha-card-background, var(--card-background-color, white));
   }
 
   .extra-trunk-connector {
@@ -898,6 +901,8 @@ function ui(e,t){return(t,o,i)=>((e,t,o)=>(o.configurable=!0,o.enumerable=!0,Ref
                   class="${Te(e.state||0,this._config)}"
                   d="M50,50 V0"
                   vector-effect="non-scaling-stroke"
+                  stroke="var(--extra-ind-color)"
+                  stroke-width="1"
                 />
                 ${Ee(this._config)&&e.state&&e.state>=(e.displayZeroTolerance??0)?ne`<circle r="1" class="extra-individual-dot" vector-effect="non-scaling-stroke" style="fill: var(--extra-ind-color);">
                         <animateMotion
