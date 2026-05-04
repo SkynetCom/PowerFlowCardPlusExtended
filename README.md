@@ -29,7 +29,7 @@ This is an independent fork and extension of the excellent [Power Flow Card Plus
 | Feature | Original | Extended |
 |---------|----------|----------|
 | Max individual sensors | 4 | **10** |
-| Extra sensors layout | N/A | **Grid display below flow diagram** |
+| Extra sensors layout | N/A | **Horizontal dynamic columns branching from a single trunk line** |
 | Color palette | 4 colors | **10 distinct colors** |
 | Sorting consistency | Optional | **Always consistent (by power, then name)** |
 | CSS custom properties | 4 individual slots | **10 individual slots** |
@@ -38,7 +38,7 @@ This is an independent fork and extension of the excellent [Power Flow Card Plus
 ### Layout Design
 
 - **Sensors 1-4** are displayed in the classic flow diagram positions (left-top, left-bottom, right-top, right-bottom) with animated SVG flow lines connecting to Home.
-- **Sensors 5-10** are displayed in a responsive grid below the flow diagram, maintaining the same visual style (colored circles, icons, values).
+- **Sensors 5-10** expand horizontally to the right in stacked vertical columns. A single animated trunk line emerges from "Home" and branches out to each extra column dynamically, without overlapping.
 - **Ordering**: When `sort_individual_devices` is enabled, sensors are sorted by power consumption (descending), then by entity name alphabetically. This ensures consistent graphical positioning across refreshes.
 
 ### Color Palette
@@ -271,7 +271,7 @@ The following changes were made relative to the original [power-flow-card-plus](
 1. **`MAX_INDIVIDUAL_SENSORS`** constant set to `10` (was effectively limited to 4 in the original UI)
 2. **Extended color palette** with 10 distinct colors in `src/style/all.ts`
 3. **Dynamic position naming** (`ind-4` through `ind-9`) for extra sensors
-4. **Extra individuals grid section** with responsive CSS layout
+4. **Extra individuals horizontal columns** with dynamic rightward SVG trunk lines
 5. **CSS custom properties** dynamically generated for all 10 sensors
 6. **Template subscriptions** extended for all individual sensor keys
 7. **Flow rate computation** array-based for all sensors (no fixed limit)
