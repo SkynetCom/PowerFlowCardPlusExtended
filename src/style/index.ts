@@ -110,6 +110,9 @@ export const styles = css`
     z-index: 1;
   }
 
+  .card-content {
+    position: relative;
+  }
   .card-content,
   .row {
     max-width: 470px;

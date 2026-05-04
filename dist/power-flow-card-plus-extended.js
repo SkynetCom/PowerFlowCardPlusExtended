@@ -288,6 +288,9 @@ const j=globalThis,B=e=>e,L=j.trustedTypes,R=L?L.createPolicy("lit-html",{create
     z-index: 1;
   }
 
+  .card-content {
+    position: relative;
+  }
   .card-content,
   .row {
     max-width: 470px;
