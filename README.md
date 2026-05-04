@@ -68,14 +68,14 @@ All colors can be overridden per-sensor using the `color` property in the entity
 
 1. Open HACS in your Home Assistant instance
 2. Go to **Frontend** > **Custom repositories**
-3. Add this repository URL: `https://github.com/YOUR_USERNAME/power-flow-card-plus-extended`
+3. Add this repository URL: `https://github.com/SkynetCom/PowerFlowCardPlusExtended`
 4. Install **Power Flow Card Plus Extended**
 5. Clear your browser cache
 6. Add the card to your Lovelace dashboard
 
 ### Manual
 
-1. Download `dist/power-flow-card-plus-extended.js` from the latest [release](https://github.com/YOUR_USERNAME/power-flow-card-plus-extended/releases)
+1. Download `dist/power-flow-card-plus-extended.js` from the latest [release](https://github.com/SkynetCom/PowerFlowCardPlusExtended/releases)
 2. Copy it to `config/www/community/power-flow-card-plus-extended/`
 3. Add the following to your `configuration.yaml`:
 
@@ -213,7 +213,7 @@ sort_individual_devices: true
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/power-flow-card-plus-extended.git
+git clone https://github.com/SkynetCom/PowerFlowCardPlusExtended.git
 cd power-flow-card-plus-extended
 
 # Install dependencies

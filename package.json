@@ -2,6 +2,15 @@
   "name": "power-flow-card-plus-extended",
   "version": "1.0.0",
   "description": "Extended Power Flow Card Plus for Home Assistant - Supports up to 10 individual sensors connected to Home",
+  "author": "Marcos Bouza <SkynetCom>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SkynetCom/PowerFlowCardPlusExtended.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SkynetCom/PowerFlowCardPlusExtended/issues"
+  },
+  "homepage": "https://github.com/SkynetCom/PowerFlowCardPlusExtended#readme",
   "main": "dist/power-flow-card-plus-extended.js",
   "scripts": {
     "build": "rollup -c",
