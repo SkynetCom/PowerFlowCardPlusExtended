@@ -21,13 +21,12 @@ interface TopIndividual {
   displayState: string;
   battery: any;
   individualObjs: IndividualObject[];
-  columnIndex?: number;
 }
 
 export const individualRightTopElement = (
   main: CardMainContext,
   config: FlowCardPlusConfig,
-  { individualObj, templatesObj, displayState, newDur, battery, individualObjs, columnIndex }: TopIndividual
+  { individualObj, templatesObj, displayState, newDur, battery, individualObjs }: TopIndividual
 ) => {
   if (!individualObj) return spacer;
   const disableEntityClick = config.clickable_entities === false;
@@ -40,12 +39,6 @@ export const individualRightTopElement = (
   const duration = newDur.individual[indexOfIndividual] || 1.66;
 
   const hasBottomRow = !!battery?.has || checkHasBottomIndividual(individualObjs);
-  const colIndex = columnIndex || 1;
-  const colWidthFactor = colIndex - 1;
-  const svgWidth = 100 + colWidthFactor * 80;
-  const startX = (hasBottomRow ? 45 : 47) + colWidthFactor * 80;
-  const curveY = hasBottomRow ? 30 : 35;
-  const leftX = 20 + colWidthFactor * 80;
 
   return html`<div class="circle-container individual-top individual-right individual-right-top">
     <span class="label">${individualObj.name}</span>
@@ -101,16 +94,17 @@ export const individualRightTopElement = (
       ? html`
           <div class="right-individual-flow-container">
             <svg
-              viewBox="0 0 ${svgWidth} 100"
+              viewBox="0 0 100 100"
               xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMaxYMid slice"
+              preserveAspectRatio="xMidYMid slice"
               class="right-individual-flow"
-              style="width: calc(var(--lines-svg-not-flat-multi-indiv-right-indiv-width) + ${colWidthFactor * 80}px);"
             >
               <path
-                id="individual-top-right-home-${colIndex}"
+                id="individual-top-right-home"
                 class="${styleLine(individualObj.state || 0, config)}"
-                d="M${startX},0 v15 c0,${curveY} -10,${curveY} -30,${curveY} h-${leftX}"
+                d="M${hasBottomRow ? 45 : 47},0 v15 c0,${hasBottomRow
+                  ? "30 -10,30 -30,30"
+                  : "35 -10,35 -30,35"} h-20"
                 vector-effect="non-scaling-stroke"
               />
               ${checkShouldShowDots(config) &&
@@ -127,7 +121,7 @@ export const individualRightTopElement = (
                         keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
                         keyTimes="0;1"
                       >
-                        <mpath xlink:href="#individual-top-right-home-${colIndex}" />
+                        <mpath xlink:href="#individual-top-right-home" />
                       </animateMotion>
                     </circle>`
                 : nothing}

@@ -110,11 +110,7 @@ export const styles = css`
     z-index: 1;
   }
 
-  .card-content {
-    max-width: 100%;
-    overflow-x: auto;
-    padding-bottom: 8px; /* avoid scrollbar clipping */
-  }
+  .card-content,
   .row {
     max-width: 470px;
   }

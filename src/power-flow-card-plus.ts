@@ -94,10 +94,6 @@ registerCustomCard({
 
 @customElement("power-flow-card-plus-extended")
 export class PowerFlowCardPlus extends LitElement {
-  static get styles() {
-    return styles;
-  }
-
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private _config = {} as PowerFlowCardPlusConfig;
 
@@ -465,155 +461,116 @@ export class PowerFlowCardPlus extends LitElement {
           id="power-flow-card-plus"
           style=${this._config.style_card_content ? this._config.style_card_content : ""}
         >
-        ${(() => {
-          const extraColumns: { top?: IndividualObject; bottom?: IndividualObject; columnIndex: number }[] = [];
-          const extraIndividualObjs = individualObjs.slice(4);
-          for (let i = 0; i < extraIndividualObjs.length; i += 2) {
-            extraColumns.push({
-              top: extraIndividualObjs[i],
-              bottom: extraIndividualObjs[i + 1],
-              columnIndex: i / 2 + 1,
-            });
-          }
-
-          return html`
-          <div class="diagram-container" style="display: flex; flex-direction: row; width: max-content;">
-            <div class="core-diagram" style="width: 470px; flex-shrink: 0; position: relative;">
-              ${solar.has ||
-              individualObjs?.some((individual) => individual?.has) ||
-              nonFossil.hasPercentage
-                ? html`<div class="row">
-                    ${nonFossilElement(this, this._config, {
+          ${solar.has ||
+          individualObjs?.some((individual) => individual?.has) ||
+          nonFossil.hasPercentage
+            ? html`<div class="row">
+                ${nonFossilElement(this, this._config, {
+                  entities,
+                  grid,
+                  newDur,
+                  nonFossil,
+                  templatesObj,
+                })}
+                ${solar.has
+                  ? solarElement(this, this._config, {
                       entities,
-                      grid,
-                      newDur,
-                      nonFossil,
+                      solar,
                       templatesObj,
-                    })}
-                    ${solar.has
-                      ? solarElement(this, this._config, {
-                          entities,
-                          solar,
-                          templatesObj,
-                        })
-                      : individualObjs?.some((individual) => individual?.has)
-                        ? spacer
-                        : nothing}
-                    ${individualFieldLeftTop
-                      ? individualLeftTopElement(this, this._config, {
-                          individualObj: individualFieldLeftTop,
-                          displayState: getIndividualDisplayState(individualFieldLeftTop),
-                          newDur,
-                          templatesObj,
-                        })
-                      : spacer}
-                    ${individualFieldRightTop
-                      ? individualRightTopElement(this, this._config, {
-                          displayState: getIndividualDisplayState(individualFieldRightTop),
-                          individualObj: individualFieldRightTop,
-                          newDur,
-                          templatesObj,
-                          battery,
-                          individualObjs,
-                        })
-                      : spacer}
-                  </div>`
-                : nothing}
-              <div class="row">
-                ${grid.has
-                  ? gridElement(this, this._config, {
-                      entities,
-                      grid,
+                    })
+                  : individualObjs?.some((individual) => individual?.has)
+                    ? spacer
+                    : nothing}
+                ${individualFieldLeftTop
+                  ? individualLeftTopElement(this, this._config, {
+                      individualObj: individualFieldLeftTop,
+                      displayState: getIndividualDisplayState(individualFieldLeftTop),
+                      newDur,
                       templatesObj,
                     })
                   : spacer}
-                ${spacer}
-                ${!entities.home?.hide
-                  ? homeElement(this, this._config, {
-                      CIRCLE_CIRCUMFERENCE,
-                      entities,
-                      grid,
-                      home,
-                      homeBatteryCircumference,
-                      homeGridCircumference,
-                      homeNonFossilCircumference,
-                      homeSolarCircumference,
+                ${checkHasRightIndividual(individualObjs)
+                  ? individualRightTopElement(this, this._config, {
+                      displayState: getIndividualDisplayState(individualFieldRightTop),
+                      individualObj: individualFieldRightTop,
                       newDur,
                       templatesObj,
-                      homeUsageToDisplay,
-                      individual: individualObjs,
+                      battery,
+                      individualObjs,
                     })
-                  : spacer}
-                ${spacer}
-              </div>
-              ${battery.has || checkHasBottomIndividual(individualObjs)
-                ? html`<div class="row">
-                    ${spacer}
-                    ${battery.has ? batteryElement(this, this._config, { battery, entities }) : spacer}
-                    ${individualFieldLeftBottom
-                      ? individualLeftBottomElement(this, this._config, {
-                          displayState: getIndividualDisplayState(individualFieldLeftBottom),
-                          individualObj: individualFieldLeftBottom,
-                          newDur,
-                          templatesObj,
-                        })
-                      : spacer}
-                    ${individualFieldRightBottom
-                      ? individualRightBottomElement(this, this._config, {
-                          displayState: getIndividualDisplayState(individualFieldRightBottom),
-                          individualObj: individualFieldRightBottom,
-                          newDur,
-                          templatesObj,
-                        })
-                      : spacer}
-                  </div>`
-                : spacer}
-
-              ${flowElement(this._config, {
-                battery,
-                grid,
-                individual: individualObjs,
-                newDur,
-                solar,
-              })}
-            </div>
-
-            ${extraColumns.length > 0 
-              ? html`
-                <div class="right-columns" style="display: flex; flex-direction: row; height: 100%;">
-                  ${extraColumns.map(col => html`
-                    <div class="column" style="display: flex; flex-direction: column; justify-content: space-between;">
-                      ${col.top
-                        ? individualRightTopElement(this, this._config, {
-                            displayState: getIndividualDisplayState(col.top),
-                            individualObj: col.top,
-                            newDur,
-                            templatesObj,
-                            battery,
-                            individualObjs,
-                            columnIndex: col.columnIndex
-                          })
-                        : spacer}
-                      ${spacer}
-                      ${col.bottom
-                        ? individualRightBottomElement(this, this._config, {
-                            displayState: getIndividualDisplayState(col.bottom),
-                            individualObj: col.bottom,
-                            newDur,
-                            templatesObj,
-                            columnIndex: col.columnIndex
-                          })
-                        : spacer}
-                    </div>
-                  `)}
-                </div>
-              `
-              : nothing
-            }
+                  : nothing}
+              </div>`
+            : nothing}
+          <div class="row">
+            ${grid.has
+              ? gridElement(this, this._config, {
+                  entities,
+                  grid,
+                  templatesObj,
+                })
+              : spacer}
+            ${spacer}
+            ${!entities.home?.hide
+              ? homeElement(this, this._config, {
+                  CIRCLE_CIRCUMFERENCE,
+                  entities,
+                  grid,
+                  home,
+                  homeBatteryCircumference,
+                  homeGridCircumference,
+                  homeNonFossilCircumference,
+                  homeSolarCircumference,
+                  newDur,
+                  templatesObj,
+                  homeUsageToDisplay,
+                  individual: individualObjs,
+                })
+              : spacer}
+            ${checkHasRightIndividual(individualObjs) ? spacer : nothing}
           </div>
-          `;
-        })()}
-
+          ${battery.has || checkHasBottomIndividual(individualObjs)
+            ? html`<div class="row">
+                ${spacer}
+                ${battery.has ? batteryElement(this, this._config, { battery, entities }) : spacer}
+                ${individualFieldLeftBottom
+                  ? individualLeftBottomElement(this, this._config, {
+                      displayState: getIndividualDisplayState(individualFieldLeftBottom),
+                      individualObj: individualFieldLeftBottom,
+                      newDur,
+                      templatesObj,
+                    })
+                  : spacer}
+                ${checkHasRightIndividual(individualObjs)
+                  ? individualRightBottomElement(this, this._config, {
+                      displayState: getIndividualDisplayState(individualFieldRightBottom),
+                      individualObj: individualFieldRightBottom,
+                      newDur,
+                      templatesObj,
+                    })
+                  : nothing}
+              </div>`
+            : spacer}
+          ${flowElement(this._config, {
+            battery,
+            grid,
+            individual: individualObjs,
+            newDur,
+            solar,
+          })}
+          ${extraIndividuals.length > 0
+            ? html`<div class="extra-individuals-section">
+                <div class="extra-individuals-grid">
+                  ${extraIndividuals.map(
+                    (extraInd, i) =>
+                      this._renderExtraIndividual(
+                        extraInd,
+                        getIndividualDisplayState(extraInd),
+                        i + 4
+                      )
+                  )}
+                </div>
+              </div>`
+            : nothing}
         </div>
         ${dashboardLinkElement(this._config, this.hass)}
       </ha-card>
@@ -1306,6 +1263,6 @@ export class PowerFlowCardPlus extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "power-flow-card-plus-extended": PowerFlowCardPlus;
+    "power-flow-card-plus": PowerFlowCardPlus;
   }
 }

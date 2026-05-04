@@ -18,13 +18,12 @@ interface TopIndividual {
   templatesObj: TemplatesObj;
   individualObj?: IndividualObject;
   displayState: string;
-  columnIndex?: number;
 }
 
 export const individualRightBottomElement = (
   main: CardMainContext,
   config: FlowCardPlusConfig,
-  { individualObj, templatesObj, displayState, newDur, columnIndex }: TopIndividual
+  { individualObj, templatesObj, displayState, newDur }: TopIndividual
 ) => {
   if (!individualObj) return spacer;
   const disableEntityClick = config.clickable_entities === false;
@@ -35,11 +34,6 @@ export const individualRightBottomElement = (
   if (indexOfIndividual === -1 || indexOfIndividual === undefined) return spacer;
 
   const duration = newDur.individual[indexOfIndividual] || 1.66;
-  const colIndex = columnIndex || 1;
-  const colWidthFactor = colIndex - 1;
-  const svgWidth = 100 + colWidthFactor * 80;
-  const startX = 45 + colWidthFactor * 80;
-  const leftX = 20 + colWidthFactor * 80;
 
   return html`<div
     class="circle-container individual-bottom individual-right individual-right-bottom"
@@ -97,16 +91,15 @@ export const individualRightBottomElement = (
       ? html`
           <div class="right-individual-flow-container">
             <svg
-              viewBox="0 0 ${svgWidth} 100"
+              viewBox="0 0 100 100"
               xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMaxYMid slice"
+              preserveAspectRatio="xMidYMid slice"
               class="right-individual-flow"
-              style="width: calc(var(--lines-svg-not-flat-multi-indiv-right-indiv-width) + ${colWidthFactor * 80}px);"
             >
               <path
-                id="individual-bottom-right-home-${colIndex}"
+                id="individual-bottom-right-home"
                 class="${styleLine(individualObj.state || 0, config)}"
-                d="M${startX},100 v-15 c0,-30 -10,-30 -30,-30 h-${leftX}"
+                d="M45,100 v-15 c0,-30 -10,-30 -30,-30 h-20"
                 vector-effect="non-scaling-stroke"
               />
               ${checkShouldShowDots(config) &&
@@ -123,7 +116,7 @@ export const individualRightBottomElement = (
                         keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
                         keyTimes="0;1"
                       >
-                        <mpath xlink:href="#individual-bottom-right-home-${colIndex}" />
+                        <mpath xlink:href="#individual-bottom-right-home" />
                       </animateMotion>
                     </circle>`
                 : nothing}
