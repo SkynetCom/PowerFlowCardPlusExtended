@@ -611,6 +611,9 @@ export const styles = css`
     margin-top: 4px;
     padding-top: 0;
     max-width: 470px;
+    position: relative;
+    z-index: 2;
+    background: var(--ha-card-background, var(--card-background-color, white));
   }
 
   .extra-trunk-connector {

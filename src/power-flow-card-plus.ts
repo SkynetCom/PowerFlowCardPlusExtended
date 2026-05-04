@@ -392,6 +392,8 @@ export class PowerFlowCardPlus extends LitElement {
                   class="${styleLine(individualObj.state || 0, this._config)}"
                   d="M50,50 V0"
                   vector-effect="non-scaling-stroke"
+                  stroke="var(--extra-ind-color)"
+                  stroke-width="1"
                 />
                 ${checkShouldShowDots(this._config) &&
                 individualObj.state &&
