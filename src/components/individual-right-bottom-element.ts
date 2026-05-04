@@ -37,9 +37,9 @@ export const individualRightBottomElement = (
   const duration = newDur.individual[indexOfIndividual] || 1.66;
   const colIndex = columnIndex || 1;
   const colWidthFactor = colIndex - 1;
-  const svgWidth = 100 + colWidthFactor * 100;
-  const startX = 45 + colWidthFactor * 100;
-  const leftX = 20 + colWidthFactor * 100;
+  const svgWidth = 100 + colWidthFactor * 80;
+  const startX = 45 + colWidthFactor * 80;
+  const leftX = 20 + colWidthFactor * 80;
 
   return html`<div
     class="circle-container individual-bottom individual-right individual-right-bottom"

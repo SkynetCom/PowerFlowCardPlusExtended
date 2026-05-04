@@ -42,10 +42,10 @@ export const individualRightTopElement = (
   const hasBottomRow = !!battery?.has || checkHasBottomIndividual(individualObjs);
   const colIndex = columnIndex || 1;
   const colWidthFactor = colIndex - 1;
-  const svgWidth = 100 + colWidthFactor * 100;
-  const startX = (hasBottomRow ? 45 : 47) + colWidthFactor * 100;
+  const svgWidth = 100 + colWidthFactor * 80;
+  const startX = (hasBottomRow ? 45 : 47) + colWidthFactor * 80;
   const curveY = hasBottomRow ? 30 : 35;
-  const leftX = 20 + colWidthFactor * 100;
+  const leftX = 20 + colWidthFactor * 80;
 
   return html`<div class="circle-container individual-top individual-right individual-right-top">
     <span class="label">${individualObj.name}</span>
