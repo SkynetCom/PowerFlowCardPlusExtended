@@ -94,6 +94,8 @@ registerCustomCard({
 
 @customElement("power-flow-card-plus-extended")
 export class PowerFlowCardPlus extends LitElement {
+  static styles = styles;
+
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private _config = {} as PowerFlowCardPlusConfig;
 
