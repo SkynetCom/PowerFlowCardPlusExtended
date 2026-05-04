@@ -94,6 +94,10 @@ registerCustomCard({
 
 @customElement("power-flow-card-plus-extended")
 export class PowerFlowCardPlus extends LitElement {
+  static get styles() {
+    return [styles, allDynamicStyles];
+  }
+
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private _config = {} as PowerFlowCardPlusConfig;
 
@@ -1272,6 +1276,6 @@ export class PowerFlowCardPlus extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "power-flow-card-plus": PowerFlowCardPlus;
+    "power-flow-card-plus-extended": PowerFlowCardPlus;
   }
 }
