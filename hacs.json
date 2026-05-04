@@ -1,0 +1,6 @@
+{
+  "name": "Power Flow Card Plus Extended",
+  "content": "lovelace",
+  "render_readme": true,
+  "filename": "dist/power-flow-card-plus-extended.js"
+}
