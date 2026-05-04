@@ -608,37 +608,64 @@ export const styles = css`
 
   /* ===== Extra Individual Sensors Grid (5+ sensors) ===== */
   .extra-individuals-section {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--divider-color, rgba(128, 128, 128, 0.15));
+    margin-top: 4px;
+    padding-top: 0;
+    max-width: 470px;
   }
 
-  .extra-individuals-grid {
-    display: grid;
-    grid-template-columns: repeat(4, var(--size-circle-entity));
-    gap: 4px 0;
+  .extra-trunk-connector {
+    display: flex;
     justify-content: center;
-    max-width: 500px;
+    height: 20px;
+  }
+
+  .trunk-svg {
+    width: 2px;
+    height: 100%;
+  }
+
+  .extra-individuals-tree {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    justify-items: center;
+    max-width: 470px;
     margin: 0 auto;
   }
 
-  .extra-individuals-grid .circle-container {
+  .extra-individual-cell {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+  }
+
+  .extra-flow-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 30px;
+  }
+
+  .extra-flow-line {
+    width: 2px;
+    height: 100%;
+  }
+
+  .extra-individual-cell .circle-container {
     padding: 4px 0;
   }
 
-  .extra-individuals-grid .circle {
+  .extra-individual-cell .circle {
     width: 64px;
     height: 64px;
     font-size: 10px;
     line-height: 10px;
   }
 
-  .extra-individuals-grid .label {
+  .extra-individual-cell .label {
     font-size: 10px;
-    max-width: 70px;
+    max-width: 80px;
     text-align: center;
   }
 

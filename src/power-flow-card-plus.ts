@@ -56,7 +56,9 @@ import {
   computeFieldIcon,
   computeFieldName,
 } from "./utils/compute-field-attributes";
-import { computeFlowRate } from "./utils/compute-flow-rate";
+import { computeFlowRate, computeIndividualFlowRate } from "./utils/compute-flow-rate";
+import { showLine } from "./utils/show-line";
+import { styleLine } from "./utils/style-line";
 import {
   checkHasBottomIndividual,
   checkHasExtraIndividuals,
@@ -80,7 +82,7 @@ import {
   type LovelaceCardEditor,
 } from "custom-card-helpers";
 import { type UnsubscribeFunc } from "home-assistant-js-websocket";
-import { html, LitElement, nothing, type PropertyValues, type TemplateResult } from "lit";
+import { html, svg, LitElement, nothing, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import packageJson from "./package.json" with { type: "json" };
 
@@ -359,56 +361,100 @@ export class PowerFlowCardPlus extends LitElement {
   }
 
   /**
-   * Render an extra individual sensor (index 4+) in the grid.
+   * Render an extra individual sensor (index 4+) with flow line.
    */
   private _renderExtraIndividual(
     individualObj: IndividualObject,
     displayState: string,
-    index: number
+    index: number,
+    newDur: NewDur
   ): TemplateResult {
     const posName = getPositionName(index);
     const disableEntityClick = this._config.clickable_entities === false;
+    const indexOfIndividual = this._config?.entities?.individual?.findIndex(
+      (e) => e.entity === individualObj.entity
+    );
+    const duration = newDur.individual[indexOfIndividual ?? index] || 1.66;
+    const pathId = `extra-ind-${index}-flow`;
+
     return html`
-      <div class="circle-container extra-individual" style="--extra-ind-color: var(--individual-${posName}-color); --extra-ind-icon-color: var(--icon-individual-${posName}-color); --extra-ind-text-color: var(--text-individual-${posName}-color); --extra-ind-secondary-color: var(--secondary-text-individual-${posName}-color);">
-        <span class="label">${individualObj.name}</span>
-        <div
-          class="circle ${disableEntityClick ? "pointer-events-none" : ""}"
-          @click=${(e: MouseEvent) => {
-            this.onEntityClick(e, individualObj?.field, individualObj?.entity);
-          }}
-          @dblclick=${(e: MouseEvent) => {
-            this.onEntityDoubleClick(e, individualObj?.field, individualObj?.entity);
-          }}
-          @pointerdown=${(e: PointerEvent) => {
-            this.onEntityPointerDown(e, individualObj?.field, individualObj?.entity);
-          }}
-          @pointerup=${(e: PointerEvent) => {
-            this.onEntityPointerUp(e);
-          }}
-          @pointercancel=${(e: PointerEvent) => {
-            this.onEntityPointerUp(e);
-          }}
-          @keyDown=${(e: { key: string; stopPropagation: () => void; target: HTMLElement }) => {
-            if (e.key === "Enter") {
-              this.openDetails(e, individualObj?.field, individualObj?.entity, "tap");
-            }
-          }}
-        >
-          <ha-ripple .disabled=${disableEntityClick}></ha-ripple>
-          ${individualObj.icon !== " "
-            ? html`<ha-icon .icon=${individualObj.icon}></ha-icon>`
-            : nothing}
-          ${individualObj?.field?.display_zero_state !== false ||
-          (individualObj.state || 0) > (individualObj.displayZeroTolerance ?? 0)
-            ? html`<span>
-                ${individualObj?.showDirection
-                  ? html`<ha-icon
-                      class="small"
-                      .icon=${individualObj.invertAnimation ? "mdi:arrow-down" : "mdi:arrow-up"}
-                    ></ha-icon>`
-                  : nothing}${displayState}
-              </span>`
-            : nothing}
+      <div class="extra-individual-cell" style="--extra-ind-color: var(--individual-${posName}-color); --extra-ind-icon-color: var(--icon-individual-${posName}-color); --extra-ind-text-color: var(--text-individual-${posName}-color); --extra-ind-secondary-color: var(--secondary-text-individual-${posName}-color);">
+        ${showLine(this._config, individualObj.state || 0) && !this._config.entities.home?.hide
+          ? html`<div class="extra-flow-container">
+              <svg
+                viewBox="0 0 100 50"
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="xMidYMid slice"
+                class="extra-flow-line"
+              >
+                <path
+                  id="${pathId}"
+                  class="${styleLine(individualObj.state || 0, this._config)}"
+                  d="M50,50 V0"
+                  vector-effect="non-scaling-stroke"
+                />
+                ${checkShouldShowDots(this._config) &&
+                individualObj.state &&
+                individualObj.state >= (individualObj.displayZeroTolerance ?? 0)
+                  ? svg`<circle r="1" class="extra-individual-dot" vector-effect="non-scaling-stroke" style="fill: var(--extra-ind-color);">
+                        <animateMotion
+                          dur="${computeIndividualFlowRate(
+                            individualObj?.field?.calculate_flow_rate,
+                            duration
+                          )}s"
+                          repeatCount="indefinite"
+                          calcMode="paced"
+                          keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
+                          keyTimes="0;1"
+                        >
+                          <mpath xlink:href="#${pathId}" />
+                        </animateMotion>
+                      </circle>`
+                  : nothing}
+              </svg>
+            </div>`
+          : html`<div class="extra-flow-container"></div>`}
+        <div class="circle-container extra-individual">
+          <div
+            class="circle ${disableEntityClick ? "pointer-events-none" : ""}"
+            @click=${(e: MouseEvent) => {
+              this.onEntityClick(e, individualObj?.field, individualObj?.entity);
+            }}
+            @dblclick=${(e: MouseEvent) => {
+              this.onEntityDoubleClick(e, individualObj?.field, individualObj?.entity);
+            }}
+            @pointerdown=${(e: PointerEvent) => {
+              this.onEntityPointerDown(e, individualObj?.field, individualObj?.entity);
+            }}
+            @pointerup=${(e: PointerEvent) => {
+              this.onEntityPointerUp(e);
+            }}
+            @pointercancel=${(e: PointerEvent) => {
+              this.onEntityPointerUp(e);
+            }}
+            @keyDown=${(e: { key: string; stopPropagation: () => void; target: HTMLElement }) => {
+              if (e.key === "Enter") {
+                this.openDetails(e, individualObj?.field, individualObj?.entity, "tap");
+              }
+            }}
+          >
+            <ha-ripple .disabled=${disableEntityClick}></ha-ripple>
+            ${individualObj.icon !== " "
+              ? html`<ha-icon .icon=${individualObj.icon}></ha-icon>`
+              : nothing}
+            ${individualObj?.field?.display_zero_state !== false ||
+            (individualObj.state || 0) > (individualObj.displayZeroTolerance ?? 0)
+              ? html`<span>
+                  ${individualObj?.showDirection
+                    ? html`<ha-icon
+                        class="small"
+                        .icon=${individualObj.invertAnimation ? "mdi:arrow-down" : "mdi:arrow-up"}
+                      ></ha-icon>`
+                    : nothing}${displayState}
+                </span>`
+              : nothing}
+          </div>
+          <span class="label">${individualObj.name}</span>
         </div>
       </div>
     `;
@@ -561,13 +607,19 @@ export class PowerFlowCardPlus extends LitElement {
           })}
           ${extraIndividuals.length > 0
             ? html`<div class="extra-individuals-section">
-                <div class="extra-individuals-grid">
+                <div class="extra-trunk-connector">
+                  <svg viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" class="trunk-svg">
+                    <path d="M50,0 V20" stroke="var(--energy-grid-consumption-color, #488fc2)" stroke-width="1" vector-effect="non-scaling-stroke" fill="none" opacity="0.4" />
+                  </svg>
+                </div>
+                <div class="extra-individuals-tree">
                   ${extraIndividuals.map(
                     (extraInd, i) =>
                       this._renderExtraIndividual(
                         extraInd,
                         getIndividualDisplayState(extraInd),
-                        i + 4
+                        i + 4,
+                        newDur
                       )
                   )}
                 </div>

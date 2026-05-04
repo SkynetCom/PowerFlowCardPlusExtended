@@ -786,37 +786,64 @@ const j=globalThis,B=e=>e,L=j.trustedTypes,R=L?L.createPolicy("lit-html",{create
 
   /* ===== Extra Individual Sensors Grid (5+ sensors) ===== */
   .extra-individuals-section {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--divider-color, rgba(128, 128, 128, 0.15));
+    margin-top: 4px;
+    padding-top: 0;
+    max-width: 470px;
   }
 
-  .extra-individuals-grid {
-    display: grid;
-    grid-template-columns: repeat(4, var(--size-circle-entity));
-    gap: 4px 0;
+  .extra-trunk-connector {
+    display: flex;
     justify-content: center;
-    max-width: 500px;
+    height: 20px;
+  }
+
+  .trunk-svg {
+    width: 2px;
+    height: 100%;
+  }
+
+  .extra-individuals-tree {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    justify-items: center;
+    max-width: 470px;
     margin: 0 auto;
   }
 
-  .extra-individuals-grid .circle-container {
+  .extra-individual-cell {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+  }
+
+  .extra-flow-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 30px;
+  }
+
+  .extra-flow-line {
+    width: 2px;
+    height: 100%;
+  }
+
+  .extra-individual-cell .circle-container {
     padding: 4px 0;
   }
 
-  .extra-individuals-grid .circle {
+  .extra-individual-cell .circle {
     width: 64px;
     height: 64px;
     font-size: 10px;
     line-height: 10px;
   }
 
-  .extra-individuals-grid .label {
+  .extra-individual-cell .label {
     font-size: 10px;
-    max-width: 70px;
+    max-width: 80px;
     text-align: center;
   }
 
@@ -857,26 +884,54 @@ const j=globalThis,B=e=>e,L=j.trustedTypes,R=L?L.createPolicy("lit-html",{create
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-function ui(e,t){return(t,o,i)=>((e,t,o)=>(o.configurable=!0,o.enumerable=!0,Reflect.decorate&&"object"!=typeof t&&Object.defineProperty(e,t,o),o))(t,o,{get(){return(t=>t.renderRoot?.querySelector(e)??null)(this)}})}!function(e){const t=`https://github.com/flixlix/${e.type}`,o=window;var i;o.customCards=o.customCards||[],o.customCards.push({...e,preview:!0,documentationURL:t}),i={name:e.name,version:e.version,readme:t},Je=i,console.groupCollapsed(`%c⚡ ${Je.name} v${Je.version} is installed`,"color: #488fc2; font-weight: bold"),console.log("Readme:",Je.readme),console.groupEnd()}({type:"power-flow-card-plus-extended",name:"Power Flow Card Plus Extended",description:"An extended version of the power flow card with richer options, advanced features and a few small UI enhancements. Supports up to 10+ individual sensors connected to Home.",version:"1.0.0"});let pi=class extends xe{constructor(){super(...arguments),this._config={},this._templateResults={},this._unsubRenderTemplates=new Map,this._width=0,this.wideEnoughForFourIndividuals=359,this._handleVisibilityChange=()=>{"undefined"!=typeof document&&"visible"===document.visibilityState&&this.requestUpdate()},this.previousDur={},this._pendingTapTimeouts=new WeakMap,this._holdTimeouts=new WeakMap,this._holdTriggered=new WeakMap,this._doubleTapDelay=250,this._holdDelay=500}setConfig(e){if(e.entities.individual1||e.entities.individual2)throw new Error("You are using an outdated configuration. Please update your configuration to the latest version. The individual1 and individual2 properties are now just a single individual array property. The easiest way to do this is to remove the individual1 and individual2 properties and replace them in the UI Editor.");if(!e.entities||!e.entities?.battery?.entity&&!e.entities?.grid?.entity&&!e.entities?.solar?.entity)throw new Error("At least one entity for battery, grid or solar must be defined");this._config={...e,min_flow_rate:h(e.min_flow_rate,d.minFlowRate),max_flow_rate:h(e.max_flow_rate,d.maxFlowRate),base_decimals:h(e.base_decimals,d.baseDecimals),kilo_decimals:h(e.kilo_decimals,d.kiloDecimals),kilo_threshold:h(e.kilo_threshold,d.kiloThreshold),max_expected_power:h(e.max_expected_power,d.maxExpectedPower),min_expected_power:h(e.min_expected_power,d.minExpectedPower),display_zero_lines:{mode:e.display_zero_lines?.mode??d.displayZeroLines.mode,transparency:h(e.display_zero_lines?.transparency,d.displayZeroLines.transparency),grey_color:e.display_zero_lines?.grey_color??d.displayZeroLines.grey_color}}}connectedCallback(){super.connectedCallback(),"undefined"!=typeof document&&document.addEventListener("visibilitychange",this._handleVisibilityChange),this._tryConnectAll()}disconnectedCallback(){this._resizeObserver?.disconnect(),this._resizeObserver=void 0,"undefined"!=typeof document&&document.removeEventListener("visibilitychange",this._handleVisibilityChange),this._tryDisconnectAll(),super.disconnectedCallback()}static async getConfigElement(){return await Promise.resolve().then(function(){return kn}),document.createElement("power-flow-card-plus-editor")}static getStubConfig(e){return function(e,t="power"){function o(t,o){const i=c(t),a=e.states[i]?.attributes.friendly_name;return o.some(e=>i.includes(e)||a?.includes(e))}let i;i="energy"===t?Object.keys(e.states).filter(t=>{const o=e.states[c(t)];return o?.state&&o.attributes&&"energy"===o.attributes.device_class||o?.entity_id.includes("energy")}):Object.keys(e.states).filter(t=>{const o=e.states[c(t)];return o?.state&&o.attributes&&"power"===o.attributes.device_class||o?.entity_id.includes("power")});const a=["grid","utility","net","meter"],n=["solar","pv","photovoltaic","inverter"],r=["battery"],s=["battery_percent","battery_level","state_of_charge","soc","percentage"],l=i.filter(e=>o(e,a))[0],u=i.filter(e=>o(e,n))[0];return{entities:{battery:{entity:i.filter(e=>o(e,r))[0]??"",state_of_charge:Object.keys(e.states).filter(t=>{const o=e.states[t];return o&&o.state&&o.attributes&&"%"===o.attributes.unit_of_measurement}).filter(e=>o(e,s))[0]??""},grid:l?{entity:l}:void 0,solar:u?{entity:u,display_zero_state:!0}:void 0},clickable_entities:!0,display_zero_lines:!0,use_new_flow_rate_model:!0,base_decimals:d.baseDecimals,kilo_decimals:d.kiloDecimals,min_flow_rate:d.minFlowRate,max_flow_rate:d.maxFlowRate,max_expected_power:d.maxExpectedPower,min_expected_power:d.minExpectedPower,kilo_threshold:d.kiloThreshold,mega_threshold:d.megaThreshold,transparency_zero_lines:d.transparencyZeroLines,sort_individual_devices:!1}}(e,"power")}getCardSize(){return 3}_normalizeActionConfig(e){if(e)return"tap_action"in e||"hold_action"in e||"double_tap_action"in e?e:{tap_action:{action:"more-info"}}}openDetails(e,t,o,i="tap"){e.stopPropagation();const a=this._normalizeActionConfig(t);if(!!!(a?.tap_action||a?.hold_action||a?.double_tap_action)){if(!o||!this._config.clickable_entities)return;if(!((e,t)=>{const o=l(t);for(const t of o)if(!(t in e.states))return!1;return!0})(this.hass,o))return;const e=new CustomEvent("hass-more-info",{composed:!0,detail:{entityId:o}});return void this.dispatchEvent(e)}st(e.target,this.hass,{entity:o,tap_action:a?.tap_action,hold_action:a?.hold_action,double_tap_action:a?.double_tap_action},i)}onEntityClick(e,t,o){e.stopPropagation();const i=e.currentTarget,a=this._normalizeActionConfig(t);if(i)if(this._holdTriggered.get(i))this._holdTriggered.set(i,!1);else{if(a?.double_tap_action){const t=this._pendingTapTimeouts.get(i);t&&clearTimeout(t);const n=setTimeout(()=>{this.openDetails({stopPropagation:()=>e.stopPropagation(),target:i},a,o,"tap"),this._pendingTapTimeouts.delete(i)},this._doubleTapDelay);return void this._pendingTapTimeouts.set(i,n)}this.openDetails({stopPropagation:()=>e.stopPropagation(),target:i},a,o,"tap")}}onEntityDoubleClick(e,t,o){const i=e.currentTarget,a=this._normalizeActionConfig(t);if(!i)return;const n=this._pendingTapTimeouts.get(i);n&&(clearTimeout(n),this._pendingTapTimeouts.delete(i)),a?.double_tap_action&&this.openDetails({stopPropagation:()=>e.stopPropagation(),target:i},a,o,"double_tap")}onEntityPointerDown(e,t,o){const i=e.currentTarget,a=this._normalizeActionConfig(t);if(!i||!a?.hold_action)return;const n=this._holdTimeouts.get(i);n&&clearTimeout(n),this._holdTriggered.set(i,!1);const r=setTimeout(()=>{this._holdTriggered.set(i,!0),this.openDetails({stopPropagation:()=>e.stopPropagation(),target:i},a,o,"hold"),this._holdTimeouts.delete(i)},this._holdDelay);this._holdTimeouts.set(i,r)}onEntityPointerUp(e){const t=e.currentTarget;if(!t)return;const o=this._holdTimeouts.get(t);o&&(clearTimeout(o),this._holdTimeouts.delete(t))}_renderExtraIndividual(e,t,o){const i=(e=>{const t=["left-top","left-bottom","right-top","right-bottom"];return e<t.length?t[e]:`ind-${e}`})(o),a=!1===this._config.clickable_entities;return ae`
-      <div class="circle-container extra-individual" style="--extra-ind-color: var(--individual-${i}-color); --extra-ind-icon-color: var(--icon-individual-${i}-color); --extra-ind-text-color: var(--text-individual-${i}-color); --extra-ind-secondary-color: var(--secondary-text-individual-${i}-color);">
-        <span class="label">${e.name}</span>
-        <div
-          class="circle ${a?"pointer-events-none":""}"
-          @click=${t=>{this.onEntityClick(t,e?.field,e?.entity)}}
-          @dblclick=${t=>{this.onEntityDoubleClick(t,e?.field,e?.entity)}}
-          @pointerdown=${t=>{this.onEntityPointerDown(t,e?.field,e?.entity)}}
-          @pointerup=${e=>{this.onEntityPointerUp(e)}}
-          @pointercancel=${e=>{this.onEntityPointerUp(e)}}
-          @keyDown=${t=>{"Enter"===t.key&&this.openDetails(t,e?.field,e?.entity,"tap")}}
-        >
-          <ha-ripple .disabled=${a}></ha-ripple>
-          ${" "!==e.icon?ae`<ha-icon .icon=${e.icon}></ha-icon>`:se}
-          ${!1!==e?.field?.display_zero_state||(e.state||0)>(e.displayZeroTolerance??0)?ae`<span>
-                ${e?.showDirection?ae`<ha-icon
-                      class="small"
-                      .icon=${e.invertAnimation?"mdi:arrow-down":"mdi:arrow-up"}
-                    ></ha-icon>`:se}${t}
-              </span>`:se}
+function ui(e,t){return(t,o,i)=>((e,t,o)=>(o.configurable=!0,o.enumerable=!0,Reflect.decorate&&"object"!=typeof t&&Object.defineProperty(e,t,o),o))(t,o,{get(){return(t=>t.renderRoot?.querySelector(e)??null)(this)}})}!function(e){const t=`https://github.com/flixlix/${e.type}`,o=window;var i;o.customCards=o.customCards||[],o.customCards.push({...e,preview:!0,documentationURL:t}),i={name:e.name,version:e.version,readme:t},Je=i,console.groupCollapsed(`%c⚡ ${Je.name} v${Je.version} is installed`,"color: #488fc2; font-weight: bold"),console.log("Readme:",Je.readme),console.groupEnd()}({type:"power-flow-card-plus-extended",name:"Power Flow Card Plus Extended",description:"An extended version of the power flow card with richer options, advanced features and a few small UI enhancements. Supports up to 10+ individual sensors connected to Home.",version:"1.0.0"});let pi=class extends xe{constructor(){super(...arguments),this._config={},this._templateResults={},this._unsubRenderTemplates=new Map,this._width=0,this.wideEnoughForFourIndividuals=359,this._handleVisibilityChange=()=>{"undefined"!=typeof document&&"visible"===document.visibilityState&&this.requestUpdate()},this.previousDur={},this._pendingTapTimeouts=new WeakMap,this._holdTimeouts=new WeakMap,this._holdTriggered=new WeakMap,this._doubleTapDelay=250,this._holdDelay=500}setConfig(e){if(e.entities.individual1||e.entities.individual2)throw new Error("You are using an outdated configuration. Please update your configuration to the latest version. The individual1 and individual2 properties are now just a single individual array property. The easiest way to do this is to remove the individual1 and individual2 properties and replace them in the UI Editor.");if(!e.entities||!e.entities?.battery?.entity&&!e.entities?.grid?.entity&&!e.entities?.solar?.entity)throw new Error("At least one entity for battery, grid or solar must be defined");this._config={...e,min_flow_rate:h(e.min_flow_rate,d.minFlowRate),max_flow_rate:h(e.max_flow_rate,d.maxFlowRate),base_decimals:h(e.base_decimals,d.baseDecimals),kilo_decimals:h(e.kilo_decimals,d.kiloDecimals),kilo_threshold:h(e.kilo_threshold,d.kiloThreshold),max_expected_power:h(e.max_expected_power,d.maxExpectedPower),min_expected_power:h(e.min_expected_power,d.minExpectedPower),display_zero_lines:{mode:e.display_zero_lines?.mode??d.displayZeroLines.mode,transparency:h(e.display_zero_lines?.transparency,d.displayZeroLines.transparency),grey_color:e.display_zero_lines?.grey_color??d.displayZeroLines.grey_color}}}connectedCallback(){super.connectedCallback(),"undefined"!=typeof document&&document.addEventListener("visibilitychange",this._handleVisibilityChange),this._tryConnectAll()}disconnectedCallback(){this._resizeObserver?.disconnect(),this._resizeObserver=void 0,"undefined"!=typeof document&&document.removeEventListener("visibilitychange",this._handleVisibilityChange),this._tryDisconnectAll(),super.disconnectedCallback()}static async getConfigElement(){return await Promise.resolve().then(function(){return kn}),document.createElement("power-flow-card-plus-editor")}static getStubConfig(e){return function(e,t="power"){function o(t,o){const i=c(t),a=e.states[i]?.attributes.friendly_name;return o.some(e=>i.includes(e)||a?.includes(e))}let i;i="energy"===t?Object.keys(e.states).filter(t=>{const o=e.states[c(t)];return o?.state&&o.attributes&&"energy"===o.attributes.device_class||o?.entity_id.includes("energy")}):Object.keys(e.states).filter(t=>{const o=e.states[c(t)];return o?.state&&o.attributes&&"power"===o.attributes.device_class||o?.entity_id.includes("power")});const a=["grid","utility","net","meter"],n=["solar","pv","photovoltaic","inverter"],r=["battery"],s=["battery_percent","battery_level","state_of_charge","soc","percentage"],l=i.filter(e=>o(e,a))[0],u=i.filter(e=>o(e,n))[0];return{entities:{battery:{entity:i.filter(e=>o(e,r))[0]??"",state_of_charge:Object.keys(e.states).filter(t=>{const o=e.states[t];return o&&o.state&&o.attributes&&"%"===o.attributes.unit_of_measurement}).filter(e=>o(e,s))[0]??""},grid:l?{entity:l}:void 0,solar:u?{entity:u,display_zero_state:!0}:void 0},clickable_entities:!0,display_zero_lines:!0,use_new_flow_rate_model:!0,base_decimals:d.baseDecimals,kilo_decimals:d.kiloDecimals,min_flow_rate:d.minFlowRate,max_flow_rate:d.maxFlowRate,max_expected_power:d.maxExpectedPower,min_expected_power:d.minExpectedPower,kilo_threshold:d.kiloThreshold,mega_threshold:d.megaThreshold,transparency_zero_lines:d.transparencyZeroLines,sort_individual_devices:!1}}(e,"power")}getCardSize(){return 3}_normalizeActionConfig(e){if(e)return"tap_action"in e||"hold_action"in e||"double_tap_action"in e?e:{tap_action:{action:"more-info"}}}openDetails(e,t,o,i="tap"){e.stopPropagation();const a=this._normalizeActionConfig(t);if(!!!(a?.tap_action||a?.hold_action||a?.double_tap_action)){if(!o||!this._config.clickable_entities)return;if(!((e,t)=>{const o=l(t);for(const t of o)if(!(t in e.states))return!1;return!0})(this.hass,o))return;const e=new CustomEvent("hass-more-info",{composed:!0,detail:{entityId:o}});return void this.dispatchEvent(e)}st(e.target,this.hass,{entity:o,tap_action:a?.tap_action,hold_action:a?.hold_action,double_tap_action:a?.double_tap_action},i)}onEntityClick(e,t,o){e.stopPropagation();const i=e.currentTarget,a=this._normalizeActionConfig(t);if(i)if(this._holdTriggered.get(i))this._holdTriggered.set(i,!1);else{if(a?.double_tap_action){const t=this._pendingTapTimeouts.get(i);t&&clearTimeout(t);const n=setTimeout(()=>{this.openDetails({stopPropagation:()=>e.stopPropagation(),target:i},a,o,"tap"),this._pendingTapTimeouts.delete(i)},this._doubleTapDelay);return void this._pendingTapTimeouts.set(i,n)}this.openDetails({stopPropagation:()=>e.stopPropagation(),target:i},a,o,"tap")}}onEntityDoubleClick(e,t,o){const i=e.currentTarget,a=this._normalizeActionConfig(t);if(!i)return;const n=this._pendingTapTimeouts.get(i);n&&(clearTimeout(n),this._pendingTapTimeouts.delete(i)),a?.double_tap_action&&this.openDetails({stopPropagation:()=>e.stopPropagation(),target:i},a,o,"double_tap")}onEntityPointerDown(e,t,o){const i=e.currentTarget,a=this._normalizeActionConfig(t);if(!i||!a?.hold_action)return;const n=this._holdTimeouts.get(i);n&&clearTimeout(n),this._holdTriggered.set(i,!1);const r=setTimeout(()=>{this._holdTriggered.set(i,!0),this.openDetails({stopPropagation:()=>e.stopPropagation(),target:i},a,o,"hold"),this._holdTimeouts.delete(i)},this._holdDelay);this._holdTimeouts.set(i,r)}onEntityPointerUp(e){const t=e.currentTarget;if(!t)return;const o=this._holdTimeouts.get(t);o&&(clearTimeout(o),this._holdTimeouts.delete(t))}_renderExtraIndividual(e,t,o,i){const a=(e=>{const t=["left-top","left-bottom","right-top","right-bottom"];return e<t.length?t[e]:`ind-${e}`})(o),n=!1===this._config.clickable_entities,r=this._config?.entities?.individual?.findIndex(t=>t.entity===e.entity),s=i.individual[r??o]||1.66,l=`extra-ind-${o}-flow`;return ae`
+      <div class="extra-individual-cell" style="--extra-ind-color: var(--individual-${a}-color); --extra-ind-icon-color: var(--icon-individual-${a}-color); --extra-ind-text-color: var(--text-individual-${a}-color); --extra-ind-secondary-color: var(--secondary-text-individual-${a}-color);">
+        ${Me(this._config,e.state||0)&&!this._config.entities.home?.hide?ae`<div class="extra-flow-container">
+              <svg
+                viewBox="0 0 100 50"
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="xMidYMid slice"
+                class="extra-flow-line"
+              >
+                <path
+                  id="${l}"
+                  class="${Te(e.state||0,this._config)}"
+                  d="M50,50 V0"
+                  vector-effect="non-scaling-stroke"
+                />
+                ${Ee(this._config)&&e.state&&e.state>=(e.displayZeroTolerance??0)?ne`<circle r="1" class="extra-individual-dot" vector-effect="non-scaling-stroke" style="fill: var(--extra-ind-color);">
+                        <animateMotion
+                          dur="${Ye(e?.field?.calculate_flow_rate,s)}s"
+                          repeatCount="indefinite"
+                          calcMode="paced"
+                          keyPoints="${e.invertAnimation?"0;1":"1;0"}"
+                          keyTimes="0;1"
+                        >
+                          <mpath xlink:href="#${l}" />
+                        </animateMotion>
+                      </circle>`:se}
+              </svg>
+            </div>`:ae`<div class="extra-flow-container"></div>`}
+        <div class="circle-container extra-individual">
+          <div
+            class="circle ${n?"pointer-events-none":""}"
+            @click=${t=>{this.onEntityClick(t,e?.field,e?.entity)}}
+            @dblclick=${t=>{this.onEntityDoubleClick(t,e?.field,e?.entity)}}
+            @pointerdown=${t=>{this.onEntityPointerDown(t,e?.field,e?.entity)}}
+            @pointerup=${e=>{this.onEntityPointerUp(e)}}
+            @pointercancel=${e=>{this.onEntityPointerUp(e)}}
+            @keyDown=${t=>{"Enter"===t.key&&this.openDetails(t,e?.field,e?.entity,"tap")}}
+          >
+            <ha-ripple .disabled=${n}></ha-ripple>
+            ${" "!==e.icon?ae`<ha-icon .icon=${e.icon}></ha-icon>`:se}
+            ${!1!==e?.field?.display_zero_state||(e.state||0)>(e.displayZeroTolerance??0)?ae`<span>
+                  ${e?.showDirection?ae`<ha-icon
+                        class="small"
+                        .icon=${e.invertAnimation?"mdi:arrow-down":"mdi:arrow-up"}
+                      ></ha-icon>`:se}${t}
+                </span>`:se}
+          </div>
+          <span class="label">${e.name}</span>
         </div>
       </div>
     `}render(){if(!this._config||!this.hass)return se;const e=this._renderData??this._computeRenderData(),{entities:t,grid:o,solar:i,battery:a,home:n,nonFossil:r,individualObjs:s,newDur:l,templatesObj:c,homeBatteryCircumference:d,homeGridCircumference:u,homeNonFossilCircumference:h,homeSolarCircumference:m,homeUsageToDisplay:f,individualFieldLeftTop:g,individualFieldLeftBottom:y,individualFieldRightTop:v,individualFieldRightBottom:b,extraIndividuals:w}=e,k=e=>e?void 0===e?.state?"":_(this.hass,this._config,e?.state,{decimals:e?.decimals,unit:e?.unit,unitWhiteSpace:e?.unit_white_space}):"";return ae`
@@ -1311,8 +1366,13 @@ function ui(e,t){return(t,o,i)=>((e,t,o)=>(o.configurable=!0,o.enumerable=!0,Ref
   ${Be(e,{battery:t,grid:o,individual:i,newDur:n})}
 </div>`)(this._config,{battery:a,grid:o,individual:s,newDur:l,solar:i})}
           ${w.length>0?ae`<div class="extra-individuals-section">
-                <div class="extra-individuals-grid">
-                  ${w.map((e,t)=>this._renderExtraIndividual(e,k(e),t+4))}
+                <div class="extra-trunk-connector">
+                  <svg viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" class="trunk-svg">
+                    <path d="M50,0 V20" stroke="var(--energy-grid-consumption-color, #488fc2)" stroke-width="1" vector-effect="non-scaling-stroke" fill="none" opacity="0.4" />
+                  </svg>
+                </div>
+                <div class="extra-individuals-tree">
+                  ${w.map((e,t)=>this._renderExtraIndividual(e,k(e),t+4,l))}
                 </div>
               </div>`:se}
         </div>
