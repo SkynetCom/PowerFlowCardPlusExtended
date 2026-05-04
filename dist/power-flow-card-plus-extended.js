@@ -825,12 +825,14 @@ const j=globalThis,B=e=>e,L=j.trustedTypes,R=L?L.createPolicy("lit-html",{create
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 30px;
+    height: 40px;
+    overflow: visible;
   }
 
   .extra-flow-line {
-    width: 2px;
+    width: 4px;
     height: 100%;
+    overflow: visible;
   }
 
   .extra-individual-cell .circle-container {
@@ -891,18 +893,17 @@ function ui(e,t){return(t,o,i)=>((e,t,o)=>(o.configurable=!0,o.enumerable=!0,Ref
       <div class="extra-individual-cell" style="--extra-ind-color: var(--individual-${a}-color); --extra-ind-icon-color: var(--icon-individual-${a}-color); --extra-ind-text-color: var(--text-individual-${a}-color); --extra-ind-secondary-color: var(--secondary-text-individual-${a}-color);">
         ${Me(this._config,e.state||0)&&!this._config.entities.home?.hide?ae`<div class="extra-flow-container">
               <svg
-                viewBox="0 0 100 50"
+                viewBox="0 0 10 100"
                 xmlns="http://www.w3.org/2000/svg"
-                preserveAspectRatio="xMidYMid slice"
+                preserveAspectRatio="none"
                 class="extra-flow-line"
               >
                 <path
                   id="${l}"
                   class="${Te(e.state||0,this._config)}"
-                  d="M50,50 V0"
+                  d="M5,100 V0"
                   vector-effect="non-scaling-stroke"
-                  stroke="var(--extra-ind-color)"
-                  stroke-width="1"
+                  style="stroke: var(--extra-ind-color); stroke-width: 1;"
                 />
                 ${Ee(this._config)&&e.state&&e.state>=(e.displayZeroTolerance??0)?ne`<circle r="1" class="extra-individual-dot" vector-effect="non-scaling-stroke" style="fill: var(--extra-ind-color);">
                         <animateMotion

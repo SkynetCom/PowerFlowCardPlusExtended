@@ -647,12 +647,14 @@ export const styles = css`
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 30px;
+    height: 40px;
+    overflow: visible;
   }
 
   .extra-flow-line {
-    width: 2px;
+    width: 4px;
     height: 100%;
+    overflow: visible;
   }
 
   .extra-individual-cell .circle-container {

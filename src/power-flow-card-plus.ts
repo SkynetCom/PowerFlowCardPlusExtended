@@ -382,18 +382,17 @@ export class PowerFlowCardPlus extends LitElement {
         ${showLine(this._config, individualObj.state || 0) && !this._config.entities.home?.hide
           ? html`<div class="extra-flow-container">
               <svg
-                viewBox="0 0 100 50"
+                viewBox="0 0 10 100"
                 xmlns="http://www.w3.org/2000/svg"
-                preserveAspectRatio="xMidYMid slice"
+                preserveAspectRatio="none"
                 class="extra-flow-line"
               >
                 <path
                   id="${pathId}"
                   class="${styleLine(individualObj.state || 0, this._config)}"
-                  d="M50,50 V0"
+                  d="M5,100 V0"
                   vector-effect="non-scaling-stroke"
-                  stroke="var(--extra-ind-color)"
-                  stroke-width="1"
+                  style="stroke: var(--extra-ind-color); stroke-width: 1;"
                 />
                 ${checkShouldShowDots(this._config) &&
                 individualObj.state &&
