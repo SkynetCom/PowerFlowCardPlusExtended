@@ -135,10 +135,12 @@ export class PowerFlowCardPlus extends LitElement {
         homeGridCircumference: number;
         homeUsageToDisplay: string;
         sortedIndividualObjects: IndividualObject[];
-        individualFieldLeftTop?: IndividualObject;
-        individualFieldLeftBottom?: IndividualObject;
-        individualFieldRightTop?: IndividualObject;
-        individualFieldRightBottom?: IndividualObject;
+        indTop1?: IndividualObject;
+        indTop2?: IndividualObject;
+        indTop3?: IndividualObject;
+        indBot1?: IndividualObject;
+        indBot2?: IndividualObject;
+        indBot3?: IndividualObject;
         extraIndividuals: IndividualObject[];
       }
     | undefined;
@@ -359,9 +361,67 @@ export class PowerFlowCardPlus extends LitElement {
       this._holdTimeouts.delete(target);
     }
   }
+  /**
+   * Render an individual sensor circle for the main grid (positions 0-5).
+   * Flow lines are drawn separately by the SVG canvas overlay.
+   */
+  private _renderGridSensor(
+    individualObj: IndividualObject,
+    displayState: string,
+    index: number
+  ): TemplateResult {
+    const posName = getPositionName(index);
+    const disableEntityClick = this._config.clickable_entities === false;
+    return html`
+      <div class="circle-container pf-cell" style="--ind-color: var(--individual-${posName}-color); --ind-icon-color: var(--icon-individual-${posName}-color); --ind-text-color: var(--text-individual-${posName}-color);">
+        ${index < 3 ? html`<span class="label">${individualObj.name}</span>` : nothing}
+        <div
+          class="circle"
+          style="border-color: var(--ind-color);"
+          @click=${(e: MouseEvent) => {
+            this.onEntityClick(e, individualObj?.field, individualObj?.entity);
+          }}
+          @dblclick=${(e: MouseEvent) => {
+            this.onEntityDoubleClick(e, individualObj?.field, individualObj?.entity);
+          }}
+          @pointerdown=${(e: PointerEvent) => {
+            this.onEntityPointerDown(e, individualObj?.field, individualObj?.entity);
+          }}
+          @pointerup=${(e: PointerEvent) => {
+            this.onEntityPointerUp(e);
+          }}
+          @pointercancel=${(e: PointerEvent) => {
+            this.onEntityPointerUp(e);
+          }}
+          @keyDown=${(e: { key: string; stopPropagation: () => void; target: HTMLElement }) => {
+            if (e.key === "Enter") {
+              this.openDetails(e, individualObj?.field, individualObj?.entity, "tap");
+            }
+          }}
+        >
+          <ha-ripple .disabled=${disableEntityClick}></ha-ripple>
+          ${individualObj.icon !== " "
+            ? html`<ha-icon .icon=${individualObj.icon} style="color: var(--ind-icon-color);"></ha-icon>`
+            : nothing}
+          ${individualObj?.field?.display_zero_state !== false ||
+          (individualObj.state || 0) > (individualObj.displayZeroTolerance ?? 0)
+            ? html`<span style="color: var(--ind-text-color);">
+                ${individualObj?.showDirection
+                  ? html`<ha-icon
+                      class="small"
+                      .icon=${individualObj.invertAnimation ? "mdi:arrow-down" : "mdi:arrow-up"}
+                    ></ha-icon>`
+                  : nothing}${displayState}
+              </span>`
+            : nothing}
+        </div>
+        ${index >= 3 ? html`<span class="label">${individualObj.name}</span>` : nothing}
+      </div>
+    `;
+  }
 
   /**
-   * Render an extra individual sensor (index 4+) with flow line.
+   * Render an extra individual sensor (index 6+) with flow line.
    */
   private _renderExtraIndividual(
     individualObj: IndividualObject,
@@ -481,10 +541,12 @@ export class PowerFlowCardPlus extends LitElement {
       homeNonFossilCircumference,
       homeSolarCircumference,
       homeUsageToDisplay,
-      individualFieldLeftTop,
-      individualFieldLeftBottom,
-      individualFieldRightTop,
-      individualFieldRightBottom,
+      indTop1,
+      indTop2,
+      indTop3,
+      indBot1,
+      indBot2,
+      indBot3,
       extraIndividuals,
     } = data;
     const getIndividualDisplayState = (field?: IndividualObject) => {
@@ -496,6 +558,60 @@ export class PowerFlowCardPlus extends LitElement {
         unitWhiteSpace: field?.unit_white_space,
       });
     };
+
+    // Build flow line paths for the SVG canvas
+    const flowLines: Array<{id: string; path: string; color: string; state: number; dur: number; invertAnim: boolean; calcFlowRate: any; displayZeroTol: number}> = [];
+
+    // Solar → Home (col1 top to col3 mid): down then right
+    if (solar.has && solar.state.total && solar.state.total > 0) {
+      flowLines.push({ id: 'flow-solar-home', path: 'M50,72 L50,150 C50,160 60,170 70,170 L215,170', color: 'var(--energy-solar-color, #ff9800)', state: solar.state.total || 0, dur: newDur.solarToHome || 1.66, invertAnim: false, calcFlowRate: false, displayZeroTol: 0 });
+    }
+    // Grid → Home (col1 mid to col3 mid): horizontal
+    if (grid.has) {
+      const gridState = grid.state.toHome || grid.state.fromGrid || 0;
+      if (gridState > 0) {
+        flowLines.push({ id: 'flow-grid-home', path: 'M80,170 L215,170', color: 'var(--energy-grid-consumption-color, #488fc2)', state: gridState, dur: newDur.gridToHome || 1.66, invertAnim: false, calcFlowRate: false, displayZeroTol: 0 });
+      }
+    }
+    // Battery → Home (col1 bottom to col3 mid): up then right
+    if (battery.has) {
+      const batState = (battery.state?.fromBattery || 0) + (battery.state?.toBattery || 0);
+      if (batState > 0) {
+        flowLines.push({ id: 'flow-bat-home', path: 'M50,268 L50,190 C50,180 60,170 70,170 L215,170', color: 'var(--energy-battery-out-color, #4db6ac)', state: batState, dur: newDur.batteryToHome || 1.66, invertAnim: false, calcFlowRate: false, displayZeroTol: 0 });
+      }
+    }
+    // Individual sensors flow lines (top row: down to home level, bottom row: up to home level)
+    const indPositions = [
+      { ind: indTop1, x: 150, fromY: 72, idx: 0 },
+      { ind: indTop2, x: 250, fromY: 72, idx: 1 },
+      { ind: indTop3, x: 350, fromY: 72, idx: 2 },
+      { ind: indBot1, x: 150, fromY: 268, idx: 3 },
+      { ind: indBot2, x: 250, fromY: 268, idx: 4 },
+      { ind: indBot3, x: 350, fromY: 268, idx: 5 },
+    ];
+    for (const pos of indPositions) {
+      if (pos.ind?.has && pos.ind.state && pos.ind.state > 0) {
+        const posName = getPositionName(pos.idx);
+        const isTop = pos.fromY < 170;
+        const toY = 170;
+        const path = isTop
+          ? `M${pos.x},${pos.fromY} L${pos.x},${toY} L250,${toY}`
+          : `M${pos.x},${pos.fromY} L${pos.x},${toY} L250,${toY}`;
+        const indIdx = this._config?.entities?.individual?.findIndex(
+          (e: any) => e.entity === pos.ind!.entity
+        ) ?? pos.idx;
+        flowLines.push({
+          id: `flow-ind-${pos.idx}`,
+          path,
+          color: `var(--individual-${posName}-color, #888)`,
+          state: pos.ind.state || 0,
+          dur: newDur.individual[indIdx] || 1.66,
+          invertAnim: pos.ind.invertAnimation || false,
+          calcFlowRate: pos.ind.field?.calculate_flow_rate,
+          displayZeroTol: pos.ind.displayZeroTolerance ?? 0,
+        });
+      }
+    }
 
     return html`
       <ha-card
@@ -510,107 +626,70 @@ export class PowerFlowCardPlus extends LitElement {
           id="power-flow-card-plus"
           style=${this._config.style_card_content ? this._config.style_card_content : ""}
         >
-          ${solar.has ||
-          individualObjs?.some((individual) => individual?.has) ||
-          nonFossil.hasPercentage
-            ? html`<div class="row">
-                ${nonFossilElement(this, this._config, {
-                  entities,
-                  grid,
-                  newDur,
-                  nonFossil,
-                  templatesObj,
-                })}
-                ${solar.has
-                  ? solarElement(this, this._config, {
-                      entities,
-                      solar,
-                      templatesObj,
-                    })
-                  : individualObjs?.some((individual) => individual?.has)
-                    ? spacer
-                    : nothing}
-                ${individualFieldLeftTop
-                  ? individualLeftTopElement(this, this._config, {
-                      individualObj: individualFieldLeftTop,
-                      displayState: getIndividualDisplayState(individualFieldLeftTop),
-                      newDur,
-                      templatesObj,
-                    })
-                  : spacer}
-                ${checkHasRightIndividual(individualObjs)
-                  ? individualRightTopElement(this, this._config, {
-                      displayState: getIndividualDisplayState(individualFieldRightTop),
-                      individualObj: individualFieldRightTop,
-                      newDur,
-                      templatesObj,
-                      battery,
-                      individualObjs,
-                    })
-                  : nothing}
-              </div>`
-            : nothing}
-          <div class="row">
+          <div class="pf-grid">
+            <!-- Row 1: Solar + 3 top individuals -->
+            ${solar.has
+              ? solarElement(this, this._config, { entities, solar, templatesObj })
+              : html`<div class="pf-cell"></div>`}
+            ${indTop1 ? this._renderGridSensor(indTop1, getIndividualDisplayState(indTop1), 0) : html`<div class="pf-cell"></div>`}
+            ${indTop2 ? this._renderGridSensor(indTop2, getIndividualDisplayState(indTop2), 1) : html`<div class="pf-cell"></div>`}
+            ${indTop3 ? this._renderGridSensor(indTop3, getIndividualDisplayState(indTop3), 2) : html`<div class="pf-cell"></div>`}
+
+            <!-- Row 2: Grid + spacer + Home + spacer -->
             ${grid.has
-              ? gridElement(this, this._config, {
-                  entities,
-                  grid,
-                  templatesObj,
-                })
-              : spacer}
-            ${spacer}
+              ? gridElement(this, this._config, { entities, grid, templatesObj })
+              : html`<div class="pf-cell"></div>`}
+            <div class="pf-cell"></div>
             ${!entities.home?.hide
               ? homeElement(this, this._config, {
-                  CIRCLE_CIRCUMFERENCE,
-                  entities,
-                  grid,
-                  home,
-                  homeBatteryCircumference,
-                  homeGridCircumference,
-                  homeNonFossilCircumference,
-                  homeSolarCircumference,
-                  newDur,
-                  templatesObj,
-                  homeUsageToDisplay,
+                  CIRCLE_CIRCUMFERENCE, entities, grid, home,
+                  homeBatteryCircumference, homeGridCircumference,
+                  homeNonFossilCircumference, homeSolarCircumference,
+                  newDur, templatesObj, homeUsageToDisplay,
                   individual: individualObjs,
                 })
-              : spacer}
-            ${checkHasRightIndividual(individualObjs) ? spacer : nothing}
+              : html`<div class="pf-cell"></div>`}
+            <div class="pf-cell"></div>
+
+            <!-- Row 3: Battery + 3 bottom individuals -->
+            ${battery.has
+              ? batteryElement(this, this._config, { battery, entities })
+              : html`<div class="pf-cell"></div>`}
+            ${indBot1 ? this._renderGridSensor(indBot1, getIndividualDisplayState(indBot1), 3) : html`<div class="pf-cell"></div>`}
+            ${indBot2 ? this._renderGridSensor(indBot2, getIndividualDisplayState(indBot2), 4) : html`<div class="pf-cell"></div>`}
+            ${indBot3 ? this._renderGridSensor(indBot3, getIndividualDisplayState(indBot3), 5) : html`<div class="pf-cell"></div>`}
+
+            <!-- SVG Flow Canvas overlay -->
+            <svg class="flow-canvas" viewBox="0 0 400 340" preserveAspectRatio="none">
+              ${flowLines.map(fl => svg`
+                <path
+                  id="${fl.id}"
+                  d="${fl.path}"
+                  style="stroke: ${fl.color}; stroke-width: 1; fill: none;"
+                  vector-effect="non-scaling-stroke"
+                />
+                ${checkShouldShowDots(this._config) && fl.state >= fl.displayZeroTol
+                  ? svg`<circle r="1.75" vector-effect="non-scaling-stroke" style="fill: ${fl.color};">
+                      <animateMotion
+                        dur="${computeIndividualFlowRate(fl.calcFlowRate, fl.dur)}s"
+                        repeatCount="indefinite"
+                        calcMode="paced"
+                        keyPoints="${fl.invertAnim ? '0;1' : '1;0'}"
+                        keyTimes="0;1"
+                      >
+                        <mpath xlink:href="#${fl.id}" />
+                      </animateMotion>
+                    </circle>`
+                  : svg``}
+              `)}
+            </svg>
           </div>
-          ${battery.has || checkHasBottomIndividual(individualObjs)
-            ? html`<div class="row">
-                ${spacer}
-                ${battery.has ? batteryElement(this, this._config, { battery, entities }) : spacer}
-                ${individualFieldLeftBottom
-                  ? individualLeftBottomElement(this, this._config, {
-                      displayState: getIndividualDisplayState(individualFieldLeftBottom),
-                      individualObj: individualFieldLeftBottom,
-                      newDur,
-                      templatesObj,
-                    })
-                  : spacer}
-                ${checkHasRightIndividual(individualObjs)
-                  ? individualRightBottomElement(this, this._config, {
-                      displayState: getIndividualDisplayState(individualFieldRightBottom),
-                      individualObj: individualFieldRightBottom,
-                      newDur,
-                      templatesObj,
-                    })
-                  : nothing}
-              </div>`
-            : spacer}
-          ${flowElement(this._config, {
-            battery,
-            grid,
-            individual: individualObjs,
-            newDur,
-            solar,
-          })}
+
           ${extraIndividuals.length > 0
             ? html`<div class="extra-individuals-section">
                 <div class="extra-trunk-connector">
-                  <svg viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" class="trunk-svg">
-                    <path d="M50,0 V20" stroke="var(--energy-grid-consumption-color, #488fc2)" stroke-width="1" vector-effect="non-scaling-stroke" fill="none" opacity="0.4" />
+                  <svg viewBox="0 0 10 20" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" class="trunk-svg">
+                    <path d="M5,0 V20" style="stroke: var(--primary-text-color); stroke-width: 1; fill: none; opacity: 0.3;" vector-effect="non-scaling-stroke" />
                   </svg>
                 </div>
                 <div class="extra-individuals-tree">
@@ -619,7 +698,7 @@ export class PowerFlowCardPlus extends LitElement {
                       this._renderExtraIndividual(
                         extraInd,
                         getIndividualDisplayState(extraInd),
-                        i + 4,
+                        i + 6,
                         newDur
                       )
                   )}
@@ -1156,15 +1235,17 @@ export class PowerFlowCardPlus extends LitElement {
       maxVisibleIndividuals
     );
 
-    // First 4 positions keep original layout
-    const individualFieldLeftTop = getIndividualByIndex(visibleIndividualObjects, 0);
-    const individualFieldLeftBottom = getIndividualByIndex(visibleIndividualObjects, 1);
-    const individualFieldRightTop = getIndividualByIndex(visibleIndividualObjects, 2);
-    const individualFieldRightBottom = getIndividualByIndex(visibleIndividualObjects, 3);
+    // First 6 positions go in the main diagram (3 top + 3 bottom)
+    const indTop1 = getIndividualByIndex(visibleIndividualObjects, 0);
+    const indTop2 = getIndividualByIndex(visibleIndividualObjects, 1);
+    const indTop3 = getIndividualByIndex(visibleIndividualObjects, 2);
+    const indBot1 = getIndividualByIndex(visibleIndividualObjects, 3);
+    const indBot2 = getIndividualByIndex(visibleIndividualObjects, 4);
+    const indBot3 = getIndividualByIndex(visibleIndividualObjects, 5);
 
-    // Extra individual sensors (4+) go into the grid below
-    const extraIndividuals = visibleIndividualObjects.length > 4
-      ? visibleIndividualObjects.slice(4)
+    // Extra individual sensors (6+) go into the tree below
+    const extraIndividuals = visibleIndividualObjects.length > 6
+      ? visibleIndividualObjects.slice(6)
       : [];
 
     allDynamicStyles(
@@ -1205,10 +1286,12 @@ export class PowerFlowCardPlus extends LitElement {
       homeGridCircumference,
       homeUsageToDisplay,
       sortedIndividualObjects: visibleIndividualObjects,
-      individualFieldLeftTop,
-      individualFieldLeftBottom,
-      individualFieldRightTop,
-      individualFieldRightBottom,
+      indTop1,
+      indTop2,
+      indTop3,
+      indBot1,
+      indBot2,
+      indBot3,
       extraIndividuals,
     };
   }

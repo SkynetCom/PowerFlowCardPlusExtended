@@ -6,7 +6,7 @@ export { convertColorListToHex } from "./convert-color";
 
 export const styles = css`
   :host {
-    --size-circle-entity: 79.99px;
+    --size-circle-entity: 65px;
     --mdc-icon-size: 24px;
     --clickable-cursor: pointer;
     --individual-left-bottom-color: #d0cc5b;
@@ -112,74 +112,48 @@ export const styles = css`
 
   .card-content {
     position: relative;
-  }
-  .card-content,
-  .row {
-    max-width: 470px;
-  }
-  .lines {
-    position: absolute;
-    bottom: 0;
-    left: var(--size-circle-entity);
-    width: 100%;
-    height: 146px;
-    display: flex;
-    justify-content: flex-start;
-    padding: 0 16px 16px;
-    box-sizing: border-box;
-    pointer-events: none;
+    max-width: 500px;
   }
 
-  :dir(rtl) .lines {
-    justify-content: flex-end;
-  }
-
-  .lines:not(.multi-individual) svg.flat-line {
-    left: var(--lines-svg-flat-left);
-  }
-
-  .lines:not(.multi-individual) svg:not(.flat-line) {
-    left: var(--lines-svg-not-flat-left);
-  }
-
-  .lines:has(svg:not(.flat-line)) {
-    margin-left: -1%;
-  }
-  .lines.individual-bottom-individual-top {
-    bottom: 110px;
-  }
-  .lines.high {
-    bottom: 100px;
-    height: 156px;
-  }
-  .lines svg {
-    width: var(--lines-svg-flat-width);
-    height: 100%;
-    max-width: 340px;
+  /* ===== New CSS Grid Layout ===== */
+  .pf-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto auto;
+    gap: 4px;
     position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0;
   }
 
-  .lines svg:not(.flat-line) {
-    width: var(--lines-svg-not-flat-width);
-    height: var(--lines-svg-not-flat-line-height);
-    top: var(--lines-svg-not-flat-line-top);
+  .pf-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 20px;
   }
 
-  .multi-individual {
-    left: calc(var(--size-circle-entity) + 2%);
-    margin-left: -2.2% !important;
+  /* SVG Flow Canvas - overlays the entire grid */
+  .flow-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
   }
 
-  .multi-individual svg {
-    width: var(--lines-svg-flat-multi-indiv-width);
+  /* Ensure circles sit above the flow canvas */
+  .pf-grid > .circle-container,
+  .pf-grid > .pf-cell {
+    position: relative;
+    z-index: 1;
   }
 
-  .multi-individual svg:not(.flat-line) {
-    width: var(--lines-svg-not-flat-multi-indiv-width);
-    margin-top: 1px;
-    height: var(--lines-svg-not-flat-multi-indiv-height);
-  }
-
+  /* Legacy .row support (kept for components that still use it internally) */
   .row {
     display: flex;
     justify-content: space-between;
