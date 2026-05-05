@@ -6,7 +6,7 @@ export { convertColorListToHex } from "./convert-color";
 
 export const styles = css`
   :host {
-    --size-circle-entity: 65px;
+    --size-circle-entity: 79.99px;
     --mdc-icon-size: 24px;
     --clickable-cursor: pointer;
     --individual-left-bottom-color: #d0cc5b;
@@ -46,6 +46,8 @@ export const styles = css`
     --lines-svg-not-flat-multi-indiv-width: calc(((130% - 246px) * 0.5));
     --lines-svg-not-flat-multi-indiv-right-indiv-width: calc(((130% - 210px) * 0.5));
     --lines-svg-not-flat-multi-indiv-right-indiv-height: 103%;
+    --lines-svg-not-flat-multi-indiv-far-right-indiv-width: calc(((180% - 210px) * 0.5));
+    --lines-svg-not-flat-multi-indiv-far-right-indiv-height: 103%;
     --lines-svg-flat-multi-indiv-width: calc((129% - 242px) * 0.5);
     --lines-svg-flat-left: 0;
     --lines-svg-not-flat-left: 0;
@@ -110,54 +112,77 @@ export const styles = css`
     z-index: 1;
   }
 
-  .card-content {
-    position: relative;
-    max-width: 500px;
+  .card-content,
+  .row {
+    max-width: 580px;
   }
-
-  /* ===== New CSS Grid Layout ===== */
-  .pf-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: auto auto auto;
-    gap: 4px;
-    position: relative;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 0;
-  }
-
-  .pf-cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 20px;
-  }
-
-  /* SVG Flow Canvas - overlays the entire grid */
-  .flow-canvas {
+  .lines {
     position: absolute;
-    top: 0;
-    left: 0;
+    bottom: 0;
+    left: var(--size-circle-entity);
     width: 100%;
-    height: 100%;
+    height: 146px;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0 16px 16px;
+    box-sizing: border-box;
     pointer-events: none;
-    z-index: 0;
   }
 
-  /* Ensure circles sit above the flow canvas */
-  .pf-grid > .circle-container,
-  .pf-grid > .pf-cell {
+  :dir(rtl) .lines {
+    justify-content: flex-end;
+  }
+
+  .lines:not(.multi-individual) svg.flat-line {
+    left: var(--lines-svg-flat-left);
+  }
+
+  .lines:not(.multi-individual) svg:not(.flat-line) {
+    left: var(--lines-svg-not-flat-left);
+  }
+
+  .lines:has(svg:not(.flat-line)) {
+    margin-left: -1%;
+  }
+  .lines.individual-bottom-individual-top {
+    bottom: 110px;
+  }
+  .lines.high {
+    bottom: 100px;
+    height: 156px;
+  }
+  .lines svg {
+    width: var(--lines-svg-flat-width);
+    height: 100%;
+    max-width: 340px;
     position: relative;
-    z-index: 1;
   }
 
-  /* Legacy .row support (kept for components that still use it internally) */
+  .lines svg:not(.flat-line) {
+    width: var(--lines-svg-not-flat-width);
+    height: var(--lines-svg-not-flat-line-height);
+    top: var(--lines-svg-not-flat-line-top);
+  }
+
+  .multi-individual {
+    left: calc(var(--size-circle-entity) + 2%);
+    margin-left: -2.2% !important;
+  }
+
+  .multi-individual svg {
+    width: var(--lines-svg-flat-multi-indiv-width);
+  }
+
+  .multi-individual svg:not(.flat-line) {
+    width: var(--lines-svg-not-flat-multi-indiv-width);
+    margin-top: 1px;
+    height: var(--lines-svg-not-flat-multi-indiv-height);
+  }
+
   .row {
     display: flex;
     justify-content: space-between;
-    max-width: 500px;
+    max-width: 580px;
     margin: 0 auto;
   }
   .circle-container {
@@ -347,6 +372,32 @@ export const styles = css`
     width: var(--lines-svg-not-flat-multi-indiv-width);
     top: var(--lines-svg-not-flat-line-top);
     max-width: 340px;
+    position: relative;
+  }
+
+  .far-right-individual-flow-container {
+    position: absolute;
+    right: calc(var(--size-circle-entity) * 2 - 27% * 1.1 + 16px);
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    height: 156px;
+    bottom: 100px;
+    padding: 0 16px 16px;
+    margin-right: -1.2%;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+  .far-right-individual-flow-container > svg {
+    width: var(--lines-svg-not-flat-multi-indiv-far-right-indiv-width);
+  }
+
+  .far-right-individual-flow {
+    height: var(--lines-svg-not-flat-multi-indiv-far-right-indiv-height);
+    margin-top: 2px;
+    width: calc(var(--lines-svg-not-flat-multi-indiv-width) * 1.5);
+    top: var(--lines-svg-not-flat-line-top);
+    max-width: 450px;
     position: relative;
   }
   .circle-container.low-carbon {
@@ -585,69 +636,37 @@ export const styles = css`
 
   /* ===== Extra Individual Sensors Grid (5+ sensors) ===== */
   .extra-individuals-section {
-    margin-top: 4px;
-    padding-top: 0;
-    max-width: 470px;
-    position: relative;
-    z-index: 2;
-    background: var(--ha-card-background, var(--card-background-color, white));
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--divider-color, rgba(128, 128, 128, 0.15));
   }
 
-  .extra-trunk-connector {
-    display: flex;
-    justify-content: center;
-    height: 20px;
-  }
-
-  .trunk-svg {
-    width: 2px;
-    height: 100%;
-  }
-
-  .extra-individuals-tree {
+  .extra-individuals-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-    justify-items: center;
-    max-width: 470px;
+    grid-template-columns: repeat(4, var(--size-circle-entity));
+    gap: 4px 0;
+    justify-content: center;
+    max-width: 500px;
     margin: 0 auto;
   }
 
-  .extra-individual-cell {
+  .extra-individuals-grid .circle-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-  }
-
-  .extra-flow-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 40px;
-    overflow: visible;
-  }
-
-  .extra-flow-line {
-    width: 4px;
-    height: 100%;
-    overflow: visible;
-  }
-
-  .extra-individual-cell .circle-container {
     padding: 4px 0;
   }
 
-  .extra-individual-cell .circle {
+  .extra-individuals-grid .circle {
     width: 64px;
     height: 64px;
     font-size: 10px;
     line-height: 10px;
   }
 
-  .extra-individual-cell .label {
+  .extra-individuals-grid .label {
     font-size: 10px;
-    max-width: 80px;
+    max-width: 70px;
     text-align: center;
   }
 
