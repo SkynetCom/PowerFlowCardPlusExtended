@@ -1440,7 +1440,7 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
   ${Re(e,{battery:t,grid:i,individual:o,solar:a,newDur:n})}
   ${Le(e,{battery:t,grid:i,individual:o,newDur:n})}
   ${Be(e,{battery:t,grid:i,individual:o,newDur:n})}
-</div>`)(this._config,{battery:a,grid:i,individual:s,newDur:l,solar:o})}
+  `)(this._config,{battery:a,grid:i,individual:s,newDur:l,solar:o})}
           ${x.length>0?ae`<div class="extra-individuals-section">
                 <div class="extra-individuals-grid">
                   ${x.map((e,t)=>this._renderExtraIndividual(e,S(e),t+4))}
