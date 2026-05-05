@@ -441,6 +441,8 @@ export class PowerFlowCardPlus extends LitElement {
       individualFieldLeftBottom,
       individualFieldRightTop,
       individualFieldRightBottom,
+      individualFieldFarRightTop,
+      individualFieldFarRightBottom,
       extraIndividuals,
     } = data;
     const getIndividualDisplayState = (field?: IndividualObject) => {
