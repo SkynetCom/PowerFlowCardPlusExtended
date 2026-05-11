@@ -10,13 +10,7 @@ import { type HomeAssistant } from "custom-card-helpers";
 import { nothing, type TemplateResult } from "lit";
 import { baseSecondarySpan } from "./base-secondary-span";
 
-export type IndividualKey =
-  | `left-top`
-  | `left-bottom`
-  | `right-top`
-  | `right-bottom`
-  | `far-right-top`
-  | `far-right-bottom`;
+export type IndividualKey = `left-top` | `left-bottom` | `right-top` | `right-bottom`;
 
 export const individualSecondarySpan = (
   hass: HomeAssistant,

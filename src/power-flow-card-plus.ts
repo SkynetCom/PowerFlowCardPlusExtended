@@ -6,8 +6,6 @@ import { individualLeftBottomElement } from "./components/individual-left-bottom
 import { individualLeftTopElement } from "./components/individual-left-top-element";
 import { individualRightBottomElement } from "./components/individual-right-bottom-element";
 import { individualRightTopElement } from "./components/individual-right-top-element";
-import { individualFarRightBottomElement } from "./components/individual-far-right-bottom-element";
-import { individualFarRightTopElement } from "./components/individual-far-right-top-element";
 import { dashboardLinkElement } from "./components/misc/dashboard-link";
 import { nonFossilElement } from "./components/non-fossil";
 import { solarElement } from "./components/solar";
@@ -569,29 +567,20 @@ export class PowerFlowCardPlus extends LitElement {
             </div>
             ${individualFieldFarRightTop || individualFieldFarRightBottom
               ? html`<div class="pf-far-right">
-                  <div class="pf-far-right-top">
-                    ${individualFieldFarRightTop
-                      ? individualFarRightTopElement(this, this._config, {
-                          displayState: getIndividualDisplayState(individualFieldFarRightTop),
-                          individualObj: individualFieldFarRightTop,
-                          newDur,
-                          templatesObj,
-                          battery,
-                          individualObjs,
-                        })
-                      : nothing}
-                  </div>
-                  <div class="pf-far-right-mid"></div>
-                  <div class="pf-far-right-bottom">
-                    ${individualFieldFarRightBottom
-                      ? individualFarRightBottomElement(this, this._config, {
-                          displayState: getIndividualDisplayState(individualFieldFarRightBottom),
-                          individualObj: individualFieldFarRightBottom,
-                          newDur,
-                          templatesObj,
-                        })
-                      : nothing}
-                  </div>
+                  ${individualFieldFarRightTop
+                    ? this._renderExtraIndividual(
+                        individualFieldFarRightTop,
+                        getIndividualDisplayState(individualFieldFarRightTop),
+                        4
+                      )
+                    : html`<div class="spacer"></div>`}
+                  ${individualFieldFarRightBottom
+                    ? this._renderExtraIndividual(
+                        individualFieldFarRightBottom,
+                        getIndividualDisplayState(individualFieldFarRightBottom),
+                        5
+                      )
+                    : html`<div class="spacer"></div>`}
                 </div>`
               : nothing}
           </div>
@@ -1139,11 +1128,13 @@ export class PowerFlowCardPlus extends LitElement {
       maxVisibleIndividuals
     );
 
-    // First 6 positions keep original layout + 4th column
+    // First 4 positions keep original layout
     const individualFieldLeftTop = getIndividualByIndex(visibleIndividualObjects, 0);
     const individualFieldLeftBottom = getIndividualByIndex(visibleIndividualObjects, 1);
     const individualFieldRightTop = getIndividualByIndex(visibleIndividualObjects, 2);
     const individualFieldRightBottom = getIndividualByIndex(visibleIndividualObjects, 3);
+
+    // Positions 4-5: far-right column
     const individualFieldFarRightTop = getIndividualByIndex(visibleIndividualObjects, 4);
     const individualFieldFarRightBottom = getIndividualByIndex(visibleIndividualObjects, 5);
 

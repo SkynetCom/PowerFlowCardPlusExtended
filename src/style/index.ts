@@ -46,8 +46,6 @@ export const styles = css`
     --lines-svg-not-flat-multi-indiv-width: calc(((130% - 246px) * 0.5));
     --lines-svg-not-flat-multi-indiv-right-indiv-width: calc(((130% - 210px) * 0.5));
     --lines-svg-not-flat-multi-indiv-right-indiv-height: 103%;
-    --lines-svg-not-flat-multi-indiv-far-right-indiv-width: calc(((180% - 210px) * 0.5));
-    --lines-svg-not-flat-multi-indiv-far-right-indiv-height: 103%;
     --lines-svg-flat-multi-indiv-width: calc((129% - 242px) * 0.5);
     --lines-svg-flat-left: 0;
     --lines-svg-not-flat-left: 0;
@@ -189,42 +187,33 @@ export const styles = css`
   .pf-layout {
     display: flex;
     align-items: stretch;
-    max-width: 680px;
-    margin: 0 auto;
   }
 
   .pf-main {
     flex: 1;
-    max-width: 470px;
     position: relative;
+    min-width: 0;
   }
 
   .pf-far-right {
     display: flex;
     flex-direction: column;
-    width: 120px;
+    justify-content: space-between;
     align-items: center;
+    width: 100px;
     flex-shrink: 0;
-    padding-left: 8px;
+    padding: 0 4px;
   }
 
-  .pf-far-right-top {
-    height: 130px;
+  .pf-far-right .extra-individual {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
   }
 
-  .pf-far-right-mid {
-    flex: 1;
-  }
-
-  .pf-far-right-bottom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
+  .pf-far-right .extra-individual .extra-individual-circle {
+    width: 70px;
+    height: 70px;
   }
   .circle-container {
     display: flex;
@@ -414,13 +403,6 @@ export const styles = css`
     top: var(--lines-svg-not-flat-line-top);
     max-width: 340px;
     position: relative;
-  }
-
-  .far-right-individual-flow-line {
-    width: 100%;
-    height: 10px;
-    pointer-events: none;
-    margin-top: 2px;
   }
   .circle-container.low-carbon {
     height: 130px;
