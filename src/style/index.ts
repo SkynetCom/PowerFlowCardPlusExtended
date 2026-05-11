@@ -110,7 +110,9 @@ export const styles = css`
     z-index: 1;
   }
 
-  .card-content,
+  .card-content {
+    max-width: 590px;
+  }
   .row {
     max-width: 470px;
   }
@@ -180,17 +182,20 @@ export const styles = css`
   .row {
     display: flex;
     justify-content: space-between;
-    max-width: 500px;
+    max-width: 470px;
     margin: 0 auto;
   }
 
   .pf-layout {
     display: flex;
     align-items: stretch;
+    justify-content: center;
   }
 
   .pf-main {
     flex: 1;
+    max-width: 470px;
+    width: 100%;
     position: relative;
     min-width: 0;
   }
@@ -200,20 +205,29 @@ export const styles = css`
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    width: 100px;
+    width: 120px;
     flex-shrink: 0;
-    padding: 0 4px;
+    padding-left: 10px;
+    position: relative;
   }
 
   .pf-far-right .extra-individual {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: relative;
+    z-index: 2;
   }
 
-  .pf-far-right .extra-individual .extra-individual-circle {
-    width: 70px;
-    height: 70px;
+  .far-right-flow-line {
+    position: absolute;
+    left: -40px;
+    width: 60px;
+    height: 10px;
+    top: calc(50% - 5px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .far-right-flow-line path {
+    stroke-width: 1;
   }
   .circle-container {
     display: flex;

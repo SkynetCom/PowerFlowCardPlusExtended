@@ -365,10 +365,18 @@ export class PowerFlowCardPlus extends LitElement {
   private _renderExtraIndividual(
     individualObj: IndividualObject,
     displayState: string,
-    index: number
+    index: number,
+    newDur: NewDur
   ): TemplateResult {
     const posName = getPositionName(index);
     const disableEntityClick = this._config.clickable_entities === false;
+    
+    // For far right sensors (index 4 and 5), render the flow line connecting them to the center
+    const isFarRight = index === 4 || index === 5;
+    const flowDuration = isFarRight && newDur.individual && newDur.individual[index] 
+      ? newDur.individual[index] 
+      : 0;
+
     return html`
       <div class="circle-container extra-individual" style="--extra-ind-color: var(--individual-${posName}-color); --extra-ind-icon-color: var(--icon-individual-${posName}-color); --extra-ind-text-color: var(--text-individual-${posName}-color); --extra-ind-secondary-color: var(--secondary-text-individual-${posName}-color);">
         <span class="label">${individualObj.name}</span>
@@ -411,6 +419,42 @@ export class PowerFlowCardPlus extends LitElement {
               </span>`
             : nothing}
         </div>
+        ${isFarRight && showLine(this._config, individualObj.state || 0) && !this._config.entities.home?.hide
+          ? html`
+              <svg
+                viewBox="0 0 60 10"
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="xMidYMid slice"
+                class="far-right-flow-line"
+              >
+                <path
+                  id="far-right-home-${index}"
+                  class="${styleLine(individualObj.state || 0, this._config)}"
+                  style="stroke: var(--extra-ind-color);"
+                  d="M60,5 H0"
+                  vector-effect="non-scaling-stroke"
+                />
+                ${checkShouldShowDots(this._config) &&
+                individualObj.state &&
+                individualObj.state >= (individualObj.displayZeroTolerance ?? 0)
+                  ? svg`<circle r="1" vector-effect="non-scaling-stroke" style="fill: var(--extra-ind-color);">
+                        <animateMotion
+                          dur="${computeIndividualFlowRate(
+                            individualObj?.field?.calculate_flow_rate,
+                            flowDuration
+                          )}s"
+                          repeatCount="indefinite"
+                          calcMode="paced"
+                          keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
+                          keyTimes="0;1"
+                        >
+                          <mpath xlink:href="#far-right-home-${index}" />
+                        </animateMotion>
+                      </circle>`
+                  : nothing}
+              </svg>
+            `
+          : nothing}
       </div>
     `;
   }
@@ -571,14 +615,16 @@ export class PowerFlowCardPlus extends LitElement {
                     ? this._renderExtraIndividual(
                         individualFieldFarRightTop,
                         getIndividualDisplayState(individualFieldFarRightTop),
-                        4
+                        4,
+                        newDur
                       )
                     : html`<div class="spacer"></div>`}
                   ${individualFieldFarRightBottom
                     ? this._renderExtraIndividual(
                         individualFieldFarRightBottom,
                         getIndividualDisplayState(individualFieldFarRightBottom),
-                        5
+                        5,
+                        newDur
                       )
                     : html`<div class="spacer"></div>`}
                 </div>`
@@ -592,7 +638,8 @@ export class PowerFlowCardPlus extends LitElement {
                       this._renderExtraIndividual(
                         extraInd,
                         getIndividualDisplayState(extraInd),
-                        i + 6
+                        i + 6,
+                        newDur
                       )
                   )}
                 </div>
