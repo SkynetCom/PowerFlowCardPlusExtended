@@ -114,7 +114,7 @@ export const styles = css`
 
   .card-content,
   .row {
-    max-width: 580px;
+    max-width: 470px;
   }
   .lines {
     position: absolute;
@@ -182,8 +182,49 @@ export const styles = css`
   .row {
     display: flex;
     justify-content: space-between;
-    max-width: 580px;
+    max-width: 500px;
     margin: 0 auto;
+  }
+
+  .pf-layout {
+    display: flex;
+    align-items: stretch;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .pf-main {
+    flex: 1;
+    max-width: 470px;
+    position: relative;
+  }
+
+  .pf-far-right {
+    display: flex;
+    flex-direction: column;
+    width: 120px;
+    align-items: center;
+    flex-shrink: 0;
+    padding-left: 8px;
+  }
+
+  .pf-far-right-top {
+    height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .pf-far-right-mid {
+    flex: 1;
+  }
+
+  .pf-far-right-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
   }
   .circle-container {
     display: flex;
@@ -375,30 +416,11 @@ export const styles = css`
     position: relative;
   }
 
-  .far-right-individual-flow-container {
-    position: absolute;
-    right: calc(var(--size-circle-entity) * 2 - 27% * 1.1 + 16px);
+  .far-right-individual-flow-line {
     width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    height: 156px;
-    bottom: 100px;
-    padding: 0 16px 16px;
-    margin-right: -1.2%;
-    box-sizing: border-box;
+    height: 10px;
     pointer-events: none;
-  }
-  .far-right-individual-flow-container > svg {
-    width: var(--lines-svg-not-flat-multi-indiv-far-right-indiv-width);
-  }
-
-  .far-right-individual-flow {
-    height: var(--lines-svg-not-flat-multi-indiv-far-right-indiv-height);
     margin-top: 2px;
-    width: calc(var(--lines-svg-not-flat-multi-indiv-width) * 1.5);
-    top: var(--lines-svg-not-flat-line-top);
-    max-width: 450px;
-    position: relative;
   }
   .circle-container.low-carbon {
     height: 130px;

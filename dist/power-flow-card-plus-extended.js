@@ -292,7 +292,7 @@ const j=globalThis,B=e=>e,L=j.trustedTypes,R=L?L.createPolicy("lit-html",{create
 
   .card-content,
   .row {
-    max-width: 580px;
+    max-width: 470px;
   }
   .lines {
     position: absolute;
@@ -360,8 +360,49 @@ const j=globalThis,B=e=>e,L=j.trustedTypes,R=L?L.createPolicy("lit-html",{create
   .row {
     display: flex;
     justify-content: space-between;
-    max-width: 580px;
+    max-width: 500px;
     margin: 0 auto;
+  }
+
+  .pf-layout {
+    display: flex;
+    align-items: stretch;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .pf-main {
+    flex: 1;
+    max-width: 470px;
+    position: relative;
+  }
+
+  .pf-far-right {
+    display: flex;
+    flex-direction: column;
+    width: 120px;
+    align-items: center;
+    flex-shrink: 0;
+    padding-left: 8px;
+  }
+
+  .pf-far-right-top {
+    height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .pf-far-right-mid {
+    flex: 1;
+  }
+
+  .pf-far-right-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
   }
   .circle-container {
     display: flex;
@@ -553,30 +594,11 @@ const j=globalThis,B=e=>e,L=j.trustedTypes,R=L?L.createPolicy("lit-html",{create
     position: relative;
   }
 
-  .far-right-individual-flow-container {
-    position: absolute;
-    right: calc(var(--size-circle-entity) * 2 - 27% * 1.1 + 16px);
+  .far-right-individual-flow-line {
     width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    height: 156px;
-    bottom: 100px;
-    padding: 0 16px 16px;
-    margin-right: -1.2%;
-    box-sizing: border-box;
+    height: 10px;
     pointer-events: none;
-  }
-  .far-right-individual-flow-container > svg {
-    width: var(--lines-svg-not-flat-multi-indiv-far-right-indiv-width);
-  }
-
-  .far-right-individual-flow {
-    height: var(--lines-svg-not-flat-multi-indiv-far-right-indiv-height);
     margin-top: 2px;
-    width: calc(var(--lines-svg-not-flat-multi-indiv-width) * 1.5);
-    top: var(--lines-svg-not-flat-line-top);
-    max-width: 450px;
-    position: relative;
   }
   .circle-container.low-carbon {
     height: 130px;
@@ -918,8 +940,10 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
           id="power-flow-card-plus"
           style=${this._config.style_card_content?this._config.style_card_content:""}
         >
-          ${o.has||s?.some(e=>e?.has)||r.hasPercentage?ae`<div class="row">
-                ${((e,t,{nonFossil:i,entities:o,templatesObj:a,grid:n,newDur:r,fossilEnergyConsumption:s})=>{const l=!1===t.clickable_entities;return i.hasPercentage?ae`<div class="circle-container low-carbon">
+          <div class="pf-layout">
+            <div class="pf-main">
+              ${o.has||s?.some(e=>e?.has)||r.hasPercentage?ae`<div class="row">
+                    ${((e,t,{nonFossil:i,entities:o,templatesObj:a,grid:n,newDur:r,fossilEnergyConsumption:s})=>{const l=!1===t.clickable_entities;return i.hasPercentage?ae`<div class="circle-container low-carbon">
     <span class="label">${i.name}</span>
     <div
       class="circle ${l?"pointer-events-none":""}"
@@ -958,7 +982,7 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
           </svg>
         `:se}
   </div>`:Xe})(this,this._config,{entities:t,grid:i,newDur:l,nonFossil:r,templatesObj:c})}
-                ${o.has?((e,t,{entities:i,solar:o,templatesObj:a})=>{const n=!1===t.clickable_entities,r=a.solarSecondary,s=i.solar?.secondary_info?.sum_total,l=t.entities.solar?.secondary_info?.entity,c=l?Math.max(ot(e.hass,l),0):0,d=s?o.state.total-c:o.state.total;return ae`<div class="circle-container solar">
+                    ${o.has?((e,t,{entities:i,solar:o,templatesObj:a})=>{const n=!1===t.clickable_entities,r=a.solarSecondary,s=i.solar?.secondary_info?.sum_total,l=t.entities.solar?.secondary_info?.entity,c=l?Math.max(ot(e.hass,l),0):0,d=s?o.state.total-c:o.state.total;return ae`<div class="circle-container solar">
     <span class="label">${o.name}</span>
     <div
       class="circle ${n?"pointer-events-none":""}"
@@ -977,7 +1001,7 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
           </span>`:se}
     </div>
   </div>`})(this,this._config,{entities:t,solar:o,templatesObj:c}):s?.some(e=>e?.has)?Xe:se}
-                ${g?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n})=>{if(!i)return Xe;const r=!1===t.clickable_entities,s=t?.entities?.individual?.findIndex(e=>e.entity===i.entity)||0,l=n.individual[s]||0;return ae`<div class="circle-container individual-top">
+                    ${g?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n})=>{if(!i)return Xe;const r=!1===t.clickable_entities,s=t?.entities?.individual?.findIndex(e=>e.entity===i.entity)||0,l=n.individual[s]||0;return ae`<div class="circle-container individual-top">
     <span class="label">${i.name}</span>
     <div
       class="circle ${r?"pointer-events-none":""}"
@@ -1019,7 +1043,7 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
           </svg>
         `:se}
   </div>`})(this,this._config,{individualObj:g,displayState:S(g),newDur:l,templatesObj:c}):Xe}
-                ${Ae(s)?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n,battery:r,individualObjs:s})=>{if(!i)return Xe;const l=!1===t.clickable_entities,c=t?.entities?.individual?.findIndex(e=>e.entity===i.entity);if(-1===c||void 0===c)return Xe;const d=n.individual[c]||1.66,u=!!r?.has||Pe(s);return ae`<div class="circle-container individual-top individual-right individual-right-top">
+                    ${Ae(s)?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n,battery:r,individualObjs:s})=>{if(!i)return Xe;const l=!1===t.clickable_entities,c=t?.entities?.individual?.findIndex(e=>e.entity===i.entity);if(-1===c||void 0===c)return Xe;const d=n.individual[c]||1.66,u=!!r?.has||Pe(s);return ae`<div class="circle-container individual-top individual-right individual-right-top">
     <span class="label">${i.name}</span>
     <div
       class="circle ${l?"pointer-events-none":""}"
@@ -1068,60 +1092,10 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
             </svg>
           </div>
         `:se}
-  </div>`})(this,this._config,{displayState:S(v),individualObj:v,newDur:l,templatesObj:c,battery:a,individualObjs:s}):Xe}
-                ${w?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n,battery:r,individualObjs:s})=>{if(!i)return Xe;const l=!1===t.clickable_entities,c=t?.entities?.individual?.findIndex(e=>e.entity===i.entity);if(-1===c||void 0===c)return Xe;const d=n.individual[c]||1.66,u=!!r?.has||Pe(s);return ae`<div class="circle-container individual-top individual-right individual-right-top">
-    <span class="label">${i.name}</span>
-    <div
-      class="circle ${l?"pointer-events-none":""}"
-      @click=${t=>{e.onEntityClick(t,i?.field,i?.entity)}}
-      @dblclick=${t=>{e.onEntityDoubleClick(t,i?.field,i?.entity)}}
-      @pointerdown=${t=>{e.onEntityPointerDown(t,i?.field,i?.entity)}}
-      @pointerup=${t=>{e.onEntityPointerUp(t)}}
-      @pointercancel=${t=>{e.onEntityPointerUp(t)}}
-      @keyDown=${t=>{"Enter"===t.key&&e.openDetails(t,i?.field,i?.entity,"tap")}}
-    >
-      <ha-ripple .disabled=${l}></ha-ripple>
-      ${qe(e.hass,e,t,o,i,c,"far-right-top")}
-      ${" "!==i.icon?ae` <ha-icon id="individual-far-right-top-icon" .icon=${i.icon}></ha-icon>`:se}
-      ${!1!==i?.field?.display_zero_state||(i.state||0)>(i.displayZeroTolerance??0)?ae` <span class="individual-top individual-far-right-top">
-            ${i?.showDirection?ae`<ha-icon
-                  class="small"
-                  .icon=${i.invertAnimation?"mdi:arrow-down":"mdi:arrow-up"}
-                ></ha-icon>`:se}${a}
-          </span>`:se}
-    </div>
-    ${Me(t,i.state||0)&&!t.entities.home?.hide?ae`
-          <div class="far-right-individual-flow-container">
-            <svg
-              viewBox="0 0 100 100"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMidYMid slice"
-              class="far-right-individual-flow"
-            >
-              <path
-                id="individual-top-far-right-home"
-                class="${Te(i.state||0,t)}"
-                d="M${u?45:47},0 v15 c0,${u?"30 -10,30 -30,30":"35 -10,35 -30,35"} h-20"
-                vector-effect="non-scaling-stroke"
-              />
-              ${Ee(t)&&i.state&&i.state>=(i.displayZeroTolerance??0)?ne`<circle r="1" class="individual-top" vector-effect="non-scaling-stroke">
-                      <animateMotion
-                        dur="${Ye(i?.field?.calculate_flow_rate,d)}s"
-                        repeatCount="indefinite"
-                        calcMode="paced"
-                        keyPoints="${i.invertAnimation?"0;1":"1;0"}"
-                        keyTimes="0;1"
-                      >
-                        <mpath xlink:href="#individual-top-far-right-home" />
-                      </animateMotion>
-                    </circle>`:se}
-            </svg>
-          </div>
-        `:se}
-  </div>`})(this,this._config,{displayState:S(w),individualObj:w,newDur:l,templatesObj:c,battery:a,individualObjs:s}):se}
-              </div>`:se}
-          <div class="row">
-            ${i.has?((e,t,{entities:i,grid:o,templatesObj:a})=>{const n=!1===t.clickable_entities;return ae`<div class="circle-container grid">
+  </div>`})(this,this._config,{displayState:S(v),individualObj:v,newDur:l,templatesObj:c,battery:a,individualObjs:s}):se}
+                  </div>`:se}
+              <div class="row">
+                ${i.has?((e,t,{entities:i,grid:o,templatesObj:a})=>{const n=!1===t.clickable_entities;return ae`<div class="circle-container grid">
     <div
       class="circle ${n?"pointer-events-none":""}"
       @click=${t=>{const a=o.powerOutage?.entityGenerator??i.grid?.power_outage?.entity,n=o.powerOutage?.isOutage&&a?a:"string"==typeof i.grid.entity?i.grid.entity:i.grid.entity.consumption;e.onEntityClick(t,o,n)}}
@@ -1163,8 +1137,8 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
     </div>
     <span class="label">${o.name}</span>
   </div>`})(this,this._config,{entities:t,grid:i,templatesObj:c}):Xe}
-            ${Xe}
-            ${t.home?.hide?Xe:((e,t,{home:i,entities:o,templatesObj:a,homeUsageToDisplay:n,homeSolarCircumference:r,CIRCLE_CIRCUMFERENCE:s,homeBatteryCircumference:l,homeNonFossilCircumference:c,homeGridCircumference:d,individual:u})=>{const p=u.filter(e=>e.has).length<=1,h=void 0!==o.home?.entity,_=["none",void 0],m=!_.includes(o.home?.tap_action?.action)||!_.includes(o.home?.hold_action?.action)||!_.includes(o.home?.double_tap_action?.action),f=h||m,g=!1===t.clickable_entities||!f;return ae`
+                ${Xe}
+                ${t.home?.hide?Xe:((e,t,{home:i,entities:o,templatesObj:a,homeUsageToDisplay:n,homeSolarCircumference:r,CIRCLE_CIRCUMFERENCE:s,homeBatteryCircumference:l,homeNonFossilCircumference:c,homeGridCircumference:d,individual:u})=>{const p=u.filter(e=>e.has).length<=1,h=void 0!==o.home?.entity,_=["none",void 0],m=!_.includes(o.home?.tap_action?.action)||!_.includes(o.home?.hold_action?.action)||!_.includes(o.home?.double_tap_action?.action),f=h||m,g=!1===t.clickable_entities||!f;return ae`
     <div class="circle-container home">
       <div
         class="circle ${g?"pointer-events-none":""}"
@@ -1222,12 +1196,11 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
       ${p?ae`<span class="label">${i.name}</span>`:ae`<span class="label"></span>`}
     </div>
   `})(this,this._config,{CIRCLE_CIRCUMFERENCE:rt,entities:t,home:n,homeBatteryCircumference:d,homeGridCircumference:u,homeNonFossilCircumference:h,homeSolarCircumference:m,templatesObj:c,homeUsageToDisplay:f,individual:s})}
-            ${Ae(s)?Xe:se}
-            ${w||k?Xe:se}
-          </div>
-          ${a.has||Pe(s)?ae`<div class="row">
-                ${Xe}
-                ${a.has?((e,t,{battery:i,entities:o})=>{const a=!1===t.clickable_entities;return ae`<div class="circle-container battery">
+                ${Ae(s)?Xe:se}
+              </div>
+              ${a.has||Pe(s)?ae`<div class="row">
+                    ${Xe}
+                    ${a.has?((e,t,{battery:i,entities:o})=>{const a=!1===t.clickable_entities;return ae`<div class="circle-container battery">
     <div
       class="circle ${a?"pointer-events-none":""}"
       @click=${t=>{const a=o.battery?.state_of_charge?o.battery?.state_of_charge:"string"==typeof o.battery?.entity?o.battery?.entity:o.battery?.entity.production;e.onEntityClick(t,i,a)}}
@@ -1286,7 +1259,7 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
     </div>
     <span class="label">${i.name}</span>
   </div>`})(this,this._config,{battery:a,entities:t}):Xe}
-                ${y?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n})=>{if(!i)return Xe;const r=!1===t.clickable_entities,s=t?.entities?.individual?.findIndex(e=>e.entity===i.entity)||0,l=n.individual[s]||0;return ae`<div class="circle-container individual-bottom bottom">
+                    ${y?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n})=>{if(!i)return Xe;const r=!1===t.clickable_entities,s=t?.entities?.individual?.findIndex(e=>e.entity===i.entity)||0,l=n.individual[s]||0;return ae`<div class="circle-container individual-bottom bottom">
     ${Me(t,i?.state||0)&&!t.entities.home?.hide?ae`
           <svg width="80" height="30">
             <path
@@ -1328,7 +1301,7 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
     </div>
     <span class="label">${i?.name}</span>
   </div> `})(this,this._config,{displayState:S(y),individualObj:y,newDur:l,templatesObj:c}):Xe}
-                ${Ae(s)?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n})=>{if(!i)return Xe;const r=!1===t.clickable_entities,s=t?.entities?.individual?.findIndex(e=>e.entity===i.entity);if(-1===s||void 0===s)return Xe;const l=n.individual[s]||1.66;return ae`<div
+                    ${Ae(s)?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n})=>{if(!i)return Xe;const r=!1===t.clickable_entities,s=t?.entities?.individual?.findIndex(e=>e.entity===i.entity);if(-1===s||void 0===s)return Xe;const l=n.individual[s]||1.66;return ae`<div
     class="circle-container individual-bottom individual-right individual-right-bottom"
   >
     <div
@@ -1379,8 +1352,71 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
             </svg>
           </div>
         `:se}
-  </div>`})(this,this._config,{displayState:S(b),individualObj:b,newDur:l,templatesObj:c}):Xe}
-                ${k?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n})=>{if(!i)return Xe;const r=!1===t.clickable_entities,s=t?.entities?.individual?.findIndex(e=>e.entity===i.entity);if(-1===s||void 0===s)return Xe;const l=n.individual[s]||1.66;return ae`<div
+  </div>`})(this,this._config,{displayState:S(b),individualObj:b,newDur:l,templatesObj:c}):se}
+                  </div>`:Xe}
+              ${((e,{battery:t,grid:i,individual:o,solar:a,newDur:n})=>ae`
+  ${He(e,{battery:t,grid:i,individual:o,solar:a,newDur:n})}
+  ${Fe(e,{battery:t,grid:i,individual:o,solar:a,newDur:n})}
+  ${Ue(e,{battery:t,individual:o,solar:a,newDur:n})}
+  ${Re(e,{battery:t,grid:i,individual:o,solar:a,newDur:n})}
+  ${Le(e,{battery:t,grid:i,individual:o,newDur:n})}
+  ${Be(e,{battery:t,grid:i,individual:o,newDur:n})}
+  `)(this._config,{battery:a,grid:i,individual:s,newDur:l,solar:o})}
+            </div>
+            ${w||k?ae`<div class="pf-far-right">
+                  <div class="pf-far-right-top">
+                    ${w?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n,battery:r,individualObjs:s})=>{if(!i)return Xe;const l=!1===t.clickable_entities,c=t?.entities?.individual?.findIndex(e=>e.entity===i.entity);if(-1===c||void 0===c)return Xe;const d=n.individual[c]||1.66;return r?.has||Pe(s),ae`<div class="circle-container individual-top individual-right individual-right-top">
+    <span class="label">${i.name}</span>
+    <div
+      class="circle ${l?"pointer-events-none":""}"
+      @click=${t=>{e.onEntityClick(t,i?.field,i?.entity)}}
+      @dblclick=${t=>{e.onEntityDoubleClick(t,i?.field,i?.entity)}}
+      @pointerdown=${t=>{e.onEntityPointerDown(t,i?.field,i?.entity)}}
+      @pointerup=${t=>{e.onEntityPointerUp(t)}}
+      @pointercancel=${t=>{e.onEntityPointerUp(t)}}
+      @keyDown=${t=>{"Enter"===t.key&&e.openDetails(t,i?.field,i?.entity,"tap")}}
+    >
+      <ha-ripple .disabled=${l}></ha-ripple>
+      ${qe(e.hass,e,t,o,i,c,"far-right-top")}
+      ${" "!==i.icon?ae` <ha-icon id="individual-far-right-top-icon" .icon=${i.icon}></ha-icon>`:se}
+      ${!1!==i?.field?.display_zero_state||(i.state||0)>(i.displayZeroTolerance??0)?ae` <span class="individual-top individual-far-right-top">
+            ${i?.showDirection?ae`<ha-icon
+                  class="small"
+                  .icon=${i.invertAnimation?"mdi:arrow-down":"mdi:arrow-up"}
+                ></ha-icon>`:se}${a}
+          </span>`:se}
+    </div>
+    ${Me(t,i.state||0)&&!t.entities.home?.hide?ae`
+          <svg
+            viewBox="0 0 100 10"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid slice"
+            class="far-right-individual-flow-line"
+          >
+            <path
+              id="individual-top-far-right-home"
+              class="individual-top ${Te(i.state||0,t)}"
+              d="M100,5 H0"
+              vector-effect="non-scaling-stroke"
+            />
+            ${Ee(t)&&i.state&&i.state>=(i.displayZeroTolerance??0)?ne`<circle r="1" class="individual-top" vector-effect="non-scaling-stroke">
+                    <animateMotion
+                      dur="${Ye(i?.field?.calculate_flow_rate,d)}s"
+                      repeatCount="indefinite"
+                      calcMode="paced"
+                      keyPoints="${i.invertAnimation?"0;1":"1;0"}"
+                      keyTimes="0;1"
+                    >
+                      <mpath xlink:href="#individual-top-far-right-home" />
+                    </animateMotion>
+                  </circle>`:se}
+          </svg>
+        `:se}
+  </div>`})(this,this._config,{displayState:S(w),individualObj:w,newDur:l,templatesObj:c,battery:a,individualObjs:s}):se}
+                  </div>
+                  <div class="pf-far-right-mid"></div>
+                  <div class="pf-far-right-bottom">
+                    ${k?((e,t,{individualObj:i,templatesObj:o,displayState:a,newDur:n})=>{if(!i)return Xe;const r=!1===t.clickable_entities,s=t?.entities?.individual?.findIndex(e=>e.entity===i.entity);if(-1===s||void 0===s)return Xe;const l=n.individual[s]||1.66;return ae`<div
     class="circle-container individual-bottom individual-right individual-right-bottom"
   >
     <div
@@ -1404,46 +1440,38 @@ function uo(e,t){return(t,i,o)=>((e,t,i)=>(i.configurable=!0,i.enumerable=!0,Ref
     </div>
     <span class="label">${i.name}</span>
     ${Me(t,i.state||0)&&!t.entities.home?.hide?ae`
-          <div class="far-right-individual-flow-container">
-            <svg
-              viewBox="0 0 100 100"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMidYMid slice"
-              class="far-right-individual-flow"
-            >
-              <path
-                id="individual-bottom-far-right-home"
-                class="${Te(i.state||0,t)}"
-                d="M45,100 v-15 c0,-30 -10,-30 -30,-30 h-20"
-                vector-effect="non-scaling-stroke"
-              />
-              ${Ee(t)&&i.state&&i.state>=(i.displayZeroTolerance??0)?ne`<circle r="1" class="individual-bottom" vector-effect="non-scaling-stroke">
-                      <animateMotion
-                        dur="${Ye(i?.field?.calculate_flow_rate,l)}s"
-                        repeatCount="indefinite"
-                        calcMode="paced"
-                        keyPoints="${i.invertAnimation?"0;1":"1;0"}"
-                        keyTimes="0;1"
-                      >
-                        <mpath xlink:href="#individual-bottom-far-right-home" />
-                      </animateMotion>
-                    </circle>`:se}
-            </svg>
-          </div>
+          <svg
+            viewBox="0 0 100 10"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid slice"
+            class="far-right-individual-flow-line"
+          >
+            <path
+              id="individual-bottom-far-right-home"
+              class="individual-bottom ${Te(i.state||0,t)}"
+              d="M100,5 H0"
+              vector-effect="non-scaling-stroke"
+            />
+            ${Ee(t)&&i.state&&i.state>=(i.displayZeroTolerance??0)?ne`<circle r="1" class="individual-bottom" vector-effect="non-scaling-stroke">
+                    <animateMotion
+                      dur="${Ye(i?.field?.calculate_flow_rate,l)}s"
+                      repeatCount="indefinite"
+                      calcMode="paced"
+                      keyPoints="${i.invertAnimation?"0;1":"1;0"}"
+                      keyTimes="0;1"
+                    >
+                      <mpath xlink:href="#individual-bottom-far-right-home" />
+                    </animateMotion>
+                  </circle>`:se}
+          </svg>
         `:se}
   </div>`})(this,this._config,{displayState:S(k),individualObj:k,newDur:l,templatesObj:c}):se}
-              </div>`:Xe}
-          ${((e,{battery:t,grid:i,individual:o,solar:a,newDur:n})=>ae`
-  ${He(e,{battery:t,grid:i,individual:o,solar:a,newDur:n})}
-  ${Fe(e,{battery:t,grid:i,individual:o,solar:a,newDur:n})}
-  ${Ue(e,{battery:t,individual:o,solar:a,newDur:n})}
-  ${Re(e,{battery:t,grid:i,individual:o,solar:a,newDur:n})}
-  ${Le(e,{battery:t,grid:i,individual:o,newDur:n})}
-  ${Be(e,{battery:t,grid:i,individual:o,newDur:n})}
-  `)(this._config,{battery:a,grid:i,individual:s,newDur:l,solar:o})}
+                  </div>
+                </div>`:se}
+          </div>
           ${x.length>0?ae`<div class="extra-individuals-section">
                 <div class="extra-individuals-grid">
-                  ${x.map((e,t)=>this._renderExtraIndividual(e,S(e),t+4))}
+                  ${x.map((e,t)=>this._renderExtraIndividual(e,S(e),t+6))}
                 </div>
               </div>`:se}
         </div>

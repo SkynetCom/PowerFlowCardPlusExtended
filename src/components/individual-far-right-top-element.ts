@@ -92,41 +92,37 @@ export const individualFarRightTopElement = (
     </div>
     ${showLine(config, individualObj.state || 0) && !config.entities.home?.hide
       ? html`
-          <div class="far-right-individual-flow-container">
-            <svg
-              viewBox="0 0 100 100"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMidYMid slice"
-              class="far-right-individual-flow"
-            >
-              <path
-                id="individual-top-far-right-home"
-                class="${styleLine(individualObj.state || 0, config)}"
-                d="M${hasBottomRow ? 45 : 47},0 v15 c0,${hasBottomRow
-                  ? "30 -10,30 -30,30"
-                  : "35 -10,35 -30,35"} h-20"
-                vector-effect="non-scaling-stroke"
-              />
-              ${checkShouldShowDots(config) &&
-              individualObj.state &&
-              individualObj.state >= (individualObj.displayZeroTolerance ?? 0)
-                ? svg`<circle r="1" class="individual-top" vector-effect="non-scaling-stroke">
-                      <animateMotion
-                        dur="${computeIndividualFlowRate(
-                          individualObj?.field?.calculate_flow_rate,
-                          duration
-                        )}s"
-                        repeatCount="indefinite"
-                        calcMode="paced"
-                        keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
-                        keyTimes="0;1"
-                      >
-                        <mpath xlink:href="#individual-top-far-right-home" />
-                      </animateMotion>
-                    </circle>`
-                : nothing}
-            </svg>
-          </div>
+          <svg
+            viewBox="0 0 100 10"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid slice"
+            class="far-right-individual-flow-line"
+          >
+            <path
+              id="individual-top-far-right-home"
+              class="individual-top ${styleLine(individualObj.state || 0, config)}"
+              d="M100,5 H0"
+              vector-effect="non-scaling-stroke"
+            />
+            ${checkShouldShowDots(config) &&
+            individualObj.state &&
+            individualObj.state >= (individualObj.displayZeroTolerance ?? 0)
+              ? svg`<circle r="1" class="individual-top" vector-effect="non-scaling-stroke">
+                    <animateMotion
+                      dur="${computeIndividualFlowRate(
+                        individualObj?.field?.calculate_flow_rate,
+                        duration
+                      )}s"
+                      repeatCount="indefinite"
+                      calcMode="paced"
+                      keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
+                      keyTimes="0;1"
+                    >
+                      <mpath xlink:href="#individual-top-far-right-home" />
+                    </animateMotion>
+                  </circle>`
+              : nothing}
+          </svg>
         `
       : nothing}
   </div>`;
