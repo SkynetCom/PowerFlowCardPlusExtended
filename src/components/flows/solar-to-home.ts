@@ -1,7 +1,6 @@
 import { type FlowCardPlusConfig } from "./../../types";
 import { checkShouldShowDots } from "./../../utils/check-should-show-dots";
 import {
-  checkHasAnyIndividual,
   checkHasBottomIndividual,
   checkHasRightIndividual,
 } from "./../../utils/compute-individual-position";
@@ -25,15 +24,6 @@ const solarToHomeDot = (
     </circle>`;
 };
 
-/**
- * Solar→Home flow: enters Home from the LEFT side.
- * Pattern: straight right > curve down > straight right into Home
- * 
- * Solar is above-left of Home. The flow goes:
- * 1. Horizontally right from Solar's position
- * 2. Curves smoothly downward
- * 3. Continues horizontally right into Home's left side
- */
 export const flowSolarToHome = (
   config: FlowCardPlusConfig,
   { battery, grid, individual, solar, newDur }: Flows
@@ -41,9 +31,6 @@ export const flowSolarToHome = (
   const shouldShow =
     solar.has && showLine(config, solar.state.toHome || 0) && !config.entities.home?.hide;
   if (!shouldShow) return nothing;
-
-  // Y position at Home level depends on whether battery/individuals exist
-  const homeY = battery.has || checkHasBottomIndividual(individual) ? 50 : solar.has ? 53 : 50;
 
   return html`<div
     class="lines ${classMap({
@@ -61,7 +48,9 @@ export const flowSolarToHome = (
       <path
         id="solar"
         class="solar ${styleLine(solar.state.toHome || 0, config)}"
-        d="M0,0 h20 c0,0 0,${homeY} 20,${homeY} H100"
+        d="M${battery.has ? 55 : 53},0 v${grid.has ? 15 : 17} c0,${battery.has
+          ? "30 10,30 30,30"
+          : "35 10,35 30,35"} h25"
         vector-effect="non-scaling-stroke"
       ></path>
       ${solarToHomeDot(config, solar, newDur)}

@@ -30,29 +30,34 @@ type DynamicStylesInput = {
 
 /**
  * Extended color palette for up to 10 individual sensors.
- * First 4 are the original colors, rest are additional distinct colors.
+ * New layout: individuals alternate between top and bottom rows.
+ * Even indices (0, 2, 4, 6, 8) = top row
+ * Odd indices (1, 3, 5, 7, 9) = bottom row
  */
 const INDIVIDUAL_COLORS = [
-  "#d0cc5b", // 0: left-top (original)
-  "#964cb5", // 1: left-bottom (original)
-  "#b54c9d", // 2: right-top (original)
-  "#5bd0cc", // 3: right-bottom (original)
-  "#ff7043", // 4: extra - deep orange
-  "#66bb6a", // 5: extra - green
-  "#42a5f5", // 6: extra - blue
-  "#ffa726", // 7: extra - orange
-  "#ab47bc", // 8: extra - purple
-  "#26c6da", // 9: extra - cyan
+  "#b54c9d", // 0: right-top (first top)
+  "#5bd0cc", // 1: right-bottom (first bottom)
+  "#d0cc5b", // 2: right-top-2 (second top)
+  "#964cb5", // 3: right-bottom-2 (second bottom)
+  "#ff7043", // 4: right-top-3 (third top) - deep orange
+  "#66bb6a", // 5: right-bottom-3 (third bottom) - green
+  "#42a5f5", // 6: right-top-4 (fourth top) - blue
+  "#ffa726", // 7: right-bottom-4 (fourth bottom) - orange
+  "#ab47bc", // 8: right-top-5 (fifth top) - purple
+  "#26c6da", // 9: right-bottom-5 (fifth bottom) - cyan
 ];
 
 /**
- * Position names for first 4 sensors, then dynamic "ind-N" for rest.
+ * Position names for individuals, matching the new layout scheme.
+ * Even indices → "right-top" / "right-top-N"
+ * Odd indices → "right-bottom" / "right-bottom-N"
  */
-const POSITION_NAMES = ["left-top", "left-bottom", "right-top", "right-bottom"];
-
 const getPositionName = (index: number): string => {
-  if (index < POSITION_NAMES.length) return POSITION_NAMES[index];
-  return `ind-${index}`;
+  if (index === 0) return "right-top";
+  if (index === 1) return "right-bottom";
+  const row = index % 2 === 0 ? "right-top" : "right-bottom";
+  const posInRow = Math.floor(index / 2) + 1;
+  return `${row}-${posInRow}`;
 };
 
 export const allDynamicStyles = (main: HostWithStyle, input: DynamicStylesInput) => {

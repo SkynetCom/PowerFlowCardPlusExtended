@@ -26,15 +26,6 @@ const batteryToHomeDot = (
 
 type FlowBatteryToHomeFlows = Pick<Flows, Exclude<keyof Flows, "solar">>;
 
-/**
- * Battery→Home flow: enters Home from the LEFT side.
- * Pattern: straight right > curve up > straight right into Home
- * 
- * Battery is below-left of Home. The flow goes:
- * 1. Horizontally right from Battery's position
- * 2. Curves smoothly upward
- * 3. Continues horizontally right into Home's left side
- */
 export const flowBatteryToHome = (
   config: FlowCardPlusConfig,
   { battery, grid, individual, newDur }: FlowBatteryToHomeFlows
@@ -42,9 +33,6 @@ export const flowBatteryToHome = (
   const shouldShow =
     battery.has && showLine(config, battery.state.toHome) && !config.entities.home?.hide;
   if (!shouldShow) return nothing;
-
-  // Y position at Home level
-  const homeY = grid.has ? 50 : 53;
 
   return html`<div
     class="lines ${classMap({
@@ -62,7 +50,7 @@ export const flowBatteryToHome = (
       <path
         id="battery-home"
         class="battery-home ${styleLine(battery.state.toHome || 0, config)}"
-        d="M0,100 h20 c0,0 0,-${100 - homeY} 20,-${100 - homeY} H100"
+        d="M55,100 v-${grid.has ? 15 : 17} c0,-30 10,-30 30,-30 h20"
         vector-effect="non-scaling-stroke"
       ></path>
       ${batteryToHomeDot(config, battery, newDur)}

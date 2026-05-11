@@ -184,7 +184,11 @@ export const styles = css`
     margin: 0 auto;
   }
 
-  /* ===== New Layout: pf-layout is a horizontal flex container ===== */
+  /* Wider row when individuals are present */
+  .row.has-individuals {
+    max-width: none;
+  }
+
   .pf-layout {
     display: flex;
     align-items: stretch;
@@ -196,124 +200,106 @@ export const styles = css`
     min-width: 0;
   }
 
-  /* ===== Horizontal Individuals Row ===== */
-  .pf-individuals-row {
+  /* ===== Individual Group Container ===== */
+  .pf-ind-group {
     display: flex;
-    flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
-    padding: 0 4px;
-    flex-shrink: 0;
-    min-width: 0;
-  }
-
-  .pf-individuals-row-inner {
-    display: flex;
-    align-items: center;
     gap: 0;
-    overflow-x: auto;
-    max-width: 100%;
-    padding: 4px 0;
+    flex-shrink: 0;
   }
 
-  /* Custom scrollbar for individuals row */
-  .pf-individuals-row-inner::-webkit-scrollbar {
-    height: 4px;
-  }
-  .pf-individuals-row-inner::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .pf-individuals-row-inner::-webkit-scrollbar-thumb {
-    background: var(--divider-color, rgba(128, 128, 128, 0.3));
-    border-radius: 2px;
+  .pf-ind-group.pf-ind-bottom {
+    align-items: flex-end;
   }
 
-  .individual-row-item {
+  /* ===== Inline Individual Elements (2nd+ in each row) ===== */
+  .ind-inline {
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex-shrink: 0;
+    position: relative;
   }
 
-  .individual-row-item .circle {
-    width: 64px;
-    height: 64px;
-    font-size: 10px;
-    line-height: 10px;
-    border-color: var(--ind-row-color, #888);
+  .ind-inline.individual-top {
+    height: 130px;
+  }
+
+  .ind-inline.individual-bottom {
+    justify-content: flex-end;
+    position: relative;
+    top: -20px;
+    margin-bottom: -20px;
+  }
+
+  .ind-inline-circle {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 10px !important;
+    line-height: 10px !important;
+    border-color: var(--ind-inline-color, #888) !important;
+    color: var(--ind-inline-text-color, var(--primary-text-color));
     cursor: var(--clickable-cursor);
   }
 
-  .individual-row-item .label {
-    font-size: 10px;
-    max-width: 70px;
+  .ind-inline ha-icon:not(.small) {
+    color: var(--ind-inline-icon-color, var(--primary-text-color));
+  }
+
+  .ind-inline-label {
+    font-size: 9px !important;
+    max-width: 58px !important;
     text-align: center;
-    color: var(--secondary-text-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 16px;
   }
 
-  .individual-row-item .individual-row-text {
-    color: var(--ind-row-text-color, var(--primary-text-color));
-  }
-
-  .individual-row-item ha-icon:not(.small) {
-    color: var(--ind-row-icon-color, var(--primary-text-color));
-  }
-
-  .individual-row-item span.secondary-info {
-    color: var(--ind-row-secondary-color, var(--primary-text-color));
-  }
-
-  /* Flow line SVG between Home and individuals row */
-  .ind-row-flow-line {
-    width: 40px;
+  /* ===== Inline Individual Connector Lines ===== */
+  .ind-inline-connector {
+    position: absolute;
+    left: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
     height: 20px;
-    flex-shrink: 0;
     pointer-events: none;
+    z-index: 0;
   }
 
-  .ind-row-flow-line path {
-    stroke: var(--disabled-text-color);
-    stroke-width: 1;
-    fill: none;
+  .ind-inline.individual-top .ind-inline-connector {
+    top: auto;
+    bottom: 0;
+    transform: none;
   }
 
-  .ind-row-flow-line path.transparency {
-    opacity: calc(calc(100 - var(--transparency)) / 100);
+  .ind-inline.individual-bottom .ind-inline-connector {
+    top: 0;
+    bottom: auto;
+    transform: none;
   }
 
-  .ind-row-flow-line path.grey {
-    stroke: var(--greyed-out--line-color) !important;
+  .ind-inline-connector-svg {
+    width: 100%;
+    height: 100%;
   }
 
-  circle.individual-row-dot {
-    stroke-width: 4;
-    fill: var(--ind-row-color, #888);
-    stroke: var(--ind-row-color, #888);
+  .ind-inline-connector path {
+    stroke: var(--ind-inline-color, var(--individual-right-top-color));
   }
 
-  .pf-far-right {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    width: 100px;
-    flex-shrink: 0;
-    padding: 0 4px;
+  .ind-inline-connector circle {
+    fill: var(--ind-inline-color, var(--individual-right-top-color));
   }
 
-  .pf-far-right .extra-individual {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  /* Inline individual flow dot colors */
+  .ind-inline .individual-right-top path,
+  .ind-inline .individual-right-top circle {
+    stroke: var(--individual-right-top-color);
   }
 
-  .pf-far-right .extra-individual .extra-individual-circle {
-    width: 70px;
-    height: 70px;
+  .ind-inline .individual-right-bottom path,
+  .ind-inline .individual-right-bottom circle {
+    stroke: var(--individual-right-bottom-color);
   }
   .circle-container {
     display: flex;
@@ -738,43 +724,7 @@ export const styles = css`
     pointer-events: none;
   }
 
-  /* ===== Extra Individual Sensors Grid (5+ sensors) - kept for backward compat ===== */
-  .extra-individuals-section {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--divider-color, rgba(128, 128, 128, 0.15));
-  }
-
-  .extra-individuals-grid {
-    display: grid;
-    grid-template-columns: repeat(4, var(--size-circle-entity));
-    gap: 4px 0;
-    justify-content: center;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .extra-individuals-grid .circle-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 4px 0;
-  }
-
-  .extra-individuals-grid .circle {
-    width: 64px;
-    height: 64px;
-    font-size: 10px;
-    line-height: 10px;
-  }
-
-  .extra-individuals-grid .label {
-    font-size: 10px;
-    max-width: 70px;
-    text-align: center;
-  }
-
-  /* Extra individual sensor color classes - dynamic via CSS custom properties */
+  /* ===== Extra Individual Sensors (DEPRECATED - kept for backward compat) ===== */
   .extra-individual .circle {
     border-color: var(--extra-ind-color, #888);
   }
