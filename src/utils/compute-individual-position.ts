@@ -22,9 +22,7 @@ const getIndividualObjSortPowerMode = (
 
 /**
  * Get individual sensor by position index (0-based).
- * Positions 0-3 map to the original layout:
- *   0 = left-top, 1 = left-bottom, 2 = right-top, 3 = right-bottom
- * Positions 4+ are for extra rows.
+ * All individuals are in a single horizontal row, ordered by index.
  */
 export const getIndividualByIndex = (
   individualObjs: IndividualObject[],
@@ -33,69 +31,49 @@ export const getIndividualByIndex = (
   return getIndividualObjSortPowerMode(individualObjs, index);
 };
 
-export const getTopLeftIndividual = (
-  individualObjs: IndividualObject[]
-): IndividualObject | undefined => {
-  return getIndividualObjSortPowerMode(individualObjs, 0);
-};
+/**
+ * Check if there are any individual sensors.
+ */
+export const checkHasAnyIndividual = (individualObjs: IndividualObject[]): boolean =>
+  filterUnusedIndividualObjs(individualObjs).length > 0;
 
-export const getBottomLeftIndividual = (
-  individualObjs: IndividualObject[]
-): IndividualObject | undefined => {
-  return getIndividualObjSortPowerMode(individualObjs, 1);
-};
-
-export const getTopRightIndividual = (
-  individualObjs: IndividualObject[]
-): IndividualObject | undefined => {
-  return getIndividualObjSortPowerMode(individualObjs, 2);
-};
-
-export const getBottomRightIndividual = (
-  individualObjs: IndividualObject[]
-): IndividualObject | undefined => {
-  return getIndividualObjSortPowerMode(individualObjs, 3);
+/**
+ * Get all visible individual objects (has=true), up to MAX_INDIVIDUAL_SENSORS.
+ */
+export const getAllVisibleIndividuals = (individualObjs: IndividualObject[]): IndividualObject[] => {
+  return filterUnusedIndividualObjs(individualObjs).slice(0, MAX_INDIVIDUAL_SENSORS);
 };
 
 /**
- * Check if there are individual sensors in right positions (index 2+).
+ * Keep backward-compatible exports for any code that still references them.
+ * These are now simplified since all individuals are in a horizontal row.
  */
 export const checkHasRightIndividual = (individualObjs: IndividualObject[]): boolean =>
-  !!getTopRightIndividual(individualObjs) || !!getBottomRightIndividual(individualObjs);
+  filterUnusedIndividualObjs(individualObjs).length > 0;
 
-/**
- * Check if there are individual sensors in bottom positions (index 1 or 3).
- */
 export const checkHasBottomIndividual = (individualObjs: IndividualObject[]): boolean =>
-  !!getBottomLeftIndividual(individualObjs) || !!getBottomRightIndividual(individualObjs);
+  filterUnusedIndividualObjs(individualObjs).length > 1;
 
-/**
- * Check if there are extra individual sensors beyond the original 4 positions.
- */
 export const checkHasExtraIndividuals = (individualObjs: IndividualObject[]): boolean =>
-  getIndividualByIndex(individualObjs, 4) !== undefined;
+  filterUnusedIndividualObjs(individualObjs).length > 0;
 
-/**
- * Get extra individual sensors (index 4+).
- */
 export const getExtraIndividuals = (individualObjs: IndividualObject[]): IndividualObject[] => {
-  const extras: IndividualObject[] = [];
-  for (let i = 4; i < MAX_INDIVIDUAL_SENSORS; i++) {
-    const obj = getIndividualByIndex(individualObjs, i);
-    if (obj) extras.push(obj);
-    else break;
-  }
-  return extras;
+  // In the new layout, all individuals go in the horizontal row
+  return [];
 };
+
+export const getTopLeftIndividual = getIndividualByIndex;
+export const getBottomLeftIndividual = getIndividualByIndex;
+export const getTopRightIndividual = getIndividualByIndex;
+export const getBottomRightIndividual = getIndividualByIndex;
 
 /**
  * Get a position name for a given index.
- * For indices 0-3, uses the original position names.
- * For indices 4+, uses "ind-N" format.
+ * Uses "ind-N" format for all positions in the horizontal row.
  */
 export const getPositionName = (index: number): string => {
-  const originalNames = ["left-top", "left-bottom", "right-top", "right-bottom"];
-  if (index < originalNames.length) return originalNames[index];
+  const legacyNames = ["left-top", "left-bottom", "right-top", "right-bottom"];
+  if (index < legacyNames.length) return legacyNames[index];
   return `ind-${index}`;
 };
 
@@ -103,7 +81,7 @@ export const getPositionName = (index: number): string => {
  * Get the CSS class suffix for a given index.
  */
 export const getPositionClass = (index: number): string => {
-  const originalClasses = ["left-top", "left-bottom", "right-top", "right-bottom"];
-  if (index < originalClasses.length) return originalClasses[index];
+  const legacyClasses = ["left-top", "left-bottom", "right-top", "right-bottom"];
+  if (index < legacyClasses.length) return legacyClasses[index];
   return `ind-${index}`;
 };

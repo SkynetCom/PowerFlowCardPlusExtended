@@ -110,9 +110,7 @@ export const styles = css`
     z-index: 1;
   }
 
-  .card-content {
-    max-width: 590px;
-  }
+  .card-content,
   .row {
     max-width: 470px;
   }
@@ -182,22 +180,119 @@ export const styles = css`
   .row {
     display: flex;
     justify-content: space-between;
-    max-width: 470px;
+    max-width: 500px;
     margin: 0 auto;
   }
 
+  /* ===== New Layout: pf-layout is a horizontal flex container ===== */
   .pf-layout {
     display: flex;
     align-items: stretch;
-    justify-content: center;
   }
 
   .pf-main {
     flex: 1;
-    max-width: 470px;
-    width: 100%;
     position: relative;
     min-width: 0;
+  }
+
+  /* ===== Horizontal Individuals Row ===== */
+  .pf-individuals-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0 4px;
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  .pf-individuals-row-inner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    max-width: 100%;
+    padding: 4px 0;
+  }
+
+  /* Custom scrollbar for individuals row */
+  .pf-individuals-row-inner::-webkit-scrollbar {
+    height: 4px;
+  }
+  .pf-individuals-row-inner::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .pf-individuals-row-inner::-webkit-scrollbar-thumb {
+    background: var(--divider-color, rgba(128, 128, 128, 0.3));
+    border-radius: 2px;
+  }
+
+  .individual-row-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .individual-row-item .circle {
+    width: 64px;
+    height: 64px;
+    font-size: 10px;
+    line-height: 10px;
+    border-color: var(--ind-row-color, #888);
+    cursor: var(--clickable-cursor);
+  }
+
+  .individual-row-item .label {
+    font-size: 10px;
+    max-width: 70px;
+    text-align: center;
+    color: var(--secondary-text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 16px;
+  }
+
+  .individual-row-item .individual-row-text {
+    color: var(--ind-row-text-color, var(--primary-text-color));
+  }
+
+  .individual-row-item ha-icon:not(.small) {
+    color: var(--ind-row-icon-color, var(--primary-text-color));
+  }
+
+  .individual-row-item span.secondary-info {
+    color: var(--ind-row-secondary-color, var(--primary-text-color));
+  }
+
+  /* Flow line SVG between Home and individuals row */
+  .ind-row-flow-line {
+    width: 40px;
+    height: 20px;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  .ind-row-flow-line path {
+    stroke: var(--disabled-text-color);
+    stroke-width: 1;
+    fill: none;
+  }
+
+  .ind-row-flow-line path.transparency {
+    opacity: calc(calc(100 - var(--transparency)) / 100);
+  }
+
+  .ind-row-flow-line path.grey {
+    stroke: var(--greyed-out--line-color) !important;
+  }
+
+  circle.individual-row-dot {
+    stroke-width: 4;
+    fill: var(--ind-row-color, #888);
+    stroke: var(--ind-row-color, #888);
   }
 
   .pf-far-right {
@@ -205,29 +300,20 @@ export const styles = css`
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    width: 120px;
+    width: 100px;
     flex-shrink: 0;
-    padding-left: 10px;
-    position: relative;
+    padding: 0 4px;
   }
 
   .pf-far-right .extra-individual {
-    position: relative;
-    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .far-right-flow-line {
-    position: absolute;
-    left: -40px;
-    width: 60px;
-    height: 10px;
-    top: calc(50% - 5px);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .far-right-flow-line path {
-    stroke-width: 1;
+  .pf-far-right .extra-individual .extra-individual-circle {
+    width: 70px;
+    height: 70px;
   }
   .circle-container {
     display: flex;
@@ -652,7 +738,7 @@ export const styles = css`
     pointer-events: none;
   }
 
-  /* ===== Extra Individual Sensors Grid (5+ sensors) ===== */
+  /* ===== Extra Individual Sensors Grid (5+ sensors) - kept for backward compat ===== */
   .extra-individuals-section {
     margin-top: 8px;
     padding-top: 8px;

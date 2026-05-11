@@ -2,10 +2,7 @@ import { batteryElement } from "./components/battery";
 import { flowElement } from "./components/flows/index";
 import { gridElement } from "./components/grid";
 import { homeElement } from "./components/home";
-import { individualLeftBottomElement } from "./components/individual-left-bottom-element";
-import { individualLeftTopElement } from "./components/individual-left-top-element";
-import { individualRightBottomElement } from "./components/individual-right-bottom-element";
-import { individualRightTopElement } from "./components/individual-right-top-element";
+import { individualRowElement } from "./components/individual-row-element";
 import { dashboardLinkElement } from "./components/misc/dashboard-link";
 import { nonFossilElement } from "./components/non-fossil";
 import { solarElement } from "./components/solar";
@@ -58,12 +55,11 @@ import {
 } from "./utils/compute-field-attributes";
 import { computeFlowRate } from "./utils/compute-flow-rate";
 import {
+  checkHasAnyIndividual,
   checkHasBottomIndividual,
   checkHasExtraIndividuals,
   checkHasRightIndividual,
-  getBottomLeftIndividual,
-  getBottomRightIndividual,
-  getExtraIndividuals,
+  getAllVisibleIndividuals,
   getIndividualByIndex,
   getPositionName,
   MAX_INDIVIDUAL_SENSORS,
@@ -88,7 +84,7 @@ registerCustomCard({
   type: "power-flow-card-plus-extended",
   name: "Power Flow Card Plus Extended",
   description:
-    "An extended version of the power flow card with richer options, advanced features and a few small UI enhancements. Supports up to 10+ individual sensors connected to Home.",
+    "An extended version of the power flow card with richer options, advanced features and a few small UI enhancements. Supports up to 10+ individual sensors in a horizontal row layout.",
   version: packageJson.version,
 });
 
@@ -132,13 +128,7 @@ export class PowerFlowCardPlus extends LitElement {
         homeGridCircumference: number;
         homeUsageToDisplay: string;
         sortedIndividualObjects: IndividualObject[];
-        individualFieldLeftTop?: IndividualObject;
-        individualFieldLeftBottom?: IndividualObject;
-        individualFieldRightTop?: IndividualObject;
-        individualFieldRightBottom?: IndividualObject;
-        individualFieldFarRightTop?: IndividualObject;
-        individualFieldFarRightBottom?: IndividualObject;
-        extraIndividuals: IndividualObject[];
+        allIndividuals: IndividualObject[];
       }
     | undefined;
 
@@ -360,23 +350,15 @@ export class PowerFlowCardPlus extends LitElement {
   }
 
   /**
-   * Render an extra individual sensor (index 4+) in the grid.
+   * Render an extra individual sensor (kept for backward compatibility).
    */
   private _renderExtraIndividual(
     individualObj: IndividualObject,
     displayState: string,
-    index: number,
-    newDur: NewDur
+    index: number
   ): TemplateResult {
     const posName = getPositionName(index);
     const disableEntityClick = this._config.clickable_entities === false;
-    
-    // For far right sensors (index 4 and 5), render the flow line connecting them to the center
-    const isFarRight = index === 4 || index === 5;
-    const flowDuration = isFarRight && newDur.individual && newDur.individual[index] 
-      ? newDur.individual[index] 
-      : 0;
-
     return html`
       <div class="circle-container extra-individual" style="--extra-ind-color: var(--individual-${posName}-color); --extra-ind-icon-color: var(--icon-individual-${posName}-color); --extra-ind-text-color: var(--text-individual-${posName}-color); --extra-ind-secondary-color: var(--secondary-text-individual-${posName}-color);">
         <span class="label">${individualObj.name}</span>
@@ -419,42 +401,6 @@ export class PowerFlowCardPlus extends LitElement {
               </span>`
             : nothing}
         </div>
-        ${isFarRight && showLine(this._config, individualObj.state || 0) && !this._config.entities.home?.hide
-          ? html`
-              <svg
-                viewBox="0 0 60 10"
-                xmlns="http://www.w3.org/2000/svg"
-                preserveAspectRatio="xMidYMid slice"
-                class="far-right-flow-line"
-              >
-                <path
-                  id="far-right-home-${index}"
-                  class="${styleLine(individualObj.state || 0, this._config)}"
-                  style="stroke: var(--extra-ind-color);"
-                  d="M60,5 H0"
-                  vector-effect="non-scaling-stroke"
-                />
-                ${checkShouldShowDots(this._config) &&
-                individualObj.state &&
-                individualObj.state >= (individualObj.displayZeroTolerance ?? 0)
-                  ? svg`<circle r="1" vector-effect="non-scaling-stroke" style="fill: var(--extra-ind-color);">
-                        <animateMotion
-                          dur="${computeIndividualFlowRate(
-                            individualObj?.field?.calculate_flow_rate,
-                            flowDuration
-                          )}s"
-                          repeatCount="indefinite"
-                          calcMode="paced"
-                          keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
-                          keyTimes="0;1"
-                        >
-                          <mpath xlink:href="#far-right-home-${index}" />
-                        </animateMotion>
-                      </circle>`
-                  : nothing}
-              </svg>
-            `
-          : nothing}
       </div>
     `;
   }
@@ -479,13 +425,7 @@ export class PowerFlowCardPlus extends LitElement {
       homeNonFossilCircumference,
       homeSolarCircumference,
       homeUsageToDisplay,
-      individualFieldLeftTop,
-      individualFieldLeftBottom,
-      individualFieldRightTop,
-      individualFieldRightBottom,
-      individualFieldFarRightTop,
-      individualFieldFarRightBottom,
-      extraIndividuals,
+      allIndividuals,
     } = data;
     const getIndividualDisplayState = (field?: IndividualObject) => {
       if (!field) return "";
@@ -496,6 +436,8 @@ export class PowerFlowCardPlus extends LitElement {
         unitWhiteSpace: field?.unit_white_space,
       });
     };
+
+    const hasAnyIndividual = allIndividuals.length > 0;
 
     return html`
       <ha-card
@@ -513,7 +455,6 @@ export class PowerFlowCardPlus extends LitElement {
           <div class="pf-layout">
             <div class="pf-main">
               ${solar.has ||
-              individualObjs?.some((individual) => individual?.has) ||
               nonFossil.hasPercentage
                 ? html`<div class="row">
                     ${nonFossilElement(this, this._config, {
@@ -529,27 +470,7 @@ export class PowerFlowCardPlus extends LitElement {
                           solar,
                           templatesObj,
                         })
-                      : individualObjs?.some((individual) => individual?.has)
-                        ? spacer
-                        : nothing}
-                    ${individualFieldLeftTop
-                      ? individualLeftTopElement(this, this._config, {
-                          individualObj: individualFieldLeftTop,
-                          displayState: getIndividualDisplayState(individualFieldLeftTop),
-                          newDur,
-                          templatesObj,
-                        })
                       : spacer}
-                    ${checkHasRightIndividual(individualObjs)
-                      ? individualRightTopElement(this, this._config, {
-                          displayState: getIndividualDisplayState(individualFieldRightTop),
-                          individualObj: individualFieldRightTop,
-                          newDur,
-                          templatesObj,
-                          battery,
-                          individualObjs,
-                        })
-                      : nothing}
                   </div>`
                 : nothing}
               <div class="row">
@@ -577,28 +498,11 @@ export class PowerFlowCardPlus extends LitElement {
                       individual: individualObjs,
                     })
                   : spacer}
-                ${checkHasRightIndividual(individualObjs) ? spacer : nothing}
               </div>
-              ${battery.has || checkHasBottomIndividual(individualObjs)
+              ${battery.has
                 ? html`<div class="row">
                     ${spacer}
                     ${battery.has ? batteryElement(this, this._config, { battery, entities }) : spacer}
-                    ${individualFieldLeftBottom
-                      ? individualLeftBottomElement(this, this._config, {
-                          displayState: getIndividualDisplayState(individualFieldLeftBottom),
-                          individualObj: individualFieldLeftBottom,
-                          newDur,
-                          templatesObj,
-                        })
-                      : spacer}
-                    ${checkHasRightIndividual(individualObjs)
-                      ? individualRightBottomElement(this, this._config, {
-                          displayState: getIndividualDisplayState(individualFieldRightBottom),
-                          individualObj: individualFieldRightBottom,
-                          newDur,
-                          templatesObj,
-                        })
-                      : nothing}
                   </div>`
                 : spacer}
               ${flowElement(this._config, {
@@ -609,42 +513,24 @@ export class PowerFlowCardPlus extends LitElement {
                 solar,
               })}
             </div>
-            ${individualFieldFarRightTop || individualFieldFarRightBottom
-              ? html`<div class="pf-far-right">
-                  ${individualFieldFarRightTop
-                    ? this._renderExtraIndividual(
-                        individualFieldFarRightTop,
-                        getIndividualDisplayState(individualFieldFarRightTop),
-                        4,
-                        newDur
-                      )
-                    : html`<div class="spacer"></div>`}
-                  ${individualFieldFarRightBottom
-                    ? this._renderExtraIndividual(
-                        individualFieldFarRightBottom,
-                        getIndividualDisplayState(individualFieldFarRightBottom),
-                        5,
-                        newDur
-                      )
-                    : html`<div class="spacer"></div>`}
+            ${hasAnyIndividual
+              ? html`<div class="pf-individuals-row">
+                  <div class="pf-individuals-row-inner">
+                    ${allIndividuals.map(
+                      (ind, i) =>
+                        individualRowElement(this, this._config, {
+                          individualObj: ind,
+                          displayState: getIndividualDisplayState(ind),
+                          newDur,
+                          templatesObj,
+                          index: i,
+                          isFirst: i === 0,
+                        })
+                    )}
+                  </div>
                 </div>`
               : nothing}
           </div>
-          ${extraIndividuals.length > 0
-            ? html`<div class="extra-individuals-section">
-                <div class="extra-individuals-grid">
-                  ${extraIndividuals.map(
-                    (extraInd, i) =>
-                      this._renderExtraIndividual(
-                        extraInd,
-                        getIndividualDisplayState(extraInd),
-                        i + 6,
-                        newDur
-                      )
-                  )}
-                </div>
-              </div>`
-            : nothing}
         </div>
         ${dashboardLinkElement(this._config, this.hass)}
       </ha-card>
@@ -1164,9 +1050,8 @@ export class PowerFlowCardPlus extends LitElement {
       ? sortIndividualObjects(individualObjs)
       : individualObjs;
 
-    // MODIFIED: Allow up to MAX_INDIVIDUAL_SENSORS (10) instead of hardcoded 4/2
+    // All visible individuals go into the horizontal row (up to MAX_INDIVIDUAL_SENSORS)
     const maxVisibleIndividuals = MAX_INDIVIDUAL_SENSORS;
-
     const filteredNotShownIndividualObjects = sortedIndividualObjects.filter(
       (individual) => individual.has
     );
@@ -1175,20 +1060,8 @@ export class PowerFlowCardPlus extends LitElement {
       maxVisibleIndividuals
     );
 
-    // First 4 positions keep original layout
-    const individualFieldLeftTop = getIndividualByIndex(visibleIndividualObjects, 0);
-    const individualFieldLeftBottom = getIndividualByIndex(visibleIndividualObjects, 1);
-    const individualFieldRightTop = getIndividualByIndex(visibleIndividualObjects, 2);
-    const individualFieldRightBottom = getIndividualByIndex(visibleIndividualObjects, 3);
-
-    // Positions 4-5: far-right column
-    const individualFieldFarRightTop = getIndividualByIndex(visibleIndividualObjects, 4);
-    const individualFieldFarRightBottom = getIndividualByIndex(visibleIndividualObjects, 5);
-
-    // Extra individual sensors (6+) go into the grid below
-    const extraIndividuals = visibleIndividualObjects.length > 6
-      ? visibleIndividualObjects.slice(6)
-      : [];
+    // All individuals in a single horizontal row
+    const allIndividuals = visibleIndividualObjects;
 
     allDynamicStyles(
       this as any,
@@ -1228,13 +1101,7 @@ export class PowerFlowCardPlus extends LitElement {
       homeGridCircumference,
       homeUsageToDisplay,
       sortedIndividualObjects: visibleIndividualObjects,
-      individualFieldLeftTop,
-      individualFieldLeftBottom,
-      individualFieldRightTop,
-      individualFieldRightBottom,
-      individualFieldFarRightTop,
-      individualFieldFarRightBottom,
-      extraIndividuals,
+      allIndividuals,
     };
   }
 
