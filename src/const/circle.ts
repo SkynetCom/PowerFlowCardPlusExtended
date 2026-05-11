@@ -1,1 +1,0 @@
-export const CIRCLE_CIRCUMFERENCE = 238.76104;
