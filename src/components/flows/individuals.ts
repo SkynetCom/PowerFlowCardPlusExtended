@@ -25,7 +25,9 @@ export const flowIndividual = (
     const posName = getPositionName(i);
     const colorVar = `var(--individual-${posName}-color)`;
 
+    // Build absolute path for drawing and relative path for animateMotion
     let pathD: string;
+    let motionPath: string;
 
     if (coords.y < nodeCoords.home.y) {
       // --- TOP individual: Recta → Curva ↑ → Recta (enters node from below) ---
@@ -33,6 +35,12 @@ export const flowIndividual = (
       const curveStartX = indCX - 60;
       const curveEndY = homeCY - 60;
       pathD = `M ${homeRight} ${homeCY} L ${curveStartX} ${homeCY} Q ${indCX} ${homeCY} ${indCX} ${curveEndY} L ${indCX} ${nodeBottom}`;
+      // Relative motion path (starts at 0,0 = homeRight,homeCY)
+      const dx1 = curveStartX - homeRight;
+      const dx2 = indCX - homeRight;
+      const dy2 = curveEndY - homeCY;
+      const dy3 = nodeBottom - homeCY;
+      motionPath = `M 0 0 L ${dx1} 0 Q ${dx2} 0 ${dx2} ${dy2} L ${dx2} ${dy3}`;
 
     } else if (coords.y > nodeCoords.home.y + 80) {
       // --- BOTTOM individual: Recta → Curva ↓ → Recta (enters node from above) ---
@@ -40,19 +48,24 @@ export const flowIndividual = (
       const curveStartX = indCX - 60;
       const curveEndY = homeCY + 60;
       pathD = `M ${homeRight} ${homeCY} L ${curveStartX} ${homeCY} Q ${indCX} ${homeCY} ${indCX} ${curveEndY} L ${indCX} ${nodeTop}`;
+      const dx1 = curveStartX - homeRight;
+      const dx2 = indCX - homeRight;
+      const dy2 = curveEndY - homeCY;
+      const dy3 = nodeTop - homeCY;
+      motionPath = `M 0 0 L ${dx1} 0 Q ${dx2} 0 ${dx2} ${dy2} L ${dx2} ${dy3}`;
 
     } else {
       // --- MIDDLE individual: straight horizontal line ---
       const nodeLeft = coords.x;
       pathD = `M ${homeRight} ${homeCY} L ${nodeLeft} ${homeCY}`;
+      const dx = nodeLeft - homeRight;
+      motionPath = `M 0 0 L ${dx} 0`;
     }
 
-    const pathId = `individual-flow-${i}`;
-    const flowDur = newDur.individual[i] || 1.66;
+    const flowDur = computeIndividualFlowRate(ind?.field?.calculate_flow_rate, newDur.individual[i] || 2);
 
     return svg`
       <path
-        id="${pathId}"
         class="${styleLine(ind.state || 0, config)}"
         style="stroke: ${colorVar}; stroke-width: 1; fill: none;"
         d="${pathD}"
@@ -62,17 +75,15 @@ export const flowIndividual = (
             vector-effect="non-scaling-stroke"
             style="fill: ${colorVar}; stroke: ${colorVar}; stroke-width: 4;">
             <animateMotion
-              dur="${computeIndividualFlowRate(ind?.field?.calculate_flow_rate, flowDur)}s"
+              dur="${flowDur}s"
               repeatCount="indefinite"
-              calcMode="paced"
+              calcMode="linear"
               keyPoints="${ind.invertAnimation ? "0;1" : "1;0"}"
               keyTimes="0;1"
-            >
-              <mpath xlink:href="#${pathId}" />
-            </animateMotion>
+              path="${motionPath}"
+            />
           </circle>`
         : nothing}
     `;
   });
 };
-
