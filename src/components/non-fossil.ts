@@ -22,16 +22,17 @@ interface NonFossil {
   nonFossil: any;
   grid: any;
   fossilEnergyConsumption?: FossilEnergyConsumption;
+  style?: string;
 }
 
 export const nonFossilElement = (
   main: CardMainContext,
   config: FlowCardPlusConfig,
-  { nonFossil, entities, templatesObj, grid, newDur, fossilEnergyConsumption }: NonFossil
+  { nonFossil, entities, templatesObj, grid, newDur, fossilEnergyConsumption, style }: NonFossil
 ): TemplateResult => {
   const disableEntityClick = config.clickable_entities === false;
   if (!nonFossil.hasPercentage) return spacer;
-  return html`<div class="circle-container low-carbon">
+  return html`<div class="circle-container low-carbon" style=${style ?? ""}>
     <span class="label">${nonFossil.name}</span>
     <div
       class="circle ${disableEntityClick ? "pointer-events-none" : ""}"

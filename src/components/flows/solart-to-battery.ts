@@ -19,7 +19,7 @@ const solarToBatteryDot = (
 
   return svg`<circle r="1" class="battery-solar" vector-effect="non-scaling-stroke">
       <animateMotion dur="${newDur.solarToBattery}s" repeatCount="indefinite" calcMode="paced">
-        <mpath xlink:href="#battery-solar" />
+        <mpath xlink:href="#solar-to-battery" />
       </animateMotion>
     </circle>`;
 };
@@ -28,32 +28,22 @@ type FlowSolarToBatteryFlows = Pick<Flows, Exclude<keyof Flows, "grid">>;
 
 export const flowSolarToBattery = (
   config: FlowCardPlusConfig,
-  { battery, individual, solar, newDur }: FlowSolarToBatteryFlows
+  { battery, individual, solar, newDur, nodeCoords }: Flows
 ) => {
   const shouldShow = battery.has && solar.has && showLine(config, solar.state.toBattery || 0);
   if (!shouldShow) return nothing;
 
-  return html`<div
-    class="lines ${classMap({
-      high: battery.has || checkHasBottomIndividual(individual),
-      "individual1-individual2": !battery.has && individual.every((i) => i?.has),
-      "multi-individual": checkHasRightIndividual(individual),
-    })}"
-  >
-    <svg
-      viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMid slice"
-      id="solar-battery-flow"
-      class="flat-line"
-    >
+  const solarX = nodeCoords.solar.x + 40;
+  const solarY = nodeCoords.solar.y + 80;
+  const batteryX = nodeCoords.battery.x + 40;
+  const batteryY = nodeCoords.battery.y;
+
+  return svg`
       <path
-        id="battery-solar"
+        id="solar-to-battery"
         class="battery-solar ${styleLine(solar.state.toBattery || 0, config)}"
-        d="M50,0 V100"
-        vector-effect="non-scaling-stroke"
+        d="M ${solarX} ${solarY} Q ${solarX - 60} ${(solarY + batteryY) / 2} ${batteryX} ${batteryY}"
       ></path>
       ${solarToBatteryDot(config, solar, newDur)}
-    </svg>
-  </div>`;
+  `;
 };

@@ -15,10 +15,11 @@ export const gridElement = (
     entities,
     grid,
     templatesObj,
-  }: { entities: ConfigEntities; grid: any; templatesObj: TemplatesObj }
+    style,
+  }: { entities: ConfigEntities; grid: any; templatesObj: TemplatesObj; style?: string }
 ) => {
   const disableEntityClick = config.clickable_entities === false;
-  return html`<div class="circle-container grid">
+  return html`<div class="circle-container grid" style=${style ?? ""}>
     <div
       class="circle ${disableEntityClick ? "pointer-events-none" : ""}"
       @click=${(e: MouseEvent) => {

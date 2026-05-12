@@ -19,41 +19,30 @@ const solarToGridDot = (
 
   return svg`<circle r="1" class="return" vector-effect="non-scaling-stroke">
       <animateMotion dur="${newDur.solarToGrid}s" repeatCount="indefinite" calcMode="paced">
-        <mpath xlink:href="#return" />
+        <mpath xlink:href="#solar-to-grid" />
       </animateMotion>
     </circle>`;
 };
 
 export const flowSolarToGrid = (
   config: FlowCardPlusConfig,
-  { battery, grid, individual, solar, newDur }: Flows
+  { battery, grid, individual, solar, newDur, nodeCoords }: Flows
 ) => {
   const shouldShow =
     grid.has && grid.hasReturnToGrid && solar.has && showLine(config, solar.state.toGrid || 0);
   if (!shouldShow) return nothing;
 
-  return html`<div
-    class="lines ${classMap({
-      high: battery.has || checkHasBottomIndividual(individual),
-      "individual1-individual2": !battery.has && individual.every((i) => i?.has),
-      "multi-individual": checkHasRightIndividual(individual),
-    })}"
-  >
-    <svg
-      viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMid slice"
-      id="solar-grid-flow"
-    >
+  const solarX = nodeCoords.solar.x;
+  const solarY = nodeCoords.solar.y + 40;
+  const gridX = nodeCoords.grid.x + 40;
+  const gridY = nodeCoords.grid.y;
+
+  return svg`
       <path
-        id="return"
+        id="solar-to-grid"
         class="return ${styleLine(solar.state.toGrid || 0, config)}"
-        d="M${battery.has ? 45 : 47},0 v15 c0,${battery.has
-          ? "30 -10,30 -30,30"
-          : "35 -10,35 -30,35"} h-20"
-        vector-effect="non-scaling-stroke"
+        d="M ${solarX} ${solarY} Q ${gridX} ${solarY} ${gridX} ${gridY}"
       ></path>
       ${solarToGridDot(config, solar, newDur)}
-    </svg>
-  </div>`;
+  `;
 };

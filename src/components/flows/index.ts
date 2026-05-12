@@ -7,6 +7,7 @@ import { flowGridToHome } from "./grid-to-home";
 import { flowSolarToGrid } from "./solar-to-grid";
 import { flowSolarToHome } from "./solar-to-home";
 import { flowSolarToBattery } from "./solart-to-battery";
+import { flowIndividual } from "./individuals";
 
 export interface Flows {
   battery: any;
@@ -14,18 +15,20 @@ export interface Flows {
   individual: IndividualObject[];
   solar: any;
   newDur: NewDur;
+  nodeCoords: any;
 }
 
 export const flowElement = (
   config: FlowCardPlusConfig,
-  { battery, grid, individual, solar, newDur }: Flows
+  { battery, grid, individual, solar, newDur, nodeCoords }: Flows
 ) => {
   return html`
   ${flowSolarToHome(config, { battery, grid, individual, solar, newDur })}
   ${flowSolarToGrid(config, { battery, grid, individual, solar, newDur })}
   ${flowSolarToBattery(config, { battery, individual, solar, newDur })}
   ${flowGridToHome(config, { battery, grid, individual, solar, newDur })}
-  ${flowBatteryToHome(config, { battery, grid, individual, newDur })}
-  ${flowBatteryToGrid(config, { battery, grid, individual, newDur })}
+  ${flowBatteryToHome(config, { battery, grid, individual, newDur, nodeCoords })}
+  ${flowBatteryToGrid(config, { battery, grid, individual, newDur, nodeCoords })}
+  ${flowIndividual(config, { individual, newDur, nodeCoords })}
   `;
 };

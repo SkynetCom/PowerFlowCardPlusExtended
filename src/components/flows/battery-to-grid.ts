@@ -25,7 +25,7 @@ const batteryFromGridDot = (
         keyTimes="0;1"
         calcMode="paced"
       >
-        <mpath xlink:href="#battery-grid" />
+        <mpath xlink:href="#battery-to-grid" />
       </animateMotion>
     </circle>`;
 };
@@ -40,7 +40,7 @@ const batteryToGridDot = (
   return svg`
     <circle r="1" class="battery-to-grid" vector-effect="non-scaling-stroke">
       <animateMotion dur="${newDur.batteryGrid}s" repeatCount="indefinite" calcMode="paced">
-        <mpath xlink:href="#battery-grid" />
+        <mpath xlink:href="#battery-to-grid" />
       </animateMotion>
     </circle>
   `;
@@ -50,7 +50,7 @@ type FlowBatteryToGridFlows = Pick<Flows, Exclude<keyof Flows, "solar">>;
 
 export const flowBatteryToGrid = (
   config: FlowCardPlusConfig,
-  { battery, grid, individual, newDur }: FlowBatteryToGridFlows
+  { battery, grid, individual, newDur, nodeCoords }: Flows
 ) => {
   const shouldShow =
     grid.has &&
@@ -58,26 +58,17 @@ export const flowBatteryToGrid = (
     showLine(config, Math.max(grid.state.toBattery || 0, battery.state.toGrid || 0));
   if (!shouldShow) return nothing;
 
-  return html`<div
-    class="lines ${classMap({
-      high: battery.has || checkHasBottomIndividual(individual),
-      "individual1-individual2": !battery.has && individual.every((i) => i?.has),
-      "multi-individual": checkHasRightIndividual(individual),
-    })}"
-  >
-    <svg
-      viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMid slice"
-      id="battery-grid-flow"
-    >
+  const batteryX = nodeCoords.battery.x;
+  const batteryY = nodeCoords.battery.y + 40;
+  const gridX = nodeCoords.grid.x + 40;
+  const gridY = nodeCoords.grid.y + 80;
+
+  return svg`
       <path
-        id="battery-grid"
+        id="battery-to-grid"
         class="${styleLine(battery.state.toGrid || grid.state.toBattery || 0, config)}"
-        d="M45,100 v-15 c0,-30 -10,-30 -30,-30 h-20"
-        vector-effect="non-scaling-stroke"
+        d="M ${batteryX} ${batteryY} Q ${gridX} ${batteryY} ${gridX} ${gridY}"
       ></path>
       ${batteryFromGridDot(config, grid, newDur)} ${batteryToGridDot(config, battery, newDur)}
-    </svg>
-  </div>`;
+  `;
 };

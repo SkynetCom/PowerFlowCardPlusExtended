@@ -22,6 +22,7 @@ interface Home {
   homeNonFossilCircumference: number;
   homeGridCircumference: number;
   individual: IndividualObject[];
+  style?: string;
 }
 
 export const homeElement = (
@@ -38,6 +39,7 @@ export const homeElement = (
     homeNonFossilCircumference,
     homeGridCircumference,
     individual,
+    style,
   }: Home
 ) => {
   const showHomeLabel = individual.filter((i) => i.has).length <= 1;
@@ -51,7 +53,7 @@ export const homeElement = (
   const disableEntityClick = config.clickable_entities === false || !isClickable;
 
   return html`
-    <div class="circle-container home">
+    <div class="circle-container home" style=${style ?? ""}>
       <div
         class="circle ${disableEntityClick ? "pointer-events-none" : ""}"
         id="home-circle"

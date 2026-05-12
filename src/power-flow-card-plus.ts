@@ -117,6 +117,26 @@ export class PowerFlowCardPlus extends LitElement {
   @query("#solar-battery-flow") solarToBatteryFlow?: SVGSVGElement;
   @query("#solar-grid-flow") solarToGridFlow?: SVGSVGElement;
   @query("#solar-home-flow") solarToHomeFlow?: SVGSVGElement;
+  private get _nodeCoords() {
+    return {
+      nonFossil: { x: 10, y: 20 },
+      grid: { x: 10, y: 170 },
+      battery: { x: 140, y: 320 },
+      solar: { x: 140, y: 20 },
+      home: { x: 140, y: 170 },
+      individual0: { x: 270, y: 20 },   // Left Top
+      individual1: { x: 140, y: 320 },  // Left Bottom (usually mapped here)
+      individual2: { x: 270, y: 170 },  // Right Top
+      individual3: { x: 270, y: 320 },  // Right Bottom
+      individual4: { x: 400, y: 20 },   // Far Right Top
+      individual5: { x: 400, y: 170 },  // Far Right Mid
+      individual6: { x: 400, y: 320 },  // Far Right Bottom
+      individual7: { x: 530, y: 20 },
+      individual8: { x: 530, y: 170 },
+      individual9: { x: 530, y: 320 },
+    };
+  }
+
   private _renderData?:
     | {
         entities: PowerFlowCardPlusConfig["entities"];
@@ -468,65 +488,39 @@ export class PowerFlowCardPlus extends LitElement {
           id="power-flow-card-plus"
           style=${this._config.style_card_content ? this._config.style_card_content : ""}
         >
-          ${solar.has ||
-          individualObjs?.some((individual) => individual?.has) ||
-          nonFossil.hasPercentage
-            ? html`<div class="row">
-                ${nonFossilElement(this, this._config, {
-                  entities,
-                  grid,
-                  newDur,
-                  nonFossil,
-                  templatesObj,
-                })}
-                ${solar.has
-                  ? solarElement(this, this._config, {
-                      entities,
-                      solar,
-                      templatesObj,
-                    })
-                  : individualObjs?.some((individual) => individual?.has)
-                    ? spacer
-                    : nothing}
-                ${individualFieldLeftTop
-                  ? individualLeftTopElement(this, this._config, {
-                      individualObj: individualFieldLeftTop,
-                      displayState: getIndividualDisplayState(individualFieldLeftTop),
-                      newDur,
-                      templatesObj,
-                    })
-                  : spacer}
-                ${checkHasRightIndividual(individualObjs)
-                  ? individualRightTopElement(this, this._config, {
-                      displayState: getIndividualDisplayState(individualFieldRightTop),
-                      individualObj: individualFieldRightTop,
-                      newDur,
-                      templatesObj,
-                      battery,
-                      individualObjs,
-                    })
-                  : spacer}
-                ${individualFieldFarRightTop
-                  ? individualFarRightTopElement(this, this._config, {
-                      displayState: getIndividualDisplayState(individualFieldFarRightTop),
-                      individualObj: individualFieldFarRightTop,
-                      newDur,
-                      templatesObj,
-                      battery,
-                      individualObjs,
-                    })
-                  : nothing}
-              </div>`
-            : nothing}
-          <div class="row">
+          <div class="pf-canvas" style="transform: scale(${Math.min(1, this._width / 600)});">
+            ${flowElement(this._config, {
+              battery,
+              grid,
+              individual: individualObjs,
+              solar,
+              newDur,
+              nodeCoords: this._nodeCoords,
+            })}
+            ${nonFossilElement(this, this._config, {
+              entities,
+              grid,
+              newDur,
+              nonFossil,
+              templatesObj,
+              style: `left: ${this._nodeCoords.nonFossil.x}px; top: ${this._nodeCoords.nonFossil.y}px;`
+            })}
             ${grid.has
               ? gridElement(this, this._config, {
                   entities,
                   grid,
                   templatesObj,
+                  style: `left: ${this._nodeCoords.grid.x}px; top: ${this._nodeCoords.grid.y}px;`
                 })
-              : spacer}
-            ${spacer}
+              : nothing}
+            ${solar.has
+              ? solarElement(this, this._config, {
+                  entities,
+                  solar,
+                  templatesObj,
+                  style: `left: ${this._nodeCoords.solar.x}px; top: ${this._nodeCoords.solar.y}px;`
+                })
+              : nothing}
             ${!entities.home?.hide
               ? homeElement(this, this._config, {
                   CIRCLE_CIRCUMFERENCE,
@@ -541,62 +535,88 @@ export class PowerFlowCardPlus extends LitElement {
                   templatesObj,
                   homeUsageToDisplay,
                   individual: individualObjs,
+                  style: `left: ${this._nodeCoords.home.x}px; top: ${this._nodeCoords.home.y}px;`
                 })
-              : spacer}
-            ${checkHasRightIndividual(individualObjs) ? spacer : nothing}
-            ${individualFieldFarRightTop || individualFieldFarRightBottom ? spacer : nothing}
+              : nothing}
+            ${battery.has 
+              ? batteryElement(this, this._config, { 
+                  battery, 
+                  entities,
+                  style: `left: ${this._nodeCoords.battery.x}px; top: ${this._nodeCoords.battery.y}px;`
+                }) 
+              : nothing}
+
+            ${individualFieldLeftTop
+              ? individualLeftTopElement(this, this._config, {
+                  individualObj: individualFieldLeftTop,
+                  displayState: getIndividualDisplayState(individualFieldLeftTop),
+                  newDur,
+                  templatesObj,
+                  style: `left: ${this._nodeCoords.individual0.x}px; top: ${this._nodeCoords.individual0.y}px;`
+                })
+              : nothing}
+            ${individualFieldLeftBottom
+              ? individualLeftBottomElement(this, this._config, {
+                  displayState: getIndividualDisplayState(individualFieldLeftBottom),
+                  individualObj: individualFieldLeftBottom,
+                  newDur,
+                  templatesObj,
+                  style: `left: ${this._nodeCoords.individual1.x}px; top: ${this._nodeCoords.individual1.y}px;`
+                })
+              : nothing}
+            ${individualFieldRightTop
+              ? individualRightTopElement(this, this._config, {
+                  displayState: getIndividualDisplayState(individualFieldRightTop),
+                  individualObj: individualFieldRightTop,
+                  newDur,
+                  templatesObj,
+                  battery,
+                  individualObjs,
+                  style: `left: ${this._nodeCoords.individual2.x}px; top: ${this._nodeCoords.individual2.y}px;`
+                })
+              : nothing}
+            ${individualFieldRightBottom
+              ? individualRightBottomElement(this, this._config, {
+                  displayState: getIndividualDisplayState(individualFieldRightBottom),
+                  individualObj: individualFieldRightBottom,
+                  newDur,
+                  templatesObj,
+                  style: `left: ${this._nodeCoords.individual3.x}px; top: ${this._nodeCoords.individual3.y}px;`
+                })
+              : nothing}
+            ${individualFieldFarRightTop
+              ? individualFarRightTopElement(this, this._config, {
+                  displayState: getIndividualDisplayState(individualFieldFarRightTop),
+                  individualObj: individualFieldFarRightTop,
+                  newDur,
+                  templatesObj,
+                  battery,
+                  individualObjs,
+                  style: `left: ${this._nodeCoords.individual4.x}px; top: ${this._nodeCoords.individual4.y}px;`
+                })
+              : nothing}
+            ${individualFieldFarRightBottom
+              ? individualFarRightBottomElement(this, this._config, {
+                  displayState: getIndividualDisplayState(individualFieldFarRightBottom),
+                  individualObj: individualFieldFarRightBottom,
+                  newDur,
+                  templatesObj,
+                  style: `left: ${this._nodeCoords.individual6.x}px; top: ${this._nodeCoords.individual6.y}px;`
+                })
+              : nothing}
+
+            ${extraIndividuals.map((extraInd, i) => {
+              const slotIdx = i + 8; // Extra individuals start at slot 8
+              const coords = (this._nodeCoords as any)[`individual${slotIdx}`];
+              return individualRightBottomElement(this, this._config, {
+                displayState: getIndividualDisplayState(extraInd),
+                individualObj: extraInd,
+                newDur,
+                templatesObj,
+                style: coords ? `left: ${coords.x}px; top: ${coords.y}px;` : undefined,
+              });
+            })}
           </div>
-          ${battery.has || checkHasBottomIndividual(individualObjs)
-            ? html`<div class="row">
-                ${spacer}
-                ${battery.has ? batteryElement(this, this._config, { battery, entities }) : spacer}
-                ${individualFieldLeftBottom
-                  ? individualLeftBottomElement(this, this._config, {
-                      displayState: getIndividualDisplayState(individualFieldLeftBottom),
-                      individualObj: individualFieldLeftBottom,
-                      newDur,
-                      templatesObj,
-                    })
-                  : spacer}
-                ${checkHasRightIndividual(individualObjs)
-                  ? individualRightBottomElement(this, this._config, {
-                      displayState: getIndividualDisplayState(individualFieldRightBottom),
-                      individualObj: individualFieldRightBottom,
-                      newDur,
-                      templatesObj,
-                    })
-                  : spacer}
-                ${individualFieldFarRightBottom
-                  ? individualFarRightBottomElement(this, this._config, {
-                      displayState: getIndividualDisplayState(individualFieldFarRightBottom),
-                      individualObj: individualFieldFarRightBottom,
-                      newDur,
-                      templatesObj,
-                    })
-                  : nothing}
-              </div>`
-            : spacer}
-          ${flowElement(this._config, {
-            battery,
-            grid,
-            individual: individualObjs,
-            newDur,
-            solar,
-          })}
-          ${extraIndividuals.length > 0
-            ? html`<div class="extra-individuals-section">
-                <div class="extra-individuals-grid">
-                  ${extraIndividuals.map(
-                    (extraInd, i) =>
-                      this._renderExtraIndividual(
-                        extraInd,
-                        getIndividualDisplayState(extraInd),
-                        i + 4
-                      )
-                  )}
-                </div>
-              </div>`
-            : nothing}
         </div>
         ${dashboardLinkElement(this._config, this.hass)}
       </ha-card>

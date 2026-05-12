@@ -19,40 +19,30 @@ const gridToHomeDot = (
 
   return svg`<circle r="1" class="grid" vector-effect="non-scaling-stroke">
       <animateMotion dur="${newDur.gridToHome}s" repeatCount="indefinite" calcMode="paced">
-        <mpath xlink:href="#grid" />
+        <mpath xlink:href="#grid-to-home" />
       </animateMotion>
     </circle>`;
 };
 
 export const flowGridToHome = (
   config: FlowCardPlusConfig,
-  { battery, grid, individual, solar, newDur }: Flows
+  { battery, grid, individual, solar, newDur, nodeCoords }: Flows
 ) => {
   const shouldShow =
     grid.has && showLine(config, grid.state.fromGrid) && !config.entities.home?.hide;
   if (!shouldShow) return nothing;
 
-  return html`<div
-    class="lines ${classMap({
-      high: battery.has || checkHasBottomIndividual(individual),
-      "individual1-individual2": !battery.has && individual.every((i) => i?.has),
-      "multi-individual": checkHasRightIndividual(individual),
-    })}"
-  >
-    <svg
-      viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMid slice"
-      id="grid-home-flow"
-      class="flat-line"
-    >
+  const gridX = nodeCoords.grid.x + 80;
+  const gridY = nodeCoords.grid.y + 40;
+  const homeX = nodeCoords.home.x;
+  const homeY = nodeCoords.home.y + 40;
+
+  return svg`
       <path
         class="grid ${styleLine(grid.state.toHome || 0, config)}"
-        id="grid"
-        d="M0,${battery.has ? 50 : solar.has ? 56 : 53} H100"
-        vector-effect="non-scaling-stroke"
+        id="grid-to-home"
+        d="M ${gridX} ${gridY} L ${homeX} ${homeY}"
       ></path>
       ${gridToHomeDot(config, grid, newDur)}
-    </svg>
-  </div>`;
+  `;
 };

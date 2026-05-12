@@ -12,14 +12,14 @@ import { type Flows } from "./index";
 
 const batteryToHomeDot = (
   config: FlowCardPlusConfig,
-  battery: FlowBatteryToHomeFlows["battery"],
-  newDur: FlowBatteryToHomeFlows["newDur"]
+  battery: Flows["battery"],
+  newDur: Flows["newDur"]
 ) => {
   if (!checkShouldShowDots(config) || !battery.state.toHome) return nothing;
 
   return svg`<circle r="1" class="battery-home" vector-effect="non-scaling-stroke">
       <animateMotion dur="${newDur.batteryToHome}s" repeatCount="indefinite" calcMode="paced">
-        <mpath xlink:href="#battery-home" />
+        <mpath xlink:href="#battery-to-home" />
       </animateMotion>
     </circle>`;
 };
@@ -28,32 +28,23 @@ type FlowBatteryToHomeFlows = Pick<Flows, Exclude<keyof Flows, "solar">>;
 
 export const flowBatteryToHome = (
   config: FlowCardPlusConfig,
-  { battery, grid, individual, newDur }: FlowBatteryToHomeFlows
+  { battery, grid, individual, newDur, nodeCoords }: Flows
 ) => {
   const shouldShow =
     battery.has && showLine(config, battery.state.toHome) && !config.entities.home?.hide;
   if (!shouldShow) return nothing;
 
-  return html`<div
-    class="lines ${classMap({
-      high: battery.has || checkHasBottomIndividual(individual),
-      "individual1-individual2": !battery.has && individual.every((i) => i?.has),
-      "multi-individual": checkHasRightIndividual(individual),
-    })}"
-  >
-    <svg
-      viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
-      preserveAspectRatio="xMidYMid slice"
-      id="battery-home-flow"
-    >
+  const batteryX = nodeCoords.battery.x + 40;
+  const batteryY = nodeCoords.battery.y;
+  const homeX = nodeCoords.home.x + 40;
+  const homeY = nodeCoords.home.y + 80;
+
+  return svg`
       <path
-        id="battery-home"
+        id="battery-to-home"
         class="battery-home ${styleLine(battery.state.toHome || 0, config)}"
-        d="M55,100 v-${grid.has ? 15 : 17} c0,-30 10,-30 30,-30 h20"
-        vector-effect="non-scaling-stroke"
+        d="M ${batteryX} ${batteryY} L ${homeX} ${homeY}"
       ></path>
       ${batteryToHomeDot(config, battery, newDur)}
-    </svg>
-  </div>`;
+  `;
 };

@@ -18,19 +18,20 @@ interface TopIndividual {
   templatesObj: TemplatesObj;
   individualObj?: IndividualObject;
   displayState: string;
+  style?: string;
 }
 
 export const individualLeftTopElement = (
   main: CardMainContext,
   config: FlowCardPlusConfig,
-  { individualObj, templatesObj, displayState, newDur }: TopIndividual
+  { individualObj, templatesObj, displayState, newDur, style }: TopIndividual
 ) => {
   if (!individualObj) return spacer;
   const disableEntityClick = config.clickable_entities === false;
   const indexOfIndividual =
     config?.entities?.individual?.findIndex((e) => e.entity === individualObj.entity) || 0;
   const duration = newDur.individual[indexOfIndividual] || 0;
-  return html`<div class="circle-container individual-top">
+  return html`<div class="circle-container individual-top" style=${style ?? ""}>
     <span class="label">${individualObj.name}</span>
     <div
       class="circle ${disableEntityClick ? "pointer-events-none" : ""}"
@@ -80,34 +81,5 @@ export const individualLeftTopElement = (
           </span>`
         : nothing}
     </div>
-    ${showLine(config, individualObj.state || 0) && !config.entities.home?.hide
-      ? html`
-          <svg width="80" height="30">
-            <path
-              d="M40 -10 v50"
-              id="individual-top"
-              class="${styleLine(individualObj.state || 0, config)}"
-            />
-            ${checkShouldShowDots(config) &&
-            individualObj.state &&
-            individualObj.state >= (individualObj.displayZeroTolerance ?? 0)
-              ? svg`<circle r="1.75" class="individual-top" vector-effect="non-scaling-stroke">
-                    <animateMotion
-                      dur="${computeIndividualFlowRate(
-                        individualObj?.field?.calculate_flow_rate,
-                        duration
-                      )}s"
-                      repeatCount="indefinite"
-                      calcMode="paced"
-                      keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
-                      keyTimes="0;1"
-                    >
-                      <mpath xlink:href="#individual-top" />
-                    </animateMotion>
-                  </circle>`
-              : nothing}
-          </svg>
-        `
-      : nothing}
   </div>`;
 };

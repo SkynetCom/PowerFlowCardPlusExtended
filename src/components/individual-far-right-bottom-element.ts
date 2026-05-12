@@ -18,12 +18,13 @@ interface TopIndividual {
   templatesObj: TemplatesObj;
   individualObj?: IndividualObject;
   displayState: string;
+  style?: string;
 }
 
 export const individualFarRightBottomElement = (
   main: CardMainContext,
   config: FlowCardPlusConfig,
-  { individualObj, templatesObj, displayState, newDur }: TopIndividual
+  { individualObj, templatesObj, displayState, newDur, style }: TopIndividual
 ) => {
   if (!individualObj) return spacer;
   const disableEntityClick = config.clickable_entities === false;
@@ -37,6 +38,7 @@ export const individualFarRightBottomElement = (
 
   return html`<div
     class="circle-container individual-bottom individual-right individual-right-bottom"
+    style=${style ?? ""}
   >
     <div
       class="circle ${disableEntityClick ? "pointer-events-none" : ""}"
@@ -87,42 +89,5 @@ export const individualFarRightBottomElement = (
         : nothing}
     </div>
     <span class="label">${individualObj.name}</span>
-    ${showLine(config, individualObj.state || 0) && !config.entities.home?.hide
-      ? html`
-          <div class="far-right-individual-flow-container">
-            <svg
-              viewBox="0 0 100 100"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMidYMid slice"
-              class="far-right-individual-flow"
-            >
-              <path
-                id="individual-bottom-far-right-home"
-                class="${styleLine(individualObj.state || 0, config)}"
-                d="M45,100 v-15 c0,-30 -10,-30 -30,-30 h-20"
-                vector-effect="non-scaling-stroke"
-              />
-              ${checkShouldShowDots(config) &&
-              individualObj.state &&
-              individualObj.state >= (individualObj.displayZeroTolerance ?? 0)
-                ? svg`<circle r="1" class="individual-bottom" vector-effect="non-scaling-stroke">
-                      <animateMotion
-                        dur="${computeIndividualFlowRate(
-                          individualObj?.field?.calculate_flow_rate,
-                          duration
-                        )}s"
-                        repeatCount="indefinite"
-                        calcMode="paced"
-                        keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
-                        keyTimes="0;1"
-                      >
-                        <mpath xlink:href="#individual-bottom-far-right-home" />
-                      </animateMotion>
-                    </circle>`
-                : nothing}
-            </svg>
-          </div>
-        `
-      : nothing}
   </div>`;
 };

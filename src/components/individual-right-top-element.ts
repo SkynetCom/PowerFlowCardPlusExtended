@@ -14,19 +14,20 @@ import { html, nothing, svg } from "lit";
 import { spacer } from "./spacer";
 import { individualSecondarySpan } from "./spans/individual-secondary-span";
 
-interface TopIndividual {
+interface RightIndividual {
   newDur: NewDur;
   templatesObj: TemplatesObj;
   individualObj?: IndividualObject;
   displayState: string;
   battery: any;
   individualObjs: IndividualObject[];
+  style?: string;
 }
 
 export const individualRightTopElement = (
   main: CardMainContext,
   config: FlowCardPlusConfig,
-  { individualObj, templatesObj, displayState, newDur, battery, individualObjs }: TopIndividual
+  { displayState, individualObj, templatesObj, battery, individualObjs, style, newDur }: RightIndividual
 ) => {
   if (!individualObj) return spacer;
   const disableEntityClick = config.clickable_entities === false;
@@ -40,7 +41,7 @@ export const individualRightTopElement = (
 
   const hasBottomRow = !!battery?.has || checkHasBottomIndividual(individualObjs);
 
-  return html`<div class="circle-container individual-top individual-right individual-right-top">
+  return html`<div class="circle-container individual-top individual-right individual-right-top" style=${style ?? ""}>
     <span class="label">${individualObj.name}</span>
     <div
       class="circle ${disableEntityClick ? "pointer-events-none" : ""}"
@@ -90,44 +91,5 @@ export const individualRightTopElement = (
           </span>`
         : nothing}
     </div>
-    ${showLine(config, individualObj.state || 0) && !config.entities.home?.hide
-      ? html`
-          <div class="right-individual-flow-container">
-            <svg
-              viewBox="0 0 100 100"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="xMidYMid slice"
-              class="right-individual-flow"
-            >
-              <path
-                id="individual-top-right-home"
-                class="${styleLine(individualObj.state || 0, config)}"
-                d="M${hasBottomRow ? 45 : 47},0 v15 c0,${hasBottomRow
-                  ? "30 -10,30 -30,30"
-                  : "35 -10,35 -30,35"} h-20"
-                vector-effect="non-scaling-stroke"
-              />
-              ${checkShouldShowDots(config) &&
-              individualObj.state &&
-              individualObj.state >= (individualObj.displayZeroTolerance ?? 0)
-                ? svg`<circle r="1" class="individual-top" vector-effect="non-scaling-stroke">
-                      <animateMotion
-                        dur="${computeIndividualFlowRate(
-                          individualObj?.field?.calculate_flow_rate,
-                          duration
-                        )}s"
-                        repeatCount="indefinite"
-                        calcMode="paced"
-                        keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
-                        keyTimes="0;1"
-                      >
-                        <mpath xlink:href="#individual-top-right-home" />
-                      </animateMotion>
-                    </circle>`
-                : nothing}
-            </svg>
-          </div>
-        `
-      : nothing}
   </div>`;
 };

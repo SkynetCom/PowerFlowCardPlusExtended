@@ -15,10 +15,11 @@ export const batteryElement = (
   }: {
     battery: any;
     entities: ConfigEntities;
+    style?: string;
   }
 ) => {
   const disableEntityClick = config.clickable_entities === false;
-  return html`<div class="circle-container battery">
+  return html`<div class="circle-container battery" style=${style ?? ""}>
     <div
       class="circle ${disableEntityClick ? "pointer-events-none" : ""}"
       @click=${(e: MouseEvent) => {

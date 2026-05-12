@@ -112,21 +112,41 @@ export const styles = css`
     z-index: 1;
   }
 
-  .card-content,
+  .card-content {
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .pf-canvas {
+    position: relative;
+    width: 600px;
+    height: 420px;
+    flex-shrink: 0;
+    transform-origin: top center;
+  }
+
   .row {
-    max-width: 580px;
+    display: none;
+  }
+  .pf-canvas-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 600px;
+    height: 420px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .pf-canvas-svg path {
+    fill: none;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
   }
   .lines {
-    position: absolute;
-    bottom: 0;
-    left: var(--size-circle-entity);
-    width: 100%;
-    height: 146px;
-    display: flex;
-    justify-content: flex-start;
-    padding: 0 16px 16px;
-    box-sizing: border-box;
-    pointer-events: none;
+    display: none;
   }
 
   :dir(rtl) .lines {
@@ -186,15 +206,12 @@ export const styles = css`
     margin: 0 auto;
   }
   .circle-container {
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  .circle-container.solar {
-    height: 130px;
-  }
-  .circle-container.individual-top {
-    height: 130px;
+    z-index: 2;
+    width: 80px;
   }
   .circle-container.individual-bottom {
     justify-content: flex-end;

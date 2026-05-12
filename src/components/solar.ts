@@ -21,6 +21,7 @@ export const solarElement = (
     entities: ConfigEntities;
     solar: any;
     templatesObj: TemplatesObj;
+    style?: string;
   }
 ) => {
   const disableEntityClick = config.clickable_entities === false;
@@ -46,7 +47,7 @@ export const solarElement = (
   const bottomSolarState = sumTotalConfig
     ? solar.state.total - secondarySolarStateWatts
     : solar.state.total;
-  return html`<div class="circle-container solar">
+  return html`<div class="circle-container solar" style=${style ?? ""}>
     <span class="label">${solar.name}</span>
     <div
       class="circle ${disableEntityClick ? "pointer-events-none" : ""}"

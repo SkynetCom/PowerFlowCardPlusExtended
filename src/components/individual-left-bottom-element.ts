@@ -18,48 +18,20 @@ interface IndividualBottom {
   templatesObj: TemplatesObj;
   individualObj?: IndividualObject;
   displayState: string;
+  style?: string;
 }
 
 export const individualLeftBottomElement = (
   main: CardMainContext,
   config: FlowCardPlusConfig,
-  { individualObj, templatesObj, displayState, newDur }: IndividualBottom
+  { individualObj, templatesObj, displayState, newDur, style }: IndividualBottom
 ) => {
   if (!individualObj) return spacer;
   const disableEntityClick = config.clickable_entities === false;
   const indexOfIndividual =
     config?.entities?.individual?.findIndex((e) => e.entity === individualObj.entity) || 0;
   const duration = newDur.individual[indexOfIndividual] || 0;
-  return html`<div class="circle-container individual-bottom bottom">
-    ${showLine(config, individualObj?.state || 0) && !config.entities.home?.hide
-      ? html`
-          <svg width="80" height="30">
-            <path
-              d="M40 40 v-40"
-              id="individual-bottom"
-              class="${styleLine(individualObj?.state || 0, config)}"
-            />
-            ${checkShouldShowDots(config) &&
-            individualObj?.state &&
-            individualObj.state >= (individualObj.displayZeroTolerance ?? 0)
-              ? svg`<circle r="1.75" class="individual-bottom" vector-effect="non-scaling-stroke">
-                    <animateMotion
-                      dur="${computeIndividualFlowRate(
-                        individualObj.field?.calculate_flow_rate !== false,
-                        duration
-                      )}s"
-                      repeatCount="indefinite"
-                      calcMode="paced"
-                      keyPoints="${individualObj.invertAnimation ? "0;1" : "1;0"}"
-                      keyTimes="0;1"
-                    >
-                      <mpath xlink:href="#individual-bottom" />
-                    </animateMotion>
-                  </circle>`
-              : nothing}
-          </svg>
-        `
-      : html` <svg width="80" height="30"></svg> `}
+  return html`<div class="circle-container individual-bottom bottom" style=${style ?? ""}>
     <div
       class="circle ${disableEntityClick ? "pointer-events-none" : ""}"
       @click=${(e: MouseEvent) => {
