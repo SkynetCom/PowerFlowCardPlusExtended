@@ -112,23 +112,22 @@ const j=globalThis,L=e=>e,B=j.trustedTypes,F=B?B.createPolicy("lit-html",{create
     ${Ae(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})}
     ${Pe(e,{battery:t,grid:o,individual:i,newDur:n,nodeCoords:r})}
     ${De(e,{battery:t,grid:o,individual:i,newDur:n,nodeCoords:r})}
-    ${((e,{individual:t,newDur:o,nodeCoords:i})=>{const a=i.home.x+80,n=i.home.y+40;return t.map((t,r)=>{if(!t.has||!Ee(e,t.state||0)||e.entities.home?.hide)return se;const s=i[`individual${r}`];if(!s)return se;const l=s.x+40,c=`var(--individual-${Be(r)}-color)`;let d;if(s.y<i.home.y){const e=s.y+80;d=`M ${a} ${n} L ${l-60} ${n} Q ${l} ${n} ${l} ${n-60} L ${l} ${e}`}else if(s.y>i.home.y+80){const e=s.y;d=`M ${a} ${n} L ${l-60} ${n} Q ${l} ${n} ${l} ${n+60} L ${l} ${e}`}else{const e=s.x;d=`M ${a} ${n} L ${e} ${n}`}const u=Ne(t?.field?.calculate_flow_rate,o.individual[r]||2);return ne`
+    ${((e,{individual:t,newDur:o,nodeCoords:i})=>{const a=i.home.x+80,n=i.home.y+40;return t.map((t,r)=>{if(!t.has||!Ee(e,t.state||0)||e.entities.home?.hide)return se;const s=i[`individual${r}`];if(!s)return se;const l=s.x+40,c=`var(--individual-${Be(r)}-color)`;let d;if(s.y<i.home.y){const e=s.y+80;d=`M ${a} ${n} L ${l-60} ${n} Q ${l} ${n} ${l} ${n-60} L ${l} ${e}`}else if(s.y>i.home.y+80){const e=s.y;d=`M ${a} ${n} L ${l-60} ${n} Q ${l} ${n} ${l} ${n+60} L ${l} ${e}`}else{const e=s.x;d=`M ${a} ${n} L ${e} ${n}`}const u=Ne(t?.field?.calculate_flow_rate,o.individual[r]||2),p=`ind-flow-${r}`;return ne`
       <path
+        id="${p}"
         class="${Ce(t.state||0,e)}"
         style="stroke: ${c}; stroke-width: 1; fill: none;"
         d="${d}"
       ></path>
-      ${Se(e)&&t.state&&t.state>0?ne`<circle r="1.5"
-            vector-effect="non-scaling-stroke"
+      ${Se(e)&&t.state&&t.state>0?ne`<circle r="1" vector-effect="non-scaling-stroke"
             style="fill: ${c}; stroke: ${c}; stroke-width: 4;">
             <animateMotion
               dur="${u}s"
               repeatCount="indefinite"
-              calcMode="linear"
-              keyPoints="${t.invertAnimation?"0;1":"1;0"}"
-              keyTimes="0;1"
-              path="${d}"
-            />
+              calcMode="paced"
+            >
+              <mpath xlink:href="#${p}" />
+            </animateMotion>
           </circle>`:se}
     `})})(e,{individual:i,newDur:n,nodeCoords:r})}
   </svg>
