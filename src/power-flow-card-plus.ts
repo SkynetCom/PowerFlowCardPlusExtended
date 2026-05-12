@@ -219,7 +219,7 @@ export class PowerFlowCardPlus extends LitElement {
 
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import("./ui-editor/ui-editor");
-    return document.createElement("power-flow-card-plus-editor");
+    return document.createElement("power-flow-card-plus-extended-editor") as LovelaceCardEditor;
   }
 
   public static getStubConfig(hass: HomeAssistant): object {

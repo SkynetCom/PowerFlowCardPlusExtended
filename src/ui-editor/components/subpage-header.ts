@@ -52,12 +52,12 @@ export class SubpageHeader extends LitElement {
   }
 }
 
-if (!customElements.get("subpage-header")) {
-  customElements.define("subpage-header", SubpageHeader);
+if (!customElements.get("subpage-header-extended")) {
+  customElements.define("subpage-header-extended", SubpageHeader);
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "subpage-header": SubpageHeader;
+    "subpage-header-extended": SubpageHeader;
   }
 }

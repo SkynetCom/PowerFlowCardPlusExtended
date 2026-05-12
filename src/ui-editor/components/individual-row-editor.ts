@@ -363,12 +363,12 @@ export class IndividualRowEditor extends LitElement {
   }
 }
 
-if (!customElements.get("individual-row-editor")) {
-  customElements.define("individual-row-editor", IndividualRowEditor);
+if (!customElements.get("individual-row-extended-editor")) {
+  customElements.define("individual-row-extended-editor", IndividualRowEditor);
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "individual-row-editor": IndividualRowEditor;
+    "individual-row-extended-editor": IndividualRowEditor;
   }
 }

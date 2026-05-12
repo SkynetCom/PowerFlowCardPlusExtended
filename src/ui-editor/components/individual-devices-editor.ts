@@ -51,14 +51,14 @@ export class IndividualDevicesEditor extends LitElement {
     }
 
     return html`
-      <individual-row-editor
+      <individual-row-extended-editor
         .hass=${this.hass}
         .config=${this.config}
         .entities=${this._configEntities || []}
         @open-sub-element-editor=${this._editDetailElement}
         @entities-changed=${this._entitiesChanged}
         style="width: 100%;"
-      ></individual-row-editor>
+      ></individual-row-extended-editor>
     `;
   }
 
@@ -100,12 +100,12 @@ export class IndividualDevicesEditor extends LitElement {
   }
 }
 
-if (!customElements.get("individual-devices-editor")) {
-  customElements.define("individual-devices-editor", IndividualDevicesEditor);
+if (!customElements.get("individual-devices-extended-editor")) {
+  customElements.define("individual-devices-extended-editor", IndividualDevicesEditor);
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "individual-devices-editor": IndividualDevicesEditor;
+    "individual-devices-extended-editor": IndividualDevicesEditor;
   }
 }

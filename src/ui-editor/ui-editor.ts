@@ -61,7 +61,7 @@ const CONFIG_PAGES: {
   },
 ];
 
-@customElement("power-flow-card-plus-editor")
+@customElement("power-flow-card-plus-extended-editor")
 export class PowerFlowCardPlusEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private _config?: PowerFlowCardPlusConfig;
@@ -217,13 +217,13 @@ export class PowerFlowCardPlusEditor extends LitElement implements LovelaceCardE
       if (this._currentConfigPage === "individual") {
         return html`
           ${this._renderLegacyFieldsAlert()}${this._renderLegacyIndividualFieldsAlert()}
-          <subpage-header @go-back=${this._goBack} page=${this._currentConfigPage}>
-          </subpage-header>
-          <individual-devices-editor
+          <subpage-header-extended @go-back=${this._goBack} page=${this._currentConfigPage}>
+          </subpage-header-extended>
+          <individual-devices-extended-editor
             .hass=${this.hass}
             .config=${this._config}
             @config-changed=${this._valueChanged}
-          ></individual-devices-editor>
+          ></individual-devices-extended-editor>
         `;
       }
 
@@ -238,7 +238,7 @@ export class PowerFlowCardPlusEditor extends LitElement implements LovelaceCardE
       const dataForForm = currentPage === "advanced" ? data : data.entities[currentPage];
       return html`
         ${this._renderLegacyFieldsAlert()}${this._renderLegacyIndividualFieldsAlert()}
-        <subpage-header @go-back=${this._goBack} page=${this._currentConfigPage}> </subpage-header>
+        <subpage-header-extended @go-back=${this._goBack} page=${this._currentConfigPage}> </subpage-header-extended>
         <ha-form
           .hass=${this.hass}
           .data=${dataForForm}
@@ -261,13 +261,13 @@ export class PowerFlowCardPlusEditor extends LitElement implements LovelaceCardE
       };
       const icon = getIconToUse();
       return html`
-        <link-subpage
+        <link-subpage-extended
           path=${page}
           header="${localize(`editor.${page}`)}"
           @open-sub-element-editor=${() => this._editDetailElement(page)}
           icon=${icon}
         >
-        </link-subpage>
+        </link-subpage-extended>
       `;
     };
 
@@ -377,6 +377,6 @@ export class PowerFlowCardPlusEditor extends LitElement implements LovelaceCardE
 
 declare global {
   interface HTMLElementTagNameMap {
-    "power-flow-card-plus-editor": PowerFlowCardPlusEditor;
+    "power-flow-card-plus-extended-editor": PowerFlowCardPlusEditor;
   }
 }

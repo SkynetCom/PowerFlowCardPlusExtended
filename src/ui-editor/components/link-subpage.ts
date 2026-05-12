@@ -111,13 +111,13 @@ export class LinkSubpage extends LitElement {
   }
 }
 
-if (!customElements.get("link-subpage")) {
-  customElements.define("link-subpage", LinkSubpage);
+if (!customElements.get("link-subpage-extended")) {
+  customElements.define("link-subpage-extended", LinkSubpage);
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "link-subpage": LinkSubpage;
+    "link-subpage-extended": LinkSubpage;
   }
 
   // for fire event
