@@ -26,11 +26,11 @@ const j=globalThis,L=e=>e,B=j.trustedTypes,F=B?B.createPolicy("lit-html",{create
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */let ke=class extends I{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,o)=>{const i=o?.renderBefore??t;let a=i._$litPart$;if(void 0===a){const e=o?.renderBefore??null;i._$litPart$=a=new _e(t.insertBefore(W(),e),e,void 0,o??{})}return a._$AI(e),a})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return re}};ke._$litElement$=!0,ke.finalized=!0,xe.litElementHydrateSupport?.({LitElement:ke});const $e=xe.litElementPolyfillSupport;$e?.({LitElement:ke}),(xe.litElementVersions??=[]).push("4.2.2");const Se=e=>!0!==e.disable_dots&&("undefined"==typeof document||"hidden"!==document.visibilityState),Ee=(e,t)=>t>0||"hide"!==e?.display_zero_lines?.mode,Ce=(e,t)=>{if(e>0)return"";const o=t?.display_zero_lines?.mode;if("show"===o||void 0===o)return"";let i="";if("transparency"===o||"custom"===o){const e=t?.display_zero_lines?.transparency;(e??1)&&(i+="transparency ")}return"grey_out"!==o&&"custom"!==o||(i+="grey"),i},De=(e,{battery:t,grid:o,individual:i,newDur:a,nodeCoords:n})=>{if(!(o.has&&t.has&&Ee(e,Math.max(o.state.toBattery||0,t.state.toGrid||0))))return se;const r=n.battery.x,s=n.battery.y+34,l=n.grid.x+80,c=n.grid.y+52;return ne`
+ */let ke=class extends I{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,o)=>{const i=o?.renderBefore??t;let a=i._$litPart$;if(void 0===a){const e=o?.renderBefore??null;i._$litPart$=a=new _e(t.insertBefore(W(),e),e,void 0,o??{})}return a._$AI(e),a})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return re}};ke._$litElement$=!0,ke.finalized=!0,xe.litElementHydrateSupport?.({LitElement:ke});const $e=xe.litElementPolyfillSupport;$e?.({LitElement:ke}),(xe.litElementVersions??=[]).push("4.2.2");const Se=e=>!0!==e.disable_dots&&("undefined"==typeof document||"hidden"!==document.visibilityState),Ee=(e,t)=>t>0||"hide"!==e?.display_zero_lines?.mode,Ce=(e,t)=>{if(e>0)return"";const o=t?.display_zero_lines?.mode;if("show"===o||void 0===o)return"";let i="";if("transparency"===o||"custom"===o){const e=t?.display_zero_lines?.transparency;(e??1)&&(i+="transparency ")}return"grey_out"!==o&&"custom"!==o||(i+="grey"),i},De=(e,{battery:t,grid:o,individual:i,newDur:a,nodeCoords:n})=>{if(!(o.has&&t.has&&Ee(e,Math.max(o.state.toBattery||0,t.state.toGrid||0))))return se;const r=n.battery.x+34,s=n.battery.y,l=n.grid.x+46,c=n.grid.y+80;return ne`
       <path
         id="battery-to-grid"
         class="${Ce(t.state.toGrid||o.state.toBattery||0,e)}"
-        d="M ${r} ${s} C ${l} ${s}, ${l} ${c+60}, ${l} ${c}"
+        d="M ${r} ${s} C ${r-80} ${s}, ${l} ${c+60}, ${l} ${c}"
       ></path>
       ${((e,t,o)=>Se(e)&&t.state.toBattery?ne`<circle r="1" class="battery-from-grid" vector-effect="non-scaling-stroke">
       <animateMotion
@@ -71,11 +71,11 @@ const j=globalThis,L=e=>e,B=j.trustedTypes,F=B?B.createPolicy("lit-html",{create
         <mpath xlink:href="#grid-to-home" />
       </animateMotion>
     </circle>`:se)(e,o,n)}
-  `},Te=(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})=>{if(!(o.has&&o.hasReturnToGrid&&a.has&&Ee(e,a.state.toGrid||0)))return se;const s=r.solar.x,l=r.solar.y+46,c=r.grid.x+80,d=r.grid.y+28;return ne`
+  `},Te=(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})=>{if(!(o.has&&o.hasReturnToGrid&&a.has&&Ee(e,a.state.toGrid||0)))return se;const s=r.solar.x+34,l=r.solar.y+80,c=r.grid.x+46,d=r.grid.y;return ne`
       <path
         id="solar-to-grid"
         class="return ${Ce(a.state.toGrid||0,e)}"
-        d="M ${s} ${l} C ${c} ${l}, ${c} ${d-60}, ${c} ${d}"
+        d="M ${s} ${l} C ${s-80} ${l}, ${c} ${d-60}, ${c} ${d}"
       ></path>
       ${((e,t,o)=>Se(e)&&t.state.toGrid&&t.has?ne`<circle r="1" class="return" vector-effect="non-scaling-stroke">
       <animateMotion dur="${o.solarToGrid}s" repeatCount="indefinite" calcMode="paced">
@@ -112,7 +112,7 @@ const j=globalThis,L=e=>e,B=j.trustedTypes,F=B?B.createPolicy("lit-html",{create
     ${Ae(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})}
     ${Pe(e,{battery:t,grid:o,individual:i,newDur:n,nodeCoords:r})}
     ${De(e,{battery:t,grid:o,individual:i,newDur:n,nodeCoords:r})}
-    ${((e,{individual:t,newDur:o,nodeCoords:i})=>{const a=i.home.x+80,n=i.home.y+40;return t.map((t,r)=>{if(!t.has||!Ee(e,t.state||0)||e.entities.home?.hide)return se;const s=i[`individual${r}`];if(!s)return se;const l=s.x+40,c=`var(--individual-${Be(r)}-color)`;let d,u;if(s.y<i.home.y){const e=s.y+80,t=l-60,o=n-60;d=`M ${a} ${n} L ${t} ${n} Q ${l} ${n} ${l} ${o} L ${l} ${e}`;const i=l-a;u=`M 0 0 L ${t-a} 0 Q ${i} 0 ${i} ${o-n} L ${i} ${e-n}`}else if(s.y>i.home.y+80){const e=s.y,t=l-60,o=n+60;d=`M ${a} ${n} L ${t} ${n} Q ${l} ${n} ${l} ${o} L ${l} ${e}`;const i=l-a;u=`M 0 0 L ${t-a} 0 Q ${i} 0 ${i} ${o-n} L ${i} ${e-n}`}else{const e=s.x;d=`M ${a} ${n} L ${e} ${n}`,u=`M 0 0 L ${e-a} 0`}const p=Ne(t?.field?.calculate_flow_rate,o.individual[r]||2);return ne`
+    ${((e,{individual:t,newDur:o,nodeCoords:i})=>{const a=i.home.x+80,n=i.home.y+40;return t.map((t,r)=>{if(!t.has||!Ee(e,t.state||0)||e.entities.home?.hide)return se;const s=i[`individual${r}`];if(!s)return se;const l=s.x+40,c=`var(--individual-${Be(r)}-color)`;let d;if(s.y<i.home.y){const e=s.y+80;d=`M ${a} ${n} L ${l-60} ${n} Q ${l} ${n} ${l} ${n-60} L ${l} ${e}`}else if(s.y>i.home.y+80){const e=s.y;d=`M ${a} ${n} L ${l-60} ${n} Q ${l} ${n} ${l} ${n+60} L ${l} ${e}`}else{const e=s.x;d=`M ${a} ${n} L ${e} ${n}`}const u=Ne(t?.field?.calculate_flow_rate,o.individual[r]||2);return ne`
       <path
         class="${Ce(t.state||0,e)}"
         style="stroke: ${c}; stroke-width: 1; fill: none;"
@@ -122,12 +122,12 @@ const j=globalThis,L=e=>e,B=j.trustedTypes,F=B?B.createPolicy("lit-html",{create
             vector-effect="non-scaling-stroke"
             style="fill: ${c}; stroke: ${c}; stroke-width: 4;">
             <animateMotion
-              dur="${p}s"
+              dur="${u}s"
               repeatCount="indefinite"
               calcMode="linear"
               keyPoints="${t.invertAnimation?"0;1":"1;0"}"
               keyTimes="0;1"
-              path="${u}"
+              path="${d}"
             />
           </circle>`:se}
     `})})(e,{individual:i,newDur:n,nodeCoords:r})}

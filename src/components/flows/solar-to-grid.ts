@@ -32,18 +32,18 @@ export const flowSolarToGrid = (
     grid.has && grid.hasReturnToGrid && solar.has && showLine(config, solar.state.toGrid || 0);
   if (!shouldShow) return nothing;
 
-  // Start from Solar LEFT edge, curve outward (top-left quadrant) to Grid RIGHT edge
-  const sx = nodeCoords.solar.x;         // 220 — Solar left edge
-  const sy = nodeCoords.solar.y + 46;    // 66 — slightly below Solar center
-  const gx = nodeCoords.grid.x + 80;    // 120 — Grid right edge
-  const gy = nodeCoords.grid.y + 28;    // 218 — above Grid center
+  // Start from Solar BOTTOM (slightly left of center), curve to Grid TOP (slightly right of center)
+  const sx = nodeCoords.solar.x + 34;    // 254 — slightly left of Solar center
+  const sy = nodeCoords.solar.y + 80;    // 100 — Solar bottom edge
+  const gx = nodeCoords.grid.x + 46;    // 86  — slightly right of Grid center
+  const gy = nodeCoords.grid.y;          // 190 — Grid top edge
 
-  // Curve bulges toward top-left corner: goes LEFT first, then curves DOWN
+  // Smooth arc bulging toward top-left corner
   return svg`
       <path
         id="solar-to-grid"
         class="return ${styleLine(solar.state.toGrid || 0, config)}"
-        d="M ${sx} ${sy} C ${gx} ${sy}, ${gx} ${gy - 60}, ${gx} ${gy}"
+        d="M ${sx} ${sy} C ${sx - 80} ${sy}, ${gx} ${gy - 60}, ${gx} ${gy}"
       ></path>
       ${solarToGridDot(config, solar, newDur)}
   `;
