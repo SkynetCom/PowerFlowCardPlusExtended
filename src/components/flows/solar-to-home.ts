@@ -32,16 +32,18 @@ export const flowSolarToHome = (
     solar.has && showLine(config, solar.state.toHome || 0) && !config.entities.home?.hide;
   if (!shouldShow) return nothing;
 
-  const solarX = nodeCoords.solar.x + 40;
-  const solarY = nodeCoords.solar.y + 80;
-  const homeX = nodeCoords.home.x + 40;
-  const homeY = nodeCoords.home.y;
+  const solarCX = nodeCoords.solar.x + 40;   // 260
+  const solarBottom = nodeCoords.solar.y + 80; // 100
+  const homeCY = nodeCoords.home.y + 40;       // 230
+  const homeLeft = nodeCoords.home.x;          // 400
 
+  // Cross center is at (solarCX, homeCY) = (260, 230)
+  // Path: vertical from Solar bottom → curve at cross center → horizontal to Home left
   return svg`
       <path
         id="solar-to-home"
         class="solar ${styleLine(solar.state.toHome || 0, config)}"
-        d="M ${solarX} ${solarY} L ${homeX} ${homeY}"
+        d="M ${solarCX} ${solarBottom} L ${solarCX} ${homeCY - 20} Q ${solarCX} ${homeCY} ${solarCX + 20} ${homeCY} L ${homeLeft} ${homeCY}"
       ></path>
       ${solarToHomeDot(config, solar, newDur)}
   `;

@@ -34,16 +34,18 @@ export const flowBatteryToHome = (
     battery.has && showLine(config, battery.state.toHome) && !config.entities.home?.hide;
   if (!shouldShow) return nothing;
 
-  const batteryX = nodeCoords.battery.x + 40;
-  const batteryY = nodeCoords.battery.y;
-  const homeX = nodeCoords.home.x + 40;
-  const homeY = nodeCoords.home.y + 80;
+  const batteryCX = nodeCoords.battery.x + 40;  // 260
+  const batteryTop = nodeCoords.battery.y;       // 370
+  const homeCY = nodeCoords.home.y + 40;          // 230
+  const homeLeft = nodeCoords.home.x;             // 400
 
+  // Cross center is at (batteryCX, homeCY) = (260, 230)
+  // Path: vertical from Battery top → curve at cross center → horizontal to Home left
   return svg`
       <path
         id="battery-to-home"
         class="battery-home ${styleLine(battery.state.toHome || 0, config)}"
-        d="M ${batteryX} ${batteryY} L ${homeX} ${homeY}"
+        d="M ${batteryCX} ${batteryTop} L ${batteryCX} ${homeCY + 20} Q ${batteryCX} ${homeCY} ${batteryCX + 20} ${homeCY} L ${homeLeft} ${homeCY}"
       ></path>
       ${batteryToHomeDot(config, battery, newDur)}
   `;

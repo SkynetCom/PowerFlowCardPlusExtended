@@ -118,30 +118,34 @@ export class PowerFlowCardPlus extends LitElement {
   @query("#solar-grid-flow") solarToGridFlow?: SVGSVGElement;
   @query("#solar-home-flow") solarToHomeFlow?: SVGSVGElement;
   private get _nodeCoords() {
-    // Canvas: 750 x 480
-    // Cross layout: Solar(top) - Grid(left) - Home(center) - Battery(bottom)
-    // Individuals fan out to the right in 2 rows (top aligned with Solar, bottom with Battery)
+    // Canvas: 900 x 480
+    // Cross layout (+): Solar(top), Grid(left), Home(RIGHT), Battery(bottom)
+    // The center of the cross is EMPTY — only flow line intersections
+    // Individuals extend from Home to the right
     //
-    //  [NonFossil] [Solar]    [Ind0]    [Ind2]    [Ind4]
-    //     [Grid] -- [Home] -- ...
-    //              [Battery]  [Ind1]    [Ind3]    [Ind5/6]
+    //                  [Solar]
+    //                    |
+    //   [Grid] ---------+--------- [Home] -- [Ind0] -- [Ind2] -- [Ind4]
+    //                    |                    [Ind1] -- [Ind3] -- [Ind5]
+    //                 [Battery]
     //
+    // Cross center: (260, 230)
     return {
-      nonFossil:   { x: 50,  y: 20 },
-      solar:       { x: 220, y: 20 },
-      grid:        { x: 50,  y: 190 },
-      home:        { x: 220, y: 190 },
-      battery:     { x: 220, y: 370 },
-      individual0: { x: 400, y: 20 },    // Top row, col 1
-      individual1: { x: 400, y: 370 },   // Bottom row, col 1
-      individual2: { x: 540, y: 20 },    // Top row, col 2
-      individual3: { x: 540, y: 370 },   // Bottom row, col 2
-      individual4: { x: 670, y: 20 },    // Top row, col 3
-      individual5: { x: 670, y: 190 },   // Middle row, col 3
-      individual6: { x: 670, y: 370 },   // Bottom row, col 3
-      individual7: { x: 800, y: 20 },
-      individual8: { x: 800, y: 190 },
-      individual9: { x: 800, y: 370 },
+      nonFossil:   { x: 40,  y: 20 },
+      solar:       { x: 220, y: 20 },    // top tip
+      grid:        { x: 40,  y: 190 },   // left tip
+      home:        { x: 400, y: 190 },   // RIGHT tip
+      battery:     { x: 220, y: 370 },   // bottom tip
+      individual0: { x: 560, y: 20 },    // Top row, col 1
+      individual1: { x: 560, y: 370 },   // Bottom row, col 1
+      individual2: { x: 690, y: 20 },    // Top row, col 2
+      individual3: { x: 690, y: 370 },   // Bottom row, col 2
+      individual4: { x: 820, y: 20 },    // Top row, col 3
+      individual5: { x: 820, y: 190 },   // Middle row, col 3
+      individual6: { x: 820, y: 370 },   // Bottom row, col 3
+      individual7: { x: 950, y: 20 },
+      individual8: { x: 950, y: 190 },
+      individual9: { x: 950, y: 370 },
     };
   }
 
@@ -496,7 +500,7 @@ export class PowerFlowCardPlus extends LitElement {
           id="power-flow-card-plus"
           style=${this._config.style_card_content ? this._config.style_card_content : ""}
         >
-          <div class="pf-canvas" style="transform: scale(${this._width > 0 ? Math.min(1, this._width / 750) : 1});">
+          <div class="pf-canvas" style="transform: scale(${this._width > 0 ? Math.min(1, this._width / 900) : 1});">
             ${flowElement(this._config, {
               battery,
               grid,
