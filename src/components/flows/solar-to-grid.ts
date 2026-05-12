@@ -32,16 +32,18 @@ export const flowSolarToGrid = (
     grid.has && grid.hasReturnToGrid && solar.has && showLine(config, solar.state.toGrid || 0);
   if (!shouldShow) return nothing;
 
-  const solarX = nodeCoords.solar.x;
-  const solarY = nodeCoords.solar.y + 40;
-  const gridX = nodeCoords.grid.x + 40;
-  const gridY = nodeCoords.grid.y;
+  // Offset: -6px left at Solar, -12px up at Grid (separate from grid-to-home)
+  const sx = nodeCoords.solar.x + 34;    // 254 — slightly left of Solar center
+  const sy = nodeCoords.solar.y + 80;    // 100 — Solar bottom edge
+  const gx = nodeCoords.grid.x + 80;    // 120 — Grid right edge
+  const gy = nodeCoords.grid.y + 28;    // 218 — above Grid center
 
+  // Smooth curve: top-left quadrant, from Solar down-left to Grid
   return svg`
       <path
         id="solar-to-grid"
         class="return ${styleLine(solar.state.toGrid || 0, config)}"
-        d="M ${solarX} ${solarY} Q ${gridX} ${solarY} ${gridX} ${gridY}"
+        d="M ${sx} ${sy} C ${sx} ${sy + 60}, ${gx} ${gy - 60}, ${gx} ${gy}"
       ></path>
       ${solarToGridDot(config, solar, newDur)}
   `;

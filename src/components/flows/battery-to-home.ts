@@ -34,18 +34,18 @@ export const flowBatteryToHome = (
     battery.has && showLine(config, battery.state.toHome) && !config.entities.home?.hide;
   if (!shouldShow) return nothing;
 
-  const batteryCX = nodeCoords.battery.x + 40;  // 260
-  const batteryTop = nodeCoords.battery.y;       // 370
-  const homeCY = nodeCoords.home.y + 40;          // 230
-  const homeLeft = nodeCoords.home.x;             // 400
+  // Offset: +6px right at Battery, +6px down at Home (separate from grid-to-home)
+  const bx = nodeCoords.battery.x + 46;   // 266 — slightly right of Battery center
+  const by = nodeCoords.battery.y;         // 370 — Battery top edge
+  const hx = nodeCoords.home.x;            // 400 — Home left edge
+  const hy = nodeCoords.home.y + 46;       // 236 — slightly below Home center
 
-  // Cross center is at (batteryCX, homeCY) = (260, 230)
-  // Path: vertical from Battery top → curve at cross center → horizontal to Home left
+  // Smooth S-curve: up from Battery, sweep right to Home
   return svg`
       <path
         id="battery-to-home"
         class="battery-home ${styleLine(battery.state.toHome || 0, config)}"
-        d="M ${batteryCX} ${batteryTop} L ${batteryCX} ${homeCY + 20} Q ${batteryCX} ${homeCY} ${batteryCX + 20} ${homeCY} L ${homeLeft} ${homeCY}"
+        d="M ${bx} ${by} C ${bx} ${by - 90}, ${hx - 60} ${hy}, ${hx} ${hy}"
       ></path>
       ${batteryToHomeDot(config, battery, newDur)}
   `;

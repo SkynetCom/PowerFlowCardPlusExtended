@@ -26,11 +26,11 @@ const j=globalThis,L=e=>e,B=j.trustedTypes,F=B?B.createPolicy("lit-html",{create
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */let ke=class extends I{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,o)=>{const i=o?.renderBefore??t;let a=i._$litPart$;if(void 0===a){const e=o?.renderBefore??null;i._$litPart$=a=new _e(t.insertBefore(W(),e),e,void 0,o??{})}return a._$AI(e),a})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return re}};ke._$litElement$=!0,ke.finalized=!0,xe.litElementHydrateSupport?.({LitElement:ke});const $e=xe.litElementPolyfillSupport;$e?.({LitElement:ke}),(xe.litElementVersions??=[]).push("4.2.2");const Se=e=>!0!==e.disable_dots&&("undefined"==typeof document||"hidden"!==document.visibilityState),Ee=(e,t)=>t>0||"hide"!==e?.display_zero_lines?.mode,Ce=(e,t)=>{if(e>0)return"";const o=t?.display_zero_lines?.mode;if("show"===o||void 0===o)return"";let i="";if("transparency"===o||"custom"===o){const e=t?.display_zero_lines?.transparency;(e??1)&&(i+="transparency ")}return"grey_out"!==o&&"custom"!==o||(i+="grey"),i},De=(e,{battery:t,grid:o,individual:i,newDur:a,nodeCoords:n})=>{if(!(o.has&&t.has&&Ee(e,Math.max(o.state.toBattery||0,t.state.toGrid||0))))return se;const r=n.battery.x,s=n.battery.y+40,l=n.grid.x+40,c=n.grid.y+80;return ne`
+ */let ke=class extends I{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const e=super.createRenderRoot();return this.renderOptions.renderBefore??=e.firstChild,e}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,o)=>{const i=o?.renderBefore??t;let a=i._$litPart$;if(void 0===a){const e=o?.renderBefore??null;i._$litPart$=a=new _e(t.insertBefore(W(),e),e,void 0,o??{})}return a._$AI(e),a})(t,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return re}};ke._$litElement$=!0,ke.finalized=!0,xe.litElementHydrateSupport?.({LitElement:ke});const $e=xe.litElementPolyfillSupport;$e?.({LitElement:ke}),(xe.litElementVersions??=[]).push("4.2.2");const Se=e=>!0!==e.disable_dots&&("undefined"==typeof document||"hidden"!==document.visibilityState),Ee=(e,t)=>t>0||"hide"!==e?.display_zero_lines?.mode,Ce=(e,t)=>{if(e>0)return"";const o=t?.display_zero_lines?.mode;if("show"===o||void 0===o)return"";let i="";if("transparency"===o||"custom"===o){const e=t?.display_zero_lines?.transparency;(e??1)&&(i+="transparency ")}return"grey_out"!==o&&"custom"!==o||(i+="grey"),i},De=(e,{battery:t,grid:o,individual:i,newDur:a,nodeCoords:n})=>{if(!(o.has&&t.has&&Ee(e,Math.max(o.state.toBattery||0,t.state.toGrid||0))))return se;const r=n.battery.x+34,s=n.battery.y,l=n.grid.x+80,c=n.grid.y+52;return ne`
       <path
         id="battery-to-grid"
         class="${Ce(t.state.toGrid||o.state.toBattery||0,e)}"
-        d="M ${r} ${s} Q ${l} ${s} ${l} ${c}"
+        d="M ${r} ${s} C ${r} ${s-60}, ${l} ${c+60}, ${l} ${c}"
       ></path>
       ${((e,t,o)=>Se(e)&&t.state.toBattery?ne`<circle r="1" class="battery-from-grid" vector-effect="non-scaling-stroke">
       <animateMotion
@@ -49,55 +49,55 @@ const j=globalThis,L=e=>e,B=j.trustedTypes,F=B?B.createPolicy("lit-html",{create
       </animateMotion>
     </circle>
   `:se)(e,t,a)}
-  `},Pe=(e,{battery:t,grid:o,individual:i,newDur:a,nodeCoords:n})=>{if(!(t.has&&Ee(e,t.state.toHome)&&!e.entities.home?.hide))return se;const r=n.battery.x+40,s=n.battery.y,l=n.home.y+40,c=n.home.x;return ne`
+  `},Pe=(e,{battery:t,grid:o,individual:i,newDur:a,nodeCoords:n})=>{if(!(t.has&&Ee(e,t.state.toHome)&&!e.entities.home?.hide))return se;const r=n.battery.x+46,s=n.battery.y,l=n.home.x,c=n.home.y+46;return ne`
       <path
         id="battery-to-home"
         class="battery-home ${Ce(t.state.toHome||0,e)}"
-        d="M ${r} ${s} L ${r} ${l+20} Q ${r} ${l} ${r+20} ${l} L ${c} ${l}"
+        d="M ${r} ${s} C ${r} ${s-90}, ${l-60} ${c}, ${l} ${c}"
       ></path>
       ${((e,t,o)=>Se(e)&&t.state.toHome?ne`<circle r="1" class="battery-home" vector-effect="non-scaling-stroke">
       <animateMotion dur="${o.batteryToHome}s" repeatCount="indefinite" calcMode="paced">
         <mpath xlink:href="#battery-to-home" />
       </animateMotion>
     </circle>`:se)(e,t,a)}
-  `},Ae=(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})=>{if(!(o.has&&Ee(e,o.state.fromGrid)&&!e.entities.home?.hide))return se;const s=r.grid.x+80,l=r.grid.y+40,c=r.home.x,d=r.home.y+40;return ne`
+  `},Ae=(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})=>{if(!(o.has&&Ee(e,o.state.fromGrid)&&!e.entities.home?.hide))return se;const s=r.grid.x+80,l=r.grid.y+40,c=r.home.x;return ne`
       <path
         class="grid ${Ce(o.state.toHome||0,e)}"
         id="grid-to-home"
-        d="M ${s} ${l} L ${c} ${d}"
+        d="M ${s} ${l} L ${c} ${l}"
       ></path>
       ${((e,t,o)=>Se(e)&&t.state.toHome?ne`<circle r="1" class="grid" vector-effect="non-scaling-stroke">
       <animateMotion dur="${o.gridToHome}s" repeatCount="indefinite" calcMode="paced">
         <mpath xlink:href="#grid-to-home" />
       </animateMotion>
     </circle>`:se)(e,o,n)}
-  `},Te=(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})=>{if(!(o.has&&o.hasReturnToGrid&&a.has&&Ee(e,a.state.toGrid||0)))return se;const s=r.solar.x,l=r.solar.y+40,c=r.grid.x+40,d=r.grid.y;return ne`
+  `},Te=(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})=>{if(!(o.has&&o.hasReturnToGrid&&a.has&&Ee(e,a.state.toGrid||0)))return se;const s=r.solar.x+34,l=r.solar.y+80,c=r.grid.x+80,d=r.grid.y+28;return ne`
       <path
         id="solar-to-grid"
         class="return ${Ce(a.state.toGrid||0,e)}"
-        d="M ${s} ${l} Q ${c} ${l} ${c} ${d}"
+        d="M ${s} ${l} C ${s} ${l+60}, ${c} ${d-60}, ${c} ${d}"
       ></path>
       ${((e,t,o)=>Se(e)&&t.state.toGrid&&t.has?ne`<circle r="1" class="return" vector-effect="non-scaling-stroke">
       <animateMotion dur="${o.solarToGrid}s" repeatCount="indefinite" calcMode="paced">
         <mpath xlink:href="#solar-to-grid" />
       </animateMotion>
     </circle>`:se)(e,a,n)}
-  `},Me=(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})=>{if(!(a.has&&Ee(e,a.state.toHome||0)&&!e.entities.home?.hide))return se;const s=r.solar.x+40,l=r.solar.y+80,c=r.home.y+40,d=r.home.x;return ne`
+  `},Me=(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})=>{if(!(a.has&&Ee(e,a.state.toHome||0)&&!e.entities.home?.hide))return se;const s=r.solar.x+46,l=r.solar.y+80,c=r.home.x,d=r.home.y+34;return ne`
       <path
         id="solar-to-home"
         class="solar ${Ce(a.state.toHome||0,e)}"
-        d="M ${s} ${l} L ${s} ${c-20} Q ${s} ${c} ${s+20} ${c} L ${d} ${c}"
+        d="M ${s} ${l} C ${s} ${l+90}, ${c-60} ${d}, ${c} ${d}"
       ></path>
       ${((e,t,o)=>Se(e)&&t.state.toHome?ne`<circle r="1" class="solar" vector-effect="non-scaling-stroke">
       <animateMotion dur="${o.solarToHome}s" repeatCount="indefinite" calcMode="paced">
         <mpath xlink:href="#solar-to-home" />
       </animateMotion>
     </circle>`:se)(e,a,n)}
-  `},ze=(e,{battery:t,individual:o,solar:i,newDur:a,nodeCoords:n})=>{if(!(t.has&&i.has&&Ee(e,i.state.toBattery||0)))return se;const r=n.solar.x+40,s=n.solar.y+80,l=n.battery.x+40,c=n.battery.y;return ne`
+  `},ze=(e,{battery:t,individual:o,solar:i,newDur:a,nodeCoords:n})=>{if(!(t.has&&i.has&&Ee(e,i.state.toBattery||0)))return se;const r=n.solar.x+40,s=n.solar.y+80,l=n.battery.y;return ne`
       <path
         id="solar-to-battery"
         class="battery-solar ${Ce(i.state.toBattery||0,e)}"
-        d="M ${r} ${s} Q ${r-60} ${(s+c)/2} ${l} ${c}"
+        d="M ${r} ${s} L ${r} ${l}"
       ></path>
       ${((e,t,o)=>Se(e)&&t.state.toBattery?ne`<circle r="1" class="battery-solar" vector-effect="non-scaling-stroke">
       <animateMotion dur="${o.solarToBattery}s" repeatCount="indefinite" calcMode="paced">

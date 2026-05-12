@@ -33,16 +33,16 @@ export const flowSolarToBattery = (
   const shouldShow = battery.has && solar.has && showLine(config, solar.state.toBattery || 0);
   if (!shouldShow) return nothing;
 
-  const solarX = nodeCoords.solar.x + 40;
-  const solarY = nodeCoords.solar.y + 80;
-  const batteryX = nodeCoords.battery.x + 40;
-  const batteryY = nodeCoords.battery.y;
+  // Straight vertical line — the VERTICAL ARM of the cross
+  const cx = nodeCoords.solar.x + 40;    // 260 — center X (same for solar & battery)
+  const sy = nodeCoords.solar.y + 80;    // 100 — Solar bottom edge
+  const by = nodeCoords.battery.y;       // 370 — Battery top edge
 
   return svg`
       <path
         id="solar-to-battery"
         class="battery-solar ${styleLine(solar.state.toBattery || 0, config)}"
-        d="M ${solarX} ${solarY} Q ${solarX - 60} ${(solarY + batteryY) / 2} ${batteryX} ${batteryY}"
+        d="M ${cx} ${sy} L ${cx} ${by}"
       ></path>
       ${solarToBatteryDot(config, solar, newDur)}
   `;

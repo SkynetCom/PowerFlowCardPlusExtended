@@ -32,16 +32,16 @@ export const flowGridToHome = (
     grid.has && showLine(config, grid.state.fromGrid) && !config.entities.home?.hide;
   if (!shouldShow) return nothing;
 
-  const gridX = nodeCoords.grid.x + 80;
-  const gridY = nodeCoords.grid.y + 40;
-  const homeX = nodeCoords.home.x;
-  const homeY = nodeCoords.home.y + 40;
+  // Straight horizontal line — the HORIZONTAL ARM of the cross
+  const gx = nodeCoords.grid.x + 80;    // 120 — Grid right edge
+  const cy = nodeCoords.grid.y + 40;    // 230 — center Y (same for grid & home)
+  const hx = nodeCoords.home.x;         // 400 — Home left edge
 
   return svg`
       <path
         class="grid ${styleLine(grid.state.toHome || 0, config)}"
         id="grid-to-home"
-        d="M ${gridX} ${gridY} L ${homeX} ${homeY}"
+        d="M ${gx} ${cy} L ${hx} ${cy}"
       ></path>
       ${gridToHomeDot(config, grid, newDur)}
   `;

@@ -58,16 +58,18 @@ export const flowBatteryToGrid = (
     showLine(config, Math.max(grid.state.toBattery || 0, battery.state.toGrid || 0));
   if (!shouldShow) return nothing;
 
-  const batteryX = nodeCoords.battery.x;
-  const batteryY = nodeCoords.battery.y + 40;
-  const gridX = nodeCoords.grid.x + 40;
-  const gridY = nodeCoords.grid.y + 80;
+  // Offset: -6px left at Battery, +12px down at Grid (separate from grid-to-home)
+  const bx = nodeCoords.battery.x + 34;   // 254 — slightly left of Battery center
+  const by = nodeCoords.battery.y;         // 370 — Battery top edge
+  const gx = nodeCoords.grid.x + 80;      // 120 — Grid right edge
+  const gy = nodeCoords.grid.y + 52;      // 242 — below Grid center
 
+  // Smooth curve: bottom-left quadrant, from Battery up-left to Grid
   return svg`
       <path
         id="battery-to-grid"
         class="${styleLine(battery.state.toGrid || grid.state.toBattery || 0, config)}"
-        d="M ${batteryX} ${batteryY} Q ${gridX} ${batteryY} ${gridX} ${gridY}"
+        d="M ${bx} ${by} C ${bx} ${by - 60}, ${gx} ${gy + 60}, ${gx} ${gy}"
       ></path>
       ${batteryFromGridDot(config, grid, newDur)} ${batteryToGridDot(config, battery, newDur)}
   `;
