@@ -12,6 +12,7 @@ export const batteryElement = (
   {
     battery,
     entities,
+    style,
   }: {
     battery: any;
     entities: ConfigEntities;

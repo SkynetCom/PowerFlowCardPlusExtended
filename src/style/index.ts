@@ -199,12 +199,7 @@ export const styles = css`
     height: var(--lines-svg-not-flat-multi-indiv-height);
   }
 
-  .row {
-    display: flex;
-    justify-content: space-between;
-    max-width: 580px;
-    margin: 0 auto;
-  }
+
   .circle-container {
     position: absolute;
     display: flex;

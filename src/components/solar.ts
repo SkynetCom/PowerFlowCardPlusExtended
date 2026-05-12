@@ -17,6 +17,7 @@ export const solarElement = (
     entities,
     solar,
     templatesObj,
+    style,
   }: {
     entities: ConfigEntities;
     solar: any;
