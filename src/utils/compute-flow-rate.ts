@@ -39,15 +39,19 @@ export const computeFlowRate = (
   if (!Number.isFinite(result)) {
     return config.max_flow_rate;
   }
-  return result;
+  // Quantize to nearest 0.5s to prevent animation restarts on minor value changes
+  return Math.round(result * 2) / 2;
 };
 
 export const computeIndividualFlowRate = (entry?: boolean | number, value?: number): number => {
+  let result: number;
   if (entry !== false && value) {
-    return value;
+    result = value;
+  } else if (typeof entry === "number") {
+    result = entry;
+  } else {
+    result = 1.66;
   }
-  if (typeof entry === "number") {
-    return entry;
-  }
-  return 1.66;
+  // Quantize to nearest 0.5s to prevent animation restarts on minor value changes
+  return Math.round(result * 2) / 2;
 };

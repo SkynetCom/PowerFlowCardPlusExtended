@@ -3,8 +3,8 @@ import { type HomeAssistant } from "custom-card-helpers";
 import { getFirstEntityName } from "../states/utils/mutli-entity";
 
 export const defaultValues = {
-  maxFlowRate: 6,
-  minFlowRate: 0.75,
+  maxFlowRate: 10,
+  minFlowRate: 2,
   baseDecimals: 0,
   kiloDecimals: 1,
   minExpectedPower: 0.01,
