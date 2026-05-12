@@ -10,12 +10,9 @@ export const flowIndividual = (
   config: FlowCardPlusConfig,
   { individual, newDur, nodeCoords }: { individual: Flows["individual"]; newDur: NewDur; nodeCoords: any }
 ) => {
-  // Home center and edges (node is 80x80)
-  const homeCX = nodeCoords.home.x + 40;
-  const homeCY = nodeCoords.home.y + 40;
-  const homeRight = nodeCoords.home.x + 80;
-  const homeTop = nodeCoords.home.y;
-  const homeBottom = nodeCoords.home.y + 80;
+  // Home edges (node is 80x80)
+  const homeRight = nodeCoords.home.x + 80;   // 300
+  const homeCY = nodeCoords.home.y + 40;       // 230
 
   return individual.map((ind, i) => {
     if (!ind.has || !showLine(config, ind.state || 0) || config.entities.home?.hide) return nothing;
@@ -23,33 +20,29 @@ export const flowIndividual = (
     const coords = (nodeCoords as any)[`individual${i}`];
     if (!coords) return nothing;
 
-    // Individual center
-    const indCX = coords.x + 40;
-    const indCY = coords.y + 40;
+    const indCX = coords.x + 40;  // center X of individual node
+    const indCY = coords.y + 40;  // center Y of individual node
 
-    // Determine Home anchor point based on individual position relative to Home
-    let anchorX = homeCX;
-    let anchorY = homeCY;
+    let pathD: string;
 
-    if (coords.x > nodeCoords.home.x + 80) {
-      // Individual is to the right of Home
-      anchorX = homeRight;
-      if (coords.y < nodeCoords.home.y) {
-        anchorY = homeTop;       // above-right
-      } else if (coords.y > nodeCoords.home.y + 80) {
-        anchorY = homeBottom;    // below-right
-      }
-    } else if (coords.x + 80 < nodeCoords.home.x) {
-      // Individual is to the left of Home
-      anchorX = nodeCoords.home.x;
-      anchorY = homeCY;
+    if (coords.y < nodeCoords.home.y) {
+      // --- TOP individual: Recta → Curva ↑ → Recta (enters node from below) ---
+      const nodeBottom = coords.y + 80;
+      const curveStartX = indCX - 60;
+      const curveEndY = homeCY - 60;
+      pathD = `M ${homeRight} ${homeCY} L ${curveStartX} ${homeCY} Q ${indCX} ${homeCY} ${indCX} ${curveEndY} L ${indCX} ${nodeBottom}`;
+
+    } else if (coords.y > nodeCoords.home.y + 80) {
+      // --- BOTTOM individual: Recta → Curva ↓ → Recta (enters node from above) ---
+      const nodeTop = coords.y;
+      const curveStartX = indCX - 60;
+      const curveEndY = homeCY + 60;
+      pathD = `M ${homeRight} ${homeCY} L ${curveStartX} ${homeCY} Q ${indCX} ${homeCY} ${indCX} ${curveEndY} L ${indCX} ${nodeTop}`;
+
     } else {
-      // Same column as Home
-      if (coords.y < nodeCoords.home.y) {
-        anchorY = homeTop;
-      } else {
-        anchorY = homeBottom;
-      }
+      // --- MIDDLE individual: straight horizontal line ---
+      const nodeLeft = coords.x;
+      pathD = `M ${homeRight} ${homeCY} L ${nodeLeft} ${homeCY}`;
     }
 
     const pathId = `individual-flow-${i}`;
@@ -59,7 +52,7 @@ export const flowIndividual = (
       <path
         id="${pathId}"
         class="${styleLine(ind.state || 0, config)}"
-        d="M ${anchorX} ${anchorY} L ${indCX} ${indCY}"
+        d="${pathD}"
       ></path>
       ${checkShouldShowDots(config) && ind.state && ind.state > 0
         ? svg`<circle r="1" class="individual" vector-effect="non-scaling-stroke">

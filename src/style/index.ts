@@ -122,8 +122,8 @@ export const styles = css`
 
   .pf-canvas {
     position: relative;
-    width: 700px;
-    height: 400px;
+    width: 750px;
+    height: 480px;
     flex-shrink: 0;
     transform-origin: top center;
   }
@@ -135,8 +135,8 @@ export const styles = css`
     position: absolute;
     top: 0;
     left: 0;
-    width: 700px;
-    height: 400px;
+    width: 750px;
+    height: 480px;
     pointer-events: none;
     z-index: 1;
   }

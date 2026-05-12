@@ -23,7 +23,7 @@ export const flowElement = (
   { battery, grid, individual, solar, newDur, nodeCoords }: Flows
 ) => {
   return html`
-  <svg class="pf-canvas-svg" viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg">
+  <svg class="pf-canvas-svg" viewBox="0 0 750 480" xmlns="http://www.w3.org/2000/svg">
     ${flowSolarToHome(config, { battery, grid, individual, solar, newDur, nodeCoords })}
     ${flowSolarToGrid(config, { battery, grid, individual, solar, newDur, nodeCoords })}
     ${flowSolarToBattery(config, { battery, individual, solar, newDur, nodeCoords })}
