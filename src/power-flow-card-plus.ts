@@ -118,22 +118,25 @@ export class PowerFlowCardPlus extends LitElement {
   @query("#solar-grid-flow") solarToGridFlow?: SVGSVGElement;
   @query("#solar-home-flow") solarToHomeFlow?: SVGSVGElement;
   private get _nodeCoords() {
+    // Canvas: 700 x 400
+    // Columns: Grid(10) | Solar/Home/Battery(140) | Ind01(280) | Ind23(420) | Ind456(560)
+    // Rows: Top(10) | Middle(160) | Bottom(310)
     return {
-      nonFossil: { x: 10, y: 20 },
-      grid: { x: 10, y: 170 },
-      battery: { x: 140, y: 320 },
-      solar: { x: 140, y: 20 },
-      home: { x: 140, y: 170 },
-      individual0: { x: 270, y: 20 },   // Left Top
-      individual1: { x: 140, y: 320 },  // Left Bottom (usually mapped here)
-      individual2: { x: 270, y: 170 },  // Right Top
-      individual3: { x: 270, y: 320 },  // Right Bottom
-      individual4: { x: 400, y: 20 },   // Far Right Top
-      individual5: { x: 400, y: 170 },  // Far Right Mid
-      individual6: { x: 400, y: 320 },  // Far Right Bottom
-      individual7: { x: 530, y: 20 },
-      individual8: { x: 530, y: 170 },
-      individual9: { x: 530, y: 320 },
+      nonFossil:   { x: 10,  y: 10 },
+      solar:       { x: 140, y: 10 },
+      grid:        { x: 10,  y: 160 },
+      home:        { x: 140, y: 160 },
+      battery:     { x: 140, y: 310 },
+      individual0: { x: 280, y: 10 },    // Left Top
+      individual1: { x: 280, y: 310 },   // Left Bottom
+      individual2: { x: 420, y: 10 },    // Right Top
+      individual3: { x: 420, y: 310 },   // Right Bottom
+      individual4: { x: 560, y: 10 },    // Far Right Top
+      individual5: { x: 560, y: 160 },   // Far Right Mid
+      individual6: { x: 560, y: 310 },   // Far Right Bottom
+      individual7: { x: 700, y: 10 },
+      individual8: { x: 700, y: 160 },
+      individual9: { x: 700, y: 310 },
     };
   }
 
@@ -488,7 +491,7 @@ export class PowerFlowCardPlus extends LitElement {
           id="power-flow-card-plus"
           style=${this._config.style_card_content ? this._config.style_card_content : ""}
         >
-          <div class="pf-canvas" style="transform: scale(${this._width > 0 ? Math.min(1, this._width / 600) : 1});">
+          <div class="pf-canvas" style="transform: scale(${this._width > 0 ? Math.min(1, this._width / 700) : 1});">
             ${flowElement(this._config, {
               battery,
               grid,

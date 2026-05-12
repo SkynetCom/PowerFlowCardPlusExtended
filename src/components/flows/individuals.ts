@@ -10,53 +10,58 @@ export const flowIndividual = (
   config: FlowCardPlusConfig,
   { individual, newDur, nodeCoords }: { individual: Flows["individual"]; newDur: NewDur; nodeCoords: any }
 ) => {
+  // Home center and edges (node is 80x80)
+  const homeCX = nodeCoords.home.x + 40;
+  const homeCY = nodeCoords.home.y + 40;
+  const homeRight = nodeCoords.home.x + 80;
+  const homeTop = nodeCoords.home.y;
+  const homeBottom = nodeCoords.home.y + 80;
+
   return individual.map((ind, i) => {
     if (!ind.has || !showLine(config, ind.state || 0) || config.entities.home?.hide) return nothing;
 
-    const slotIdx = i;
-    const coords = (nodeCoords as any)[`individual${slotIdx}`];
+    const coords = (nodeCoords as any)[`individual${i}`];
     if (!coords) return nothing;
 
-    // Center of Home is (180, 210)
-    // Home boundaries for lines:
-    // Top: (180, 170)
-    // Bottom: (180, 250)
-    // Left: (140, 210)
-    // Right: (220, 210)
+    // Individual center
+    const indCX = coords.x + 40;
+    const indCY = coords.y + 40;
 
-    const startX = 180;
-    const startY = 210;
-    const endX = coords.x + 40;
-    const endY = coords.y + 40;
+    // Determine Home anchor point based on individual position relative to Home
+    let anchorX = homeCX;
+    let anchorY = homeCY;
 
-    // Determine entry point to Home based on slot position
-    let homeAnchorX = 180;
-    let homeAnchorY = 210;
-
-    if (coords.x > 180) {
-      homeAnchorX = 220; // Right side
-      homeAnchorY = 210;
-    } else if (coords.x < 180) {
-      homeAnchorX = 140; // Left side
-      homeAnchorY = 210;
-    }
-
-    if (coords.y < 170) {
-      homeAnchorY = 170; // Top side
-    } else if (coords.y > 250) {
-      homeAnchorY = 250; // Bottom side
+    if (coords.x > nodeCoords.home.x + 80) {
+      // Individual is to the right of Home
+      anchorX = homeRight;
+      if (coords.y < nodeCoords.home.y) {
+        anchorY = homeTop;       // above-right
+      } else if (coords.y > nodeCoords.home.y + 80) {
+        anchorY = homeBottom;    // below-right
+      }
+    } else if (coords.x + 80 < nodeCoords.home.x) {
+      // Individual is to the left of Home
+      anchorX = nodeCoords.home.x;
+      anchorY = homeCY;
+    } else {
+      // Same column as Home
+      if (coords.y < nodeCoords.home.y) {
+        anchorY = homeTop;
+      } else {
+        anchorY = homeBottom;
+      }
     }
 
     const pathId = `individual-flow-${i}`;
-    const flowDur = newDur.individual[i] || 0;
+    const flowDur = newDur.individual[i] || 1.66;
 
     return svg`
       <path
         id="${pathId}"
         class="${styleLine(ind.state || 0, config)}"
-        d="M ${homeAnchorX} ${homeAnchorY} L ${endX} ${endY}"
+        d="M ${anchorX} ${anchorY} L ${indCX} ${indCY}"
       ></path>
-      ${checkShouldShowDots(config) && ind.state > 0
+      ${checkShouldShowDots(config) && ind.state && ind.state > 0
         ? svg`<circle r="1" class="individual" vector-effect="non-scaling-stroke">
             <animateMotion
               dur="${computeIndividualFlowRate(ind?.field?.calculate_flow_rate, flowDur)}s"
@@ -72,3 +77,4 @@ export const flowIndividual = (
     `;
   });
 };
+
