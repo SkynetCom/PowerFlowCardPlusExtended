@@ -1,6 +1,7 @@
 import { type FlowCardPlusConfig, type NewDur } from "./../../types";
 import { checkShouldShowDots } from "./../../utils/check-should-show-dots";
 import { computeIndividualFlowRate } from "./../../utils/compute-flow-rate";
+import { getPositionName } from "./../../utils/compute-individual-position";
 import { showLine } from "./../../utils/show-line";
 import { styleLine } from "./../../utils/style-line";
 import { svg, nothing } from "lit";
@@ -11,8 +12,8 @@ export const flowIndividual = (
   { individual, newDur, nodeCoords }: { individual: Flows["individual"]; newDur: NewDur; nodeCoords: any }
 ) => {
   // Home edges (node is 80x80)
-  const homeRight = nodeCoords.home.x + 80;   // 300
-  const homeCY = nodeCoords.home.y + 40;       // 230
+  const homeRight = nodeCoords.home.x + 80;
+  const homeCY = nodeCoords.home.y + 40;
 
   return individual.map((ind, i) => {
     if (!ind.has || !showLine(config, ind.state || 0) || config.entities.home?.hide) return nothing;
@@ -20,8 +21,9 @@ export const flowIndividual = (
     const coords = (nodeCoords as any)[`individual${i}`];
     if (!coords) return nothing;
 
-    const indCX = coords.x + 40;  // center X of individual node
-    const indCY = coords.y + 40;  // center Y of individual node
+    const indCX = coords.x + 40;
+    const posName = getPositionName(i);
+    const colorVar = `var(--individual-${posName}-color)`;
 
     let pathD: string;
 
@@ -52,10 +54,13 @@ export const flowIndividual = (
       <path
         id="${pathId}"
         class="${styleLine(ind.state || 0, config)}"
+        style="stroke: ${colorVar}; stroke-width: 1; fill: none;"
         d="${pathD}"
       ></path>
       ${checkShouldShowDots(config) && ind.state && ind.state > 0
-        ? svg`<circle r="1" class="individual" vector-effect="non-scaling-stroke">
+        ? svg`<circle r="1.5"
+            vector-effect="non-scaling-stroke"
+            style="fill: ${colorVar}; stroke: ${colorVar}; stroke-width: 4;">
             <animateMotion
               dur="${computeIndividualFlowRate(ind?.field?.calculate_flow_rate, flowDur)}s"
               repeatCount="indefinite"
