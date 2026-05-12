@@ -105,10 +105,10 @@ const j=globalThis,L=e=>e,B=j.trustedTypes,F=B?B.createPolicy("lit-html",{create
       </animateMotion>
     </circle>`:se)(e,i,a)}
   `},Oe=(e,t,o)=>{const i=e.use_new_flow_rate_model??!0?((e,t)=>{const o=e.max_expected_power,i=e.min_expected_power;return((e,t,o,i,a)=>e>a?o:(e-i)*(o-t)/(a-i)+t)(t,e.max_flow_rate,e.min_flow_rate,i,o)})(e,t):((e,t,o)=>{const i=e.min_flow_rate,a=e.max_flow_rate;return a-t/(o>0?o:t>0?t:1)*(a-i)})(e,t,o);return Number.isFinite(i)?i:e.max_flow_rate},Ne=(e,t)=>!1!==e&&t?t:"number"==typeof e?e:1.66,Ie=(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})=>ae`
-  ${Me(e,{battery:t,grid:o,individual:i,solar:a,newDur:n})}
-  ${Te(e,{battery:t,grid:o,individual:i,solar:a,newDur:n})}
-  ${ze(e,{battery:t,individual:i,solar:a,newDur:n})}
-  ${Ae(e,{battery:t,grid:o,individual:i,solar:a,newDur:n})}
+  ${Me(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})}
+  ${Te(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})}
+  ${ze(e,{battery:t,individual:i,solar:a,newDur:n,nodeCoords:r})}
+  ${Ae(e,{battery:t,grid:o,individual:i,solar:a,newDur:n,nodeCoords:r})}
   ${Pe(e,{battery:t,grid:o,individual:i,newDur:n,nodeCoords:r})}
   ${De(e,{battery:t,grid:o,individual:i,newDur:n,nodeCoords:r})}
   ${((e,{individual:t,newDur:o,nodeCoords:i})=>t.map((t,a)=>{if(!t.has||!$e(e,t.state||0)||e.entities.home?.hide)return se;const n=i[`individual${a}`];if(!n)return se;const r=n.x+40,s=n.y+40;let l=180,c=210;n.x>180?(l=220,c=210):n.x<180&&(l=140,c=210),n.y<170?c=170:n.y>250&&(c=250);const d=`individual-flow-${a}`,u=o.individual[a]||0;return ne`
@@ -917,7 +917,7 @@ function ri(e,t){return(t,o,i)=>((e,t,o)=>(o.configurable=!0,o.enumerable=!0,Ref
           id="power-flow-card-plus"
           style=${this._config.style_card_content?this._config.style_card_content:""}
         >
-          <div class="pf-canvas" style="transform: scale(${Math.min(1,this._width/600)});">
+          <div class="pf-canvas" style="transform: scale(${this._width>0?Math.min(1,this._width/600):1});">
             ${Ie(this._config,{battery:a,grid:o,individual:s,solar:i,newDur:l,nodeCoords:this._nodeCoords})}
             ${((e,t,{nonFossil:o,entities:i,templatesObj:a,grid:n,newDur:r,fossilEnergyConsumption:s,style:l})=>{const c=!1===t.clickable_entities;return o.hasPercentage?ae`<div class="circle-container low-carbon" style=${l??""}>
     <span class="label">${o.name}</span>

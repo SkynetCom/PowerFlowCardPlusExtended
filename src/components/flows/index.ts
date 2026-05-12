@@ -23,10 +23,10 @@ export const flowElement = (
   { battery, grid, individual, solar, newDur, nodeCoords }: Flows
 ) => {
   return html`
-  ${flowSolarToHome(config, { battery, grid, individual, solar, newDur })}
-  ${flowSolarToGrid(config, { battery, grid, individual, solar, newDur })}
-  ${flowSolarToBattery(config, { battery, individual, solar, newDur })}
-  ${flowGridToHome(config, { battery, grid, individual, solar, newDur })}
+  ${flowSolarToHome(config, { battery, grid, individual, solar, newDur, nodeCoords })}
+  ${flowSolarToGrid(config, { battery, grid, individual, solar, newDur, nodeCoords })}
+  ${flowSolarToBattery(config, { battery, individual, solar, newDur, nodeCoords })}
+  ${flowGridToHome(config, { battery, grid, individual, solar, newDur, nodeCoords })}
   ${flowBatteryToHome(config, { battery, grid, individual, newDur, nodeCoords })}
   ${flowBatteryToGrid(config, { battery, grid, individual, newDur, nodeCoords })}
   ${flowIndividual(config, { individual, newDur, nodeCoords })}

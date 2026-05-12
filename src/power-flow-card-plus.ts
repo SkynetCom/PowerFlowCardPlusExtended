@@ -488,7 +488,7 @@ export class PowerFlowCardPlus extends LitElement {
           id="power-flow-card-plus"
           style=${this._config.style_card_content ? this._config.style_card_content : ""}
         >
-          <div class="pf-canvas" style="transform: scale(${Math.min(1, this._width / 600)});">
+          <div class="pf-canvas" style="transform: scale(${this._width > 0 ? Math.min(1, this._width / 600) : 1});">
             ${flowElement(this._config, {
               battery,
               grid,
