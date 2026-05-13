@@ -42,12 +42,9 @@ export const flowIndividual = (
     }
 
     const flowDur = computeIndividualFlowRate(ind?.field?.calculate_flow_rate, newDur.individual[i] || 2);
-    const pathId = `ind-flow-${i}`;
 
-    // Use same pattern as main flow dots (mpath + xlink:href + calcMode paced)
     return svg`
       <path
-        id="${pathId}"
         class="${styleLine(ind.state || 0, config)}"
         style="stroke: ${colorVar}; stroke-width: 1; fill: none;"
         d="${pathD}"
@@ -59,11 +56,11 @@ export const flowIndividual = (
               dur="${flowDur}s"
               repeatCount="indefinite"
               calcMode="paced"
-            >
-              <mpath xlink:href="#${pathId}" />
-            </animateMotion>
+              path="${pathD}"
+            ></animateMotion>
           </circle>`
         : nothing}
     `;
   });
+
 };

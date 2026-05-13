@@ -58,18 +58,18 @@ export const flowBatteryToGrid = (
     showLine(config, Math.max(grid.state.toBattery || 0, battery.state.toGrid || 0));
   if (!shouldShow) return nothing;
 
-  // Start from Battery TOP (slightly left of center), curve to Grid BOTTOM (slightly right of center)
-  const bx = nodeCoords.battery.x + 34;   // 254 — slightly left of Battery center
-  const by = nodeCoords.battery.y;         // 370 — Battery top edge
-  const gx = nodeCoords.grid.x + 46;      // 86  — slightly right of Grid center
-  const gy = nodeCoords.grid.y + 80;      // 270 — Grid bottom edge
+  // Start: Battery top (slightly left), End: Grid right (slightly below center)
+  // Curve bows INWARD toward cross center (~260, 230)
+  const bx = nodeCoords.battery.x + 34;   // 254
+  const by = nodeCoords.battery.y;         // 370
+  const gx = nodeCoords.grid.x + 80;      // 120
+  const gy = nodeCoords.grid.y + 52;      // 242
 
-  // Smooth arc bulging toward bottom-left corner
   return svg`
       <path
         id="battery-to-grid"
         class="${styleLine(battery.state.toGrid || grid.state.toBattery || 0, config)}"
-        d="M ${bx} ${by} C ${bx - 80} ${by}, ${gx} ${gy + 60}, ${gx} ${gy}"
+        d="M ${bx} ${by} C ${bx} ${(by + gy) / 2 - 20}, ${(bx + gx) / 2 - 20} ${gy}, ${gx} ${gy}"
       ></path>
       ${batteryFromGridDot(config, grid, newDur)} ${batteryToGridDot(config, battery, newDur)}
   `;
